@@ -36,7 +36,7 @@ class Mixin implements CompatibleInterface, CreatableInterface
             return static::create($instance);
         }
 
-        $file = Temporary::file($instance);
+        $file = Temporary::get($instance);
 
         if (Filesystem::unexists($file)) {
             Filesystem::put($file, Expression::generate($instance));
