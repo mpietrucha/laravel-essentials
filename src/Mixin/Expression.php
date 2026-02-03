@@ -2,14 +2,22 @@
 
 namespace Mpietrucha\Laravel\Package\Mixin;
 
+use Mpietrucha\Utility\Instance\Path;
 use Mpietrucha\Utility\Str;
 
 abstract class Expression
 {
-    public static function trait(string $trait): object
+    public static function generate(string $trait): string
     {
-        $expression = Str::sprintf('return new class { use %s; };', $trait);
+        $name = static::name($trait);
 
-        return eval($expression);
+        return Str::sprintf('class %s { use %s; }; return new %s', $name, $trait, $name);
+    }
+
+    protected static function name(string $trait): string
+    {
+        $delimiter = Path::delimiter();
+
+        return Str::of($trait)->remove($delimiter)->finish('TraitMixinInstance');
     }
 }

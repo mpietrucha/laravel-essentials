@@ -10,6 +10,8 @@ use Mpietrucha\Utility\Concerns\Creatable;
 use Mpietrucha\Utility\Contracts\CompatibleInterface;
 use Mpietrucha\Utility\Contracts\CreatableInterface;
 use Mpietrucha\Utility\Enumerable\Contracts\EnumerableInterface;
+use Mpietrucha\Utility\Filesystem;
+use Mpietrucha\Utility\Filesystem\Temporary;
 use Mpietrucha\Utility\Instance;
 use Mpietrucha\Utility\Reflection;
 use Mpietrucha\Utility\Reflection\Contracts\ReflectionInterface;
@@ -34,7 +36,13 @@ class Mixin implements CompatibleInterface, CreatableInterface
             return static::create($instance);
         }
 
-        return Expression::trait($instance) |> static::create(...);
+        $file = Temporary::file($instance);
+
+        if (Filesystem::unexists($file)) {
+            Filesystem::put($file, Expression::generate($instance));
+        }
+
+        return Filesystem::requireOnce($file) |> static::create(...);
     }
 
     public static function attach(string $destination, object|string $instance): void
