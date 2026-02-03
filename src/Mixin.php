@@ -18,14 +18,30 @@ use Mpietrucha\Utility\Reflection\Contracts\ReflectionInterface;
 use Mpietrucha\Utility\Type;
 use Mpietrucha\Utility\Value;
 
+/**
+ * @phpstan-type BucketCollection \Mpietrucha\Utility\Collection<string, object|string>
+ */
 class Mixin implements CompatibleInterface, CreatableInterface
 {
     use Compatible, Creatable;
 
     protected ?ReflectionInterface $reflection = null;
 
+    /**
+     * @var BucketCollection
+     */
+    protected static ?EnumerableInterface $bucket = null;
+
     public function __construct(protected object $instance)
     {
+    }
+
+    /**
+     * @return BucketCollection
+     */
+    public static function bucket(): EnumerableInterface
+    {
+        return static::$bucket ??= Collection::create();
     }
 
     public static function build(object|string $instance): static
@@ -52,6 +68,8 @@ class Mixin implements CompatibleInterface, CreatableInterface
         $handler = Macro::attach(...);
 
         Value::pipe($destination, $handler) |> $mixin->macros()->eachKeys(...);
+
+        static::bucket()->put($destination, $instance);
     }
 
     public function instance(): object
