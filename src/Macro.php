@@ -2,7 +2,6 @@
 
 namespace Mpietrucha\Laravel\Package;
 
-use Illuminate\Support\Traits\Macroable;
 use Mpietrucha\Laravel\Package\Macro\Attempt;
 use Mpietrucha\Laravel\Package\Macro\Exception\MacroException;
 use Mpietrucha\Utility\Concerns\Compatible;
@@ -35,6 +34,10 @@ abstract class Macro implements CompatibleInterface
             return false;
         }
 
-        return Instance::traits($destination)->contains(Macroable::class);
+        return Instance::traits($destination)->intersect([
+            \Illuminate\Support\Traits\Macroable::class,
+            \Spatie\Macroable\Macroable::class,
+            \Filament\Support\Concerns\Macroable::class,
+        ])->isNotEmpty();
     }
 }
