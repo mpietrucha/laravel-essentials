@@ -30,10 +30,6 @@ abstract class Macro implements CompatibleInterface
 
     protected static function compatibility(string $destination): bool
     {
-        if (Instance::unexists($destination)) {
-            return false;
-        }
-
         return Instance::traits($destination)->intersect([
             \Illuminate\Support\Traits\Macroable::class,
             \Spatie\Macroable\Macroable::class,

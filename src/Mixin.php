@@ -19,7 +19,9 @@ use Mpietrucha\Utility\Type;
 use Mpietrucha\Utility\Value;
 
 /**
- * @phpstan-type BucketCollection \Mpietrucha\Utility\Collection<string, object|string>
+ * @phpstan-type MixinCollection \Mpietrucha\Utility\Collection<int, string>
+ * @phpstan-type RegistryCollection \Mpietrucha\Utility\Collection<string, MixinCollection>
+ * @phpstan-type MacroCollection \Mpietrucha\Utility\Enumerable\Contracts\EnumerableInterface<string, callable>
  */
 class Mixin implements CompatibleInterface, CreatableInterface
 {
@@ -28,20 +30,20 @@ class Mixin implements CompatibleInterface, CreatableInterface
     protected ?ReflectionInterface $reflection = null;
 
     /**
-     * @var BucketCollection
+     * @var null|RegistryCollection
      */
-    protected static ?EnumerableInterface $bucket = null;
+    protected static ?EnumerableInterface $registry = null;
 
     public function __construct(protected object $instance)
     {
     }
 
     /**
-     * @return BucketCollection
+     * @return RegistryCollection
      */
-    public static function bucket(): EnumerableInterface
+    public static function registry(): EnumerableInterface
     {
-        return static::$bucket ??= Collection::create();
+        return static::$registry ??= Collection::create();
     }
 
     public static function build(object|string $instance): static
@@ -69,7 +71,7 @@ class Mixin implements CompatibleInterface, CreatableInterface
 
         Value::pipe($destination, $handler) |> $mixin->macros()->eachKeys(...);
 
-        static::bucket()->put($destination, $instance);
+        static::register($destination, $instance);
     }
 
     public function instance(): object
@@ -83,7 +85,7 @@ class Mixin implements CompatibleInterface, CreatableInterface
     }
 
     /**
-     * @return \Mpietrucha\Utility\Enumerable\Contracts\EnumerableInterface<string, callable>
+     * @return MacroCollection
      */
     public function macros(): EnumerableInterface
     {
@@ -94,6 +96,15 @@ class Mixin implements CompatibleInterface, CreatableInterface
             fn (EnumerableInterface $methods) => $methods->keyBy->getName(),
             fn (EnumerableInterface $methods) => $this->instance() |> $methods->map->getClosure(...),
         ]);
+    }
+
+    protected static function register(string $mixin, object|string $destination): void
+    {
+        $destination = Instance::namespace($destination);
+
+        $mixins = static::registry()->getOrPut($destination, Collection::create(...));
+
+        $mixins->push($mixin);
     }
 
     protected static function compatibility(object|string $instance): bool

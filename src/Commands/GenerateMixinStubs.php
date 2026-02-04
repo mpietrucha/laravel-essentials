@@ -1,0 +1,99 @@
+<?php
+
+namespace Mpietrucha\Laravel\Package\Commands;
+
+use Illuminate\Console\Command;
+use Illuminate\Support\Traits\Macroable;
+use Mpietrucha\Laravel\Package\Commands\Concerns\InteractsWithMixins;
+use Mpietrucha\Utility\Collection;
+use Mpietrucha\Utility\Concerns\Compatible;
+use Mpietrucha\Utility\Contracts\CompatibleInterface;
+use Mpietrucha\Utility\Enumerable\Contracts\EnumerableInterface;
+use Mpietrucha\Utility\Filesystem;
+use Mpietrucha\Utility\Instance;
+use Mpietrucha\Utility\Instance\Path;
+use Mpietrucha\Utility\Str;
+use Mpietrucha\Utility\Stringable;
+
+/**
+ * @phpstan-import-type MixinCollection from \Mpietrucha\Laravel\Package\Mixin
+ */
+class GenerateMixinStubs extends Command implements CompatibleInterface
+{
+    use Compatible, InteractsWithMixins;
+
+    /**
+     * @var string
+     */
+    protected $signature = 'mixins:stub
+                            {--directory=phpstan/stubs : Output file}';
+
+    /**
+     * @var string
+     */
+    protected $description = 'Generate PHPStan stub file for registered mixins';
+
+    /**
+     * @param  MixinCollection  $mixins
+     */
+    protected function generate(string $destination, Collection $mixins): ?string
+    {
+        if (static::incompatible($destination)) {
+            return null;
+        }
+
+        $namespace = Path::namespace($destination);
+
+        $class = Path::name($destination);
+
+        return $this->hydrate($namespace, $this->docblock($mixins), $destination);
+    }
+
+    protected function stub(): string
+    {
+        return '<?php namespace %s; %sclass %s {}';
+    }
+
+    /**
+     * @param  MixinCollection  $mixins
+     */
+    protected function docblock(Collection $mixins): string
+    {
+        $mixins = $this->signatures(...) |> $mixins->map(...);
+
+        $mixins->prepend('/**')->append('*/');
+
+        return Str::eol() |> $mixins->join(...);
+    }
+
+    protected function signatures(string $mixin): string
+    {
+        $content = Instance::file($mixin) |> Filesystem::get(...) |> Str::of(...);
+
+        $signatures = $content->lines()->pipeThrough([
+            fn (EnumerableInterface $lines) => $lines->mapToStringables(),
+            fn (EnumerableInterface $lines) => $lines->map->trim(),
+            fn (EnumerableInterface $lines) => $lines->filter->is('*public*function*'),
+            fn (EnumerableInterface $lines) => $this->signature(...) |> $lines->map(...),
+        ]);
+
+        return Str::eol() |> $signatures->join(...);
+    }
+
+    protected function signature(Stringable $method): string
+    {
+        $declaration = $method->explode(':')->mapToStringables();
+
+        $return = $declaration->last() ?? Str::none();
+
+        /** @var \Mpietrucha\Utility\Stringable $body */
+        $body = $declaration->first();
+
+        return $body->remove(['public', 'function'])->prepend($return)->prepend('* @method')->squish();
+    }
+
+    protected static function compatibility(string $destination): mixed
+    {
+        return Instance::traits($destination)->doesntContain(Macroable::class);
+    }
+}
