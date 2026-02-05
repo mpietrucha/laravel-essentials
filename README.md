@@ -132,6 +132,60 @@ class MyClass
 }
 ```
 
+### PHPStan Integration
+
+This package provides commands to generate PHPStan stubs and analyzers for your registered mixins, enabling full static analysis support.
+
+#### Generate Stubs
+
+Generate PHPStan stub files with `@method` annotations for registered mixins:
+
+```bash
+php artisan mixin:stubs
+```
+
+This creates stub files in `phpstan/stubs` directory by default:
+
+```php
+<?php
+
+namespace Illuminate\Support;
+
+/**
+ * @method int sumAll()
+ * @method float avgAll()
+ */
+class Collection {}
+```
+
+#### Generate Analyzers
+
+Generate PHPStan analyzer classes for registered mixins:
+
+```bash
+php artisan mixin:analyzers
+```
+
+This creates analyzer files in `analyze/src` directory by default.
+
+#### PHPStan Configuration
+
+Add the generated stubs to your `phpstan.neon`:
+
+```neon
+parameters:
+    stubFiles:
+        - phpstan/stubs/Collection.stub
+```
+
+Or if using merged output:
+
+```neon
+parameters:
+    stubFiles:
+        - phpstan/stubs/Mixins.stub
+```
+
 ## License
 
 MIT

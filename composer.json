@@ -17,11 +17,13 @@
     },
     "require-dev": {
         "ergebnis/composer-normalize": "dev-main",
+        "filament/support": "^5.2",
         "larastan/larastan": "^3.8",
         "laravel/framework": "^12.37",
         "mpietrucha/pint": "^1.0",
         "orchestra/testbench": "^10.6",
         "phpstan/phpstan": "2.1.31",
+        "spatie/macroable": "^2.1",
         "symfony/var-dumper": "^7.2"
     },
     "minimum-stability": "dev",

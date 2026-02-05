@@ -4,17 +4,14 @@ namespace Mpietrucha\Laravel\Package;
 
 use Mpietrucha\Laravel\Package\Macro\Attempt;
 use Mpietrucha\Laravel\Package\Macro\Exception\MacroException;
-use Mpietrucha\Utility\Concerns\Compatible;
-use Mpietrucha\Utility\Contracts\CompatibleInterface;
+use Mpietrucha\Laravel\Package\Macro\Registry;
 use Mpietrucha\Utility\Instance;
 
-abstract class Macro implements CompatibleInterface
+abstract class Macro
 {
-    use Compatible;
-
     public static function attach(string $destination, string $name, callable $handler): void
     {
-        static::incompatible($destination) && MacroException::create()->throw();
+        Registry::incompatible($destination) && MacroException::create()->throw();
 
         $handler = function (mixed ...$arguments) use ($name, $handler) {
             $context = isset($this) ? $this : null; /** @phpstan-ignore-line */
@@ -26,14 +23,5 @@ abstract class Macro implements CompatibleInterface
         };
 
         $destination::macro($name, $handler);
-    }
-
-    protected static function compatibility(string $destination): bool
-    {
-        return Instance::traits($destination)->intersect([
-            \Illuminate\Support\Traits\Macroable::class,
-            \Spatie\Macroable\Macroable::class,
-            \Filament\Support\Concerns\Macroable::class,
-        ])->isNotEmpty();
     }
 }

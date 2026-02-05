@@ -3,11 +3,9 @@
 namespace Mpietrucha\Laravel\Package\Commands;
 
 use Illuminate\Console\Command;
-use Illuminate\Support\Traits\Macroable;
 use Mpietrucha\Laravel\Package\Commands\Concerns\InteractsWithMixins;
+use Mpietrucha\Laravel\Package\Macro\Registry;
 use Mpietrucha\Utility\Collection;
-use Mpietrucha\Utility\Concerns\Compatible;
-use Mpietrucha\Utility\Contracts\CompatibleInterface;
 use Mpietrucha\Utility\Enumerable\Contracts\EnumerableInterface;
 use Mpietrucha\Utility\Filesystem;
 use Mpietrucha\Utility\Instance;
@@ -18,9 +16,9 @@ use Mpietrucha\Utility\Stringable;
 /**
  * @phpstan-import-type MixinCollection from \Mpietrucha\Laravel\Package\Mixin
  */
-class GenerateMixinStubs extends Command implements CompatibleInterface
+class GenerateMixinStubs extends Command
 {
-    use Compatible, InteractsWithMixins;
+    use InteractsWithMixins;
 
     /**
      * @var string
@@ -38,11 +36,12 @@ class GenerateMixinStubs extends Command implements CompatibleInterface
     }
 
     /**
+     * @param  class-string  $destination
      * @param  MixinCollection  $mixins
      */
     protected function generate(string $destination, Collection $mixins): ?string
     {
-        if (static::incompatible($destination)) {
+        if (Registry::internal($destination)) {
             return null;
         }
 
@@ -99,10 +98,5 @@ class GenerateMixinStubs extends Command implements CompatibleInterface
     protected static function defaultDirectory(): string
     {
         return 'phpstan/stubs';
-    }
-
-    protected static function compatibility(string $destination): mixed
-    {
-        return Instance::traits($destination)->doesntContain(Macroable::class);
     }
 }

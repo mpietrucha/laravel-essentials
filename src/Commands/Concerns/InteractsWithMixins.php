@@ -27,7 +27,7 @@ trait InteractsWithMixins
 {
     public function handle(): void
     {
-        $files = Mixin::registry()->pipeThrough([
+        $files = Mixin::map()->pipeThrough([
             fn (EnumerableInterface $files) => $this->build(...) |> $files->mapWithKeys(...),
             fn (EnumerableInterface $files) => $files->filter(),
             fn (EnumerableInterface $files) => $this->transform(...) |> $files->pipe(...),
@@ -59,6 +59,7 @@ trait InteractsWithMixins
 
     /**
      * @param  MixinCollection  $mixins
+     * @param  class-string  $destination
      * @return null|array<string, string>
      */
     protected function build(Collection $mixins, string $destination): ?array
@@ -73,6 +74,7 @@ trait InteractsWithMixins
     }
 
     /**
+     * @param  class-string  $destination
      * @param  MixinCollection  $mixins
      */
     protected function generate(string $destination, Collection $mixins): ?string

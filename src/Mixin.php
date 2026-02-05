@@ -19,8 +19,8 @@ use Mpietrucha\Utility\Type;
 use Mpietrucha\Utility\Value;
 
 /**
- * @phpstan-type MixinCollection \Mpietrucha\Utility\Collection<int, string>
- * @phpstan-type RegistryCollection \Mpietrucha\Utility\Collection<string, MixinCollection>
+ * @phpstan-type MixinCollection \Mpietrucha\Utility\Collection<int, class-string>
+ * @phpstan-type MapCollection \Mpietrucha\Utility\Collection<string, MixinCollection>
  * @phpstan-type MacroCollection \Mpietrucha\Utility\Enumerable\Contracts\EnumerableInterface<string, callable>
  */
 class Mixin implements CompatibleInterface, CreatableInterface
@@ -30,20 +30,20 @@ class Mixin implements CompatibleInterface, CreatableInterface
     protected ?ReflectionInterface $reflection = null;
 
     /**
-     * @var null|RegistryCollection
+     * @var null|MapCollection
      */
-    protected static ?EnumerableInterface $registry = null;
+    protected static ?EnumerableInterface $map = null;
 
     public function __construct(protected object $instance)
     {
     }
 
     /**
-     * @return RegistryCollection
+     * @return MapCollection
      */
-    public static function registry(): EnumerableInterface
+    public static function map(): EnumerableInterface
     {
-        return static::$registry ??= Collection::create();
+        return static::$map ??= Collection::create();
     }
 
     public static function build(object|string $instance): static
@@ -71,7 +71,7 @@ class Mixin implements CompatibleInterface, CreatableInterface
 
         Value::pipe($destination, $handler) |> $mixin->macros()->eachKeys(...);
 
-        static::register($destination, $instance);
+        static::use($destination, $instance);
     }
 
     public function instance(): object
@@ -98,11 +98,11 @@ class Mixin implements CompatibleInterface, CreatableInterface
         ]);
     }
 
-    protected static function register(string $destination, object|string $instance): void
+    protected static function use(string $destination, object|string $instance): void
     {
         $destination = Instance::namespace($destination);
 
-        $mixins = static::registry()->getOrPut($destination, Collection::create(...));
+        $mixins = static::map()->getOrPut($destination, Collection::create(...));
 
         $mixins->push($instance);
     }
