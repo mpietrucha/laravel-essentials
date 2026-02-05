@@ -46,11 +46,11 @@ trait InteractsWithMixins
     {
         parent::configure();
 
-        $this->addOption('lint', null, InputOption::VALUE_NEGATABLE, 'Run lint after generation', true);
-        $this->addOption('merge', null, InputOption::VALUE_NEGATABLE, 'Merge all output into a single file', true);
+        $this->addOption('lint', null, InputOption::VALUE_NEGATABLE, 'Run lint after generation', static::defaultLint());
+        $this->addOption('merge', null, InputOption::VALUE_NEGATABLE, 'Merge all output into a single file', static::defaultMerge());
 
-        $this->addOption('directory', null, InputOption::VALUE_OPTIONAL, 'Output directory', static::defaultDirectoryName());
-        $this->addOption('file', null, InputOption::VALUE_OPTIONAL, 'Output filename (used with --merge)', static::defaultFileName());
+        $this->addOption('directory', null, InputOption::VALUE_OPTIONAL, 'Output directory', static::defaultDirectory());
+        $this->addOption('file', null, InputOption::VALUE_OPTIONAL, 'Output filename (used with --merge)', static::defaultFile());
     }
 
     protected function done(): void
@@ -127,7 +127,6 @@ trait InteractsWithMixins
         $php = '<?php';
 
         $content = $files->pipeThrough([
-            fn (EnumerableInterface $files) => Filesystem::get(...) |> $files->map(...),
             fn (EnumerableInterface $files) => Str::eol() |> $files->join(...) |> Str::of(...),
             fn (Stringable $content) => $content->remove($php),
             fn (Stringable $content) => $content->start($php),
@@ -146,12 +145,22 @@ trait InteractsWithMixins
         $this->option('lint') && Process::run(['composer', 'lint', ...$files]);
     }
 
-    protected static function defaultFileName(): string
+    protected static function defaultLint(): bool
+    {
+        return true;
+    }
+
+    protected static function defaultMerge(): bool
+    {
+        return true;
+    }
+
+    protected static function defaultFile(): string
     {
         return 'Mixins';
     }
 
-    protected static function defaultDirectoryName(): string
+    protected static function defaultDirectory(): string
     {
         return Str::none();
     }

@@ -67,7 +67,12 @@ class GenerateMixinAnalyzers extends Command
         return Str::eol() |> $mixins->join(...);
     }
 
-    protected static function defaultDirectoryName(): string
+    protected static function defaultMerge(): bool
+    {
+        return false;
+    }
+
+    protected static function defaultDirectory(): string
     {
         return 'analyze/src';
     }

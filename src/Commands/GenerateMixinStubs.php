@@ -96,7 +96,7 @@ class GenerateMixinStubs extends Command implements CompatibleInterface
         return $body->remove(['public', 'function'])->prepend($return)->prepend('* @method')->squish();
     }
 
-    protected static function defaultDirectoryName(): string
+    protected static function defaultDirectory(): string
     {
         return 'phpstan/stubs';
     }
