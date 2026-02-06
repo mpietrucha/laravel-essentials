@@ -1,6 +1,6 @@
 <?php
 
-namespace Mpietrucha\Laravel\Package\Macro;
+namespace Mpietrucha\Laravel\Essentials\Macro;
 
 use Mpietrucha\Utility\Arr;
 use Mpietrucha\Utility\Collection;

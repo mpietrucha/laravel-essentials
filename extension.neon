@@ -1,0 +1,10 @@
+services:
+  -
+    class: Mpietrucha\PHPStan\Methods\MacroExtension
+    tags:
+        - phpstan.broker.methodsClassReflectionExtension
+parameters:
+    paths:
+        - phpstan/cache
+    bootstrapFiles:
+        - phpstan/bootstrap.php

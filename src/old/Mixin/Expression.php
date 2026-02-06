@@ -1,6 +1,6 @@
 <?php
 
-namespace Mpietrucha\Laravel\Package\Mixin;
+namespace Mpietrucha\Laravel\Essentials\Mixin;
 
 use Mpietrucha\Utility\Instance\Path;
 use Mpietrucha\Utility\Str;

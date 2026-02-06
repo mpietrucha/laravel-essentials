@@ -1,6 +1,6 @@
 <?php
 
-namespace Mpietrucha\Laravel\Package\Macro\Exception;
+namespace Mpietrucha\Laravel\Essentials\Macro\Exception;
 
 use Mpietrucha\Utility\Throwable\InvalidArgumentException;
 

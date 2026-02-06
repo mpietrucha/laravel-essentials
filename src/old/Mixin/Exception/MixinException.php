@@ -1,6 +1,6 @@
 <?php
 
-namespace Mpietrucha\Laravel\Package\Mixin\Exception;
+namespace Mpietrucha\Laravel\Essentials\Mixin\Exception;
 
 use Mpietrucha\Utility\Throwable\InvalidArgumentException;
 
