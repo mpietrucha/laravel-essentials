@@ -10,6 +10,8 @@ class MixinServiceProvider extends ServiceProvider
 {
     public function configure(Builder $package): void
     {
+        $package->name('laravel-essentials');
+
         $package->hasConsoleCommand(GenerateMixinAnalyzers::class);
     }
 }
