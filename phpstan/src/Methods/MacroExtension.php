@@ -44,13 +44,23 @@ final class MacroExtension implements MethodsClassReflectionExtension
 
     protected function mixin(ClassReflection $reflection, string $method): ?Closure
     {
-        $map = $reflection->getName() |> Macro::map()->get(...);
+        while ($reflection) {
+            $map = $reflection->getName() |> Macro::map()->get(...);
 
-        if (Type::null($map)) {
-            return null;
+            $reflection = $reflection->getParentClass();
+
+            if (Type::null($map)) {
+                continue;
+            }
+
+            if ($map->has($method) |> Normalizer::not(...)) {
+                continue;
+            }
+
+            return $map->get($method) |> Closure::fromCallable(...);
         }
 
-        return $map->get($method) |> Closure::fromCallable(...);
+        return null;
     }
 
     protected function factory(): ClosureTypeFactory
