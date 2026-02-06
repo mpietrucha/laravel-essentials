@@ -6,7 +6,7 @@ namespace Mpietrucha\PHPStan\Methods;
 
 use Closure;
 use Mpietrucha\Laravel\Essentials\Macro;
-use Mpietrucha\Laravel\Essentials\Macro\Registry;
+use Mpietrucha\Laravel\Essentials\Macro\Implementation;
 use Mpietrucha\PHPStan\Reflection\MacroReflection;
 use Mpietrucha\Utility\Normalizer;
 use Mpietrucha\Utility\Type;
@@ -27,7 +27,7 @@ final class MacroExtension implements MethodsClassReflectionExtension
     {
         $destination = $reflection->getName();
 
-        if (Registry::internal($destination)) {
+        if (Implementation::internal($destination)) {
             return false;
         }
 

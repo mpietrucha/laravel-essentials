@@ -3,17 +3,16 @@
 namespace Mpietrucha\Laravel\Essentials;
 
 use Closure;
-use Mpietrucha\Laravel\Essentials\Concerns\InteractsWithMap;
 use Mpietrucha\Laravel\Essentials\Macro\Attempt;
 use Mpietrucha\Laravel\Essentials\Macro\Exception\MacroException;
-use Mpietrucha\Laravel\Essentials\Macro\Registry;
+use Mpietrucha\Laravel\Essentials\Macro\Implementation;
 use Mpietrucha\Utility\Concerns\Compatible;
 use Mpietrucha\Utility\Contracts\CompatibleInterface;
 use Mpietrucha\Utility\Instance;
 
 class Macro implements CompatibleInterface
 {
-    use Compatible, InteractsWithMap;
+    use Compatible;
 
     /**
      * @param  class-string  $destination
@@ -38,6 +37,6 @@ class Macro implements CompatibleInterface
 
     protected static function compatibility(string $destination): bool
     {
-        return Registry::compatible($destination);
+        return Implementation::compatible($destination);
     }
 }

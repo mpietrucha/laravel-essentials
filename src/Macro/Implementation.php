@@ -14,7 +14,7 @@ use Mpietrucha\Utility\Type;
  * @phpstan-type RegistryCollection \Mpietrucha\Utility\Collection<class-string, bool>
  * @phpstan-type TraitCollection \Mpietrucha\Utility\Enumerable\Contracts\EnumerableInterface<int, class-string>
  */
-class Registry implements CompatibleInterface
+class Implementation implements CompatibleInterface
 {
     use Compatible;
 

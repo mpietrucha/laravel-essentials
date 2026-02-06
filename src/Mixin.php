@@ -2,7 +2,6 @@
 
 namespace Mpietrucha\Laravel\Essentials;
 
-use Mpietrucha\Laravel\Essentials\Concerns\InteractsWithMap;
 use Mpietrucha\Laravel\Essentials\Mixin\Exception\MixinException;
 use Mpietrucha\Laravel\Essentials\Mixin\Expression;
 use Mpietrucha\Utility\Collection;
@@ -21,7 +20,7 @@ use Mpietrucha\Utility\Value;
 
 class Mixin implements CompatibleInterface, CreatableInterface
 {
-    use Compatible, Creatable, InteractsWithMap;
+    use Compatible, Creatable;
 
     public function __construct(protected object $mixin)
     {
