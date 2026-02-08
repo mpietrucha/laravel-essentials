@@ -87,7 +87,9 @@ class GenerateMixinAnalyzers extends Command
 
         $class = FQN::name($destination);
 
-        return $this->hydrate($class, $destination, $mixins);
+        $namespace = FQN::namespace($destination);
+
+        return $this->hydrate($namespace, $class, $destination, $mixins);
     }
 
     protected function hydrate(mixed ...$arguments): string
@@ -99,7 +101,7 @@ class GenerateMixinAnalyzers extends Command
 
     protected function stub(): string
     {
-        return '<?php class %s extends %s { %s }';
+        return '<?php namespace %s; class %s extends %s { %s }';
     }
 
     /**
