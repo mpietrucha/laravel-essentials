@@ -7,5 +7,5 @@ use Mpietrucha\Utility\Filesystem\Path;
 
 Constant::undefined('LARAVEL_START') && Path::build('vendor/larastan/larastan/bootstrap.php') |> Filesystem::requireOnce(...);
 
-Artisan::call('ide:helper');
+Artisan::call('ide:helpers');
 Artisan::call('mixin:analyzers');

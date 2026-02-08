@@ -5,14 +5,14 @@ namespace Mpietrucha\Laravel\Essentials\Commands;
 use Illuminate\Console\Command;
 use Mpietrucha\Laravel\Essentials\Commands\Concerns\InteractsWithLint;
 
-class GenerateIdeHelper extends Command
+class GenerateIdeHelpers extends Command
 {
     use InteractsWithLint;
 
     /**
      * @var string
      */
-    protected $signature = 'ide:helper';
+    protected $signature = 'ide:helpers';
 
     /**
      * @var string
