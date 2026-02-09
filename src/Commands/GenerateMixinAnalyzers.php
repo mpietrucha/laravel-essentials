@@ -85,9 +85,9 @@ class GenerateMixinAnalyzers extends Command
 
         $namespace = FQN::namespace($destination);
 
-        $destination = FQN::canonicalize($destination);
-
         $class = FQN::name($destination);
+
+        $destination = FQN::canonicalize($destination);
 
         return $this->hydrate($namespace, $class, $destination, $mixins);
     }
