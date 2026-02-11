@@ -14,7 +14,13 @@ abstract class MixinAnalyzers extends Action
 {
     public static function due(): bool
     {
-        return Mixin::map()->hash() |> Cache::dirty(...);
+        $mixins = Mixin::map();
+
+        if ($mixins->isEmpty()) {
+            return false;
+        }
+
+        return $mixins->hash() |> Cache::dirty(...);
     }
 
     protected static function handle(): void

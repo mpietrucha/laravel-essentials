@@ -41,7 +41,7 @@ abstract class Cache implements UtilizableInterface
         if (static::storage()->doesntContain($indicator)) {
             static::flush();
 
-            return true;
+            static::synchronize($indicator);
         }
 
         if (static::storage()->doesntContain($value)) {
