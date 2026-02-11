@@ -1,7 +1,6 @@
 includes:
     - vendor/mpietrucha/utility/extension.neon
     - vendor/larastan/larastan/extension.neon
-    - extension.neon
 parameters:
     level: 8
     paths:

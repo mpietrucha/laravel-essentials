@@ -6,42 +6,65 @@ use Mpietrucha\Utility\Collection;
 use Mpietrucha\Utility\Enumerable\Contracts\EnumerableInterface;
 use Mpietrucha\Utility\Filesystem;
 use Mpietrucha\Utility\Filesystem\Temporary;
+use Mpietrucha\Utility\Type;
+use Mpietrucha\Utility\Utilizer\Concerns\Utilizable;
+use Mpietrucha\Utility\Utilizer\Contracts\UtilizableInterface;
+use Mpietrucha\Utility\Value;
 
 /**
  * @internal
  *
  * @phpstan-type StorageCollection \Mpietrucha\Utility\Collection<string, string>
  */
-abstract class Cache
+abstract class Cache implements UtilizableInterface
 {
+    use Utilizable\Strings;
+
     /**
      * @var null|StorageCollection
      */
     protected static ?EnumerableInterface $storage = null;
 
-    public static function get(string $identifier): ?string
+    public static function flush(): void
     {
-        return static::storage()->get($identifier);
+        static::file() |> Filesystem::delete(...);
     }
 
-    public static function set(string $identifier, string $hash): void
+    public static function dirty(string $value): bool
     {
-        static::storage()->put($identifier, $hash);
+        $indicator = static::utilize();
+
+        if (Type::null($indicator)) {
+            return true;
+        }
+
+        if (static::storage()->doesntContain($indicator)) {
+            static::flush();
+
+            return true;
+        }
+
+        if (static::storage()->doesntContain($value)) {
+            static::synchronize($value);
+
+            return true;
+        }
+
+        return false;
+    }
+
+    protected static function synchronize(string $value): void
+    {
+        static::storage()->push($value);
 
         $file = static::file();
 
         Filesystem::put($file, static::storage()->toJson());
     }
 
-    public static function validate(string $identifier, string $hash): bool
+    protected static function file(): string
     {
-        if (static::get($identifier) === $hash) {
-            return false;
-        }
-
-        static::set($identifier, $hash);
-
-        return true;
+        return Temporary::file('phpstan-actions-cache.json');
     }
 
     /**
@@ -52,8 +75,10 @@ abstract class Cache
         return static::$storage ??= static::file() |> Filesystem::json(...) |> Collection::create(...);
     }
 
-    protected static function file(): string
+    protected static function hydrate(): ?string
     {
-        return Temporary::file('phpstan-actions-cache.json');
+        $hash = Filesystem::hash(...);
+
+        return base_path('composer.lock') |> Value::attempt($hash)->value(...);
     }
 }
