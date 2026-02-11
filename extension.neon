@@ -3,7 +3,12 @@ services:
     class: Mpietrucha\PHPStan\Methods\MacroExtension
     tags:
         - phpstan.broker.methodsClassReflectionExtension
+  errorFormatter.mixin:
+    class: Mpietrucha\PHPStan\Formatters\MixinErrorFormatter
+    arguments:
+        - @errorFormatter.table
 parameters:
+    errorFormat: mixin
     paths:
         - phpstan/cache
     bootstrapFiles:
