@@ -27,6 +27,8 @@ abstract class Cache implements UtilizableInterface
 
     public static function flush(): void
     {
+        static::$storage = null;
+
         static::file() |> Filesystem::delete(...);
     }
 
