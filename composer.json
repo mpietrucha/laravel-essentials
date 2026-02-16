@@ -14,10 +14,10 @@
         "php": "^8.5",
         "composer-runtime-api": "^2.2",
         "mpietrucha/utility": "^1.0",
-        "spatie/laravel-package-tools": "^1.92"
+        "spatie/laravel-package-tools": "^1.92",
+        "barryvdh/laravel-ide-helper": "^3.6"
     },
     "require-dev": {
-        "barryvdh/laravel-ide-helper": "^3.6",
         "ergebnis/composer-normalize": "dev-main",
         "filament/support": "^5.2",
         "larastan/larastan": "^3.8",
