@@ -1,69 +1,69 @@
 {
-  "name": "mpietrucha/laravel-essentials",
-  "description": "Laravel essentials.",
-  "license": "MIT",
-  "type": "library",
-  "version": "1.0.0",
-  "authors": [
-    {
-      "name": "Michał Pietrucha",
-      "email": "michal.pietrucha@off-site.pl"
-    }
-  ],
-  "require": {
-    "php": "^8.5",
-    "composer-runtime-api": "^2.2",
-    "mpietrucha/utility": "^1.0",
-    "spatie/laravel-package-tools": "^1.92",
-    "barryvdh/laravel-ide-helper": "^3.6"
-  },
-  "require-dev": {
-    "ergebnis/composer-normalize": "dev-main",
-    "filament/support": "^5.2",
-    "larastan/larastan": "^3.8",
-    "mpietrucha/pint": "^1.0",
-    "orchestra/testbench": "^10.6",
-    "phpstan/phpstan": "2.1.31",
-    "spatie/macroable": "^2.1",
-    "symfony/var-dumper": "^7.2"
-  },
-  "minimum-stability": "dev",
-  "prefer-stable": true,
-  "autoload": {
-    "psr-4": {
-      "Mpietrucha\\Laravel\\Essentials\\": "src/",
-      "Mpietrucha\\PHPStan\\": "phpstan/src/"
-    }
-  },
-  "config": {
-    "allow-plugins": {
-      "ergebnis/composer-normalize": true
+    "name": "mpietrucha/laravel-essentials",
+    "description": "Laravel essentials.",
+    "license": "MIT",
+    "type": "library",
+    "version": "1.0.0",
+    "authors": [
+        {
+            "name": "Michał Pietrucha",
+            "email": "michal.pietrucha@off-site.pl"
+        }
+    ],
+    "require": {
+        "php": "^8.5",
+        "composer-runtime-api": "^2.2",
+        "mpietrucha/utility": "^1.0",
+        "spatie/laravel-package-tools": "^1.92",
+        "barryvdh/laravel-ide-helper": "^3.6"
     },
-    "optimize-autoloader": true,
-    "sort-packages": true
-  },
-  "extra": {
-    "laravel": {
-      "providers": [
-        "Mpietrucha\\Laravel\\Essentials\\EssentialsServiceProvider"
-      ]
-    }
-  },
-  "scripts": {
-    "post-update-cmd": [
-      "@composer normalize"
-    ],
-    "post-create-project-cmd": [
-      "@prettier:config"
-    ],
-    "lint": "pint --verbose --parallel",
-    "prettier:config": "curl -sSLO https://raw.githubusercontent.com/mpietrucha/prettier/refs/heads/main/dist/.prettierrc",
-    "test": [
-      "@test:lint",
-      "@test:types"
-    ],
-    "test:lint": "@lint --test",
-    "test:types": "phpstan analyse --ansi"
-  },
-  "$schema": "https://getcomposer.org/schema.json"
+    "require-dev": {
+        "ergebnis/composer-normalize": "dev-main",
+        "filament/support": "^5.2",
+        "larastan/larastan": "^3.8",
+        "mpietrucha/pint": "^1.0",
+        "orchestra/testbench": "^10.6",
+        "phpstan/phpstan": "2.1.31",
+        "spatie/macroable": "^2.1",
+        "symfony/var-dumper": "^7.2"
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "autoload": {
+        "psr-4": {
+            "Mpietrucha\\Laravel\\Essentials\\": "src/",
+            "Mpietrucha\\PHPStan\\": "phpstan/src/"
+        }
+    },
+    "config": {
+        "allow-plugins": {
+            "ergebnis/composer-normalize": true
+        },
+        "optimize-autoloader": true,
+        "sort-packages": true
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Mpietrucha\\Laravel\\Essentials\\EssentialsServiceProvider"
+            ]
+        }
+    },
+    "scripts": {
+        "post-update-cmd": [
+            "@composer normalize"
+        ],
+        "post-create-project-cmd": [
+            "@prettier:config"
+        ],
+        "lint": "pint --verbose --parallel",
+        "prettier:config": "curl -sSLO https://raw.githubusercontent.com/mpietrucha/prettier/refs/heads/main/dist/.prettierrc",
+        "test": [
+            "@test:lint",
+            "@test:types"
+        ],
+        "test:lint": "@lint --test",
+        "test:types": "phpstan analyse --ansi"
+    },
+    "$schema": "https://getcomposer.org/schema.json"
 }
