@@ -2,22 +2,34 @@
 
 namespace Mpietrucha\Laravel\Essentials\Package\Translations\Concerns;
 
-use Mpietrucha\Laravel\Essentials\Package\Context;
-use Mpietrucha\Laravel\Essentials\Package\Translations\Exception\TranslationException;
-use Mpietrucha\Utility\Normalizer;
-use Mpietrucha\Utility\Str;
+use Mpietrucha\Laravel\Essentials\Package\Translations\Translation;
 
+/**
+ * @phpstan-import-type TranslationProperties from \Mpietrucha\Laravel\Essentials\Package\Translations\Translation
+ */
 trait InteractsWithTranslations
 {
     /**
-     * @param  null|array<string, string>  $properties
+     * @param  null|TranslationProperties  $properties
      */
     public static function __(string $key, ?array $properties = null): string
     {
-        $name = Context::name() ?? TranslationException::create()->throw();
+        return static::t($key, $properties);
+    }
 
-        $key = Str::sprintf('%s::%s', $name, $key);
+    /**
+     * @param  null|TranslationProperties  $properties
+     */
+    public static function t(string $key, ?array $properties = null): string
+    {
+        return Translation::get($key, $properties);
+    }
 
-        return __($key, Normalizer::array($properties)); /** @phpstan-ignore argument.type */
+    /**
+     * @param  null|TranslationProperties  $properties
+     */
+    public static function tc(string $key, int $count, ?array $properties = null): string
+    {
+        return Translation::choice($key, $count, $properties);
     }
 }
