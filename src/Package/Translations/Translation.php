@@ -3,9 +3,9 @@
 namespace Mpietrucha\Laravel\Essentials\Package\Translations;
 
 use Mpietrucha\Laravel\Essentials\Package\Context;
-use Mpietrucha\Laravel\Essentials\Package\Translations\Exception\TranslationException;
 use Mpietrucha\Utility\Normalizer;
 use Mpietrucha\Utility\Str;
+use Mpietrucha\Utility\Type;
 
 /**
  * @phpstan-type TranslationProperties array<string, string>
@@ -14,9 +14,9 @@ abstract class Translation
 {
     public static function key(string $key): string
     {
-        $name = Context::name() ?? TranslationException::create()->throw();
+        $name = Context::name();
 
-        return Str::sprintf('%s::%s', $name, $key);
+        return Type::null($name) ? $key : Str::sprintf('%s::%s', $name, $key);
     }
 
     /**
