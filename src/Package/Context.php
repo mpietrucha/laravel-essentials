@@ -17,7 +17,7 @@ abstract class Context
 
     public static function directory(bool $type = self::EXTERNAL): ?string
     {
-        $backtrace = Backtrace::get(DEBUG_BACKTRACE_IGNORE_ARGS, 5);
+        $backtrace = Backtrace::get(DEBUG_BACKTRACE_IGNORE_ARGS, 6);
 
         $handler = match (true) {
             $type === self::EXTERNAL => File::external(...),
