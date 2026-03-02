@@ -34,11 +34,8 @@ trait InteractsWithMap
             return;
         }
 
-        $map = static::map()->getOrPut($name, Collection::create());
+        $bucket = Collection::create(...);
 
-        match (true) {
-            Type::string($key) => $map->put($key, $value),
-            default => $map->push($value)
-        };
+        static::map()->getOrPut($name, $bucket)->prepend($value, $key);
     }
 }
