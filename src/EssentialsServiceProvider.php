@@ -27,7 +27,7 @@ class EssentialsServiceProvider extends ServiceProvider
     public function bootingPackage(): void
     {
         auth()->provider('cached', function (Application $application, array $config) {
-            $hasher = $application->get('hasher');
+            $hasher = $application->get('hash');
 
             $model = Arr::get($config, 'model');
 
