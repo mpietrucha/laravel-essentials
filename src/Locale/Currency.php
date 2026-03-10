@@ -3,9 +3,14 @@
 namespace Mpietrucha\Laravel\Essentials\Locale;
 
 use Mpietrucha\Laravel\Essentials\Events\CurrencyUpdated;
+use Mpietrucha\Laravel\Essentials\Locale\Concerns\InteractsWithEnum;
+use Mpietrucha\Laravel\Essentials\Locale\Contracts\InteractsWithEnumInterface;
+use Mpietrucha\Utility\Type;
 
-class Currency
+abstract class Currency implements InteractsWithEnumInterface
 {
+    use InteractsWithEnum;
+
     public static function config(): string
     {
         return 'app.currency';
@@ -13,7 +18,20 @@ class Currency
 
     public static function get(): ?string
     {
-        return static::config() |> config(...);
+        $currency = static::config() |> config(...);
+
+        $enum = static::enum();
+
+        if (Type::null($enum)) {
+            return $currency;
+        }
+
+        $currency = match (true) {
+            Type::null($currency) => $enum::default(),
+            default => $enum::from($currency)
+        };
+
+        return $currency->value();
     }
 
     public static function set(string $currency): void
@@ -25,5 +43,11 @@ class Currency
         config()->set($config, $currency);
 
         CurrencyUpdated::dispatch($currency, $previous);
+    }
+
+    protected static function hydrate(): string
+    {
+        /** @phpstan-ignore class.notFound */
+        return \App\Enums\Currency::class;
     }
 }
