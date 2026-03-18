@@ -14,19 +14,21 @@
         "php": "^8.5",
         "composer-runtime-api": "^2.2",
         "barryvdh/laravel-ide-helper": "^3.7",
+        "laravel/framework": "^13.0",
         "mpietrucha/support": "^1.0",
-        "spatie/laravel-package-tools": "^1.93",
+        "nesbot/carbon": "^3.11",
+        "spatie/laravel-package-tools": "^1.9",
         "symfony/intl": "^8.0"
     },
     "require-dev": {
-        "ergebnis/composer-normalize": "^2.50",
+        "ergebnis/composer-normalize": "^2.5",
         "filament/support": "^5.4",
-        "larastan/larastan": "^3.9.3",
-        "laravel/pint": "^1.29",
+        "larastan/larastan": "^3.9",
+        "laravel/pint": "^1.2",
         "orchestra/testbench": "^11.0",
-        "phpstan/phpstan": "^2.1.42",
+        "phpstan/phpstan": "^2.1",
         "spatie/macroable": "^2.1",
-        "symfony/var-dumper": "^7.4.6"
+        "symfony/var-dumper": "^7.4"
     },
     "minimum-stability": "dev",
     "prefer-stable": true,
