@@ -14,6 +14,7 @@ use Mpietrucha\Support\Filesystem\Temporary;
 use Mpietrucha\Support\Filesystem\Touch;
 use Mpietrucha\Support\Instance\Path;
 use Mpietrucha\Support\Reflection;
+use ReflectionMethod;
 
 /**
  * @phpstan-import-type MacroHandlerCollection from Macro
@@ -100,13 +101,13 @@ class Mixin
 
         $mixin = $this->get();
 
-        return $methods
-            ->filter
-            ->isPublic()
-            ->keyBy
-            ->getName()
-            ->map
-            ->getClosure($mixin);
+        return $methods->mapWithKeys(function (ReflectionMethod $method) use ($mixin) {
+            if (! $method->isPublic()) {
+                return [];
+            }
+
+            return [$method->getName() => $method->getClosure($mixin)];
+        })->filter();
     }
 
     protected static function stub(): string
