@@ -12,14 +12,4 @@ class LocaleUpdated
     public function __construct(protected LocaleInterface $locale, protected LocaleInterface $previous)
     {
     }
-
-    public function locale(): LocaleInterface
-    {
-        return $this->locale;
-    }
-
-    public function previous(): LocaleInterface
-    {
-        return $this->previous;
-    }
 }

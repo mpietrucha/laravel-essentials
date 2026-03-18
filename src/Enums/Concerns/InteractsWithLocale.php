@@ -24,7 +24,7 @@ trait InteractsWithLocale
 
         $previous = static::get();
 
-        $locale->value() |> app()->setLocale(...);
+        $locale->value |> app()->setLocale(...);
 
         LocaleUpdated::dispatch($locale, $previous);
 

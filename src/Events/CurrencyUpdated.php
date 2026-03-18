@@ -12,14 +12,4 @@ class CurrencyUpdated
     public function __construct(public CurrencyInterface $currency, public CurrencyInterface $previous)
     {
     }
-
-    public function currency(): CurrencyInterface
-    {
-        return $this->currency;
-    }
-
-    public function previous(): CurrencyInterface
-    {
-        return $this->previous;
-    }
 }

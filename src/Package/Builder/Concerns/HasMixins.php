@@ -2,10 +2,14 @@
 
 namespace Mpietrucha\Laravel\Essentials\Package\Builder\Concerns;
 
+use Mpietrucha\Laravel\Essentials\Macro\Mixin;
 use Mpietrucha\Laravel\Essentials\Package\Builder;
 
 /**
- * @phpstan-type Mixins array<class-string, class-string>
+ * @phpstan-import-type MixinTarget from Mixin
+ * @phpstan-import-type MixinHandler from Mixin
+ *
+ * @phpstan-type Mixins array<MixinTarget, MixinHandler>
  *
  * @phpstan-require-extends Builder
  */

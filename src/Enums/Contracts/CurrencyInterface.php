@@ -2,6 +2,7 @@
 
 namespace Mpietrucha\Laravel\Essentials\Enums\Contracts;
 
-interface CurrencyInterface extends \Mpietrucha\Support\Enums\Contracts\CurrencyInterface, LocaleInterface
+interface CurrencyInterface extends LocaleInterface
 {
+    public function symbol(): string;
 }

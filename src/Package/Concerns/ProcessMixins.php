@@ -4,11 +4,12 @@ namespace Mpietrucha\Laravel\Essentials\Package\Concerns;
 
 use Illuminate\Support\ServiceProvider;
 use Mpietrucha\Laravel\Essentials\Macro\Mixin;
+use Mpietrucha\Laravel\Essentials\Package\Builder\Concerns\HasMixins;
 
 /**
  * @phpstan-require-extends ServiceProvider
  *
- * @phpstan-import-type Mixins from \Mpietrucha\Laravel\Essentials\Package\Builder\Concerns\HasMixins
+ * @phpstan-import-type Mixins from HasMixins
  */
 trait ProcessMixins
 {
@@ -19,7 +20,7 @@ trait ProcessMixins
     {
         collect(
             $mixins ?? $this->package()->mixins ?? []
-        )->each(fn (string $mixin, string $source) => Mixin::use($source, $mixin));
+        )->each(fn (object|string $handler, string $target) => Mixin::use($target, $handler));
 
         return $this;
     }

@@ -1,6 +1,5 @@
 includes:
     - vendor/larastan/larastan/extension.neon
-    - vendor/mpietrucha/support/extension.neon
     - extension.neon
 parameters:
     level: max

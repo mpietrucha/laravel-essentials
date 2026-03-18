@@ -2,25 +2,22 @@
 
 namespace Mpietrucha\Laravel\Essentials\Enums\Concerns;
 
+use Mpietrucha\Laravel\Essentials\Enums\Contracts\CurrencyInterface;
 use Mpietrucha\Laravel\Essentials\Events\CurrencyUpdated;
-use Mpietrucha\Support\Enums\Contracts\CurrencyInterface;
+use Mpietrucha\Support\Enums\Concerns\InteractsWithEnum;
+use Symfony\Component\Intl\Currencies;
 
 /**
  * @phpstan-require-implements CurrencyInterface
  */
 trait InteractsWithCurrency
 {
-    use \Mpietrucha\Support\Enums\Concerns\InteractsWithCurrency;
-
-    public static function key(): string
-    {
-        return 'app.currency';
-    }
+    use InteractsWithEnum;
 
     public static function get(): static
     {
         /** @var null|string $currency */
-        $currency = static::key() |> config(...);
+        $currency = static::config() |> config(...);
 
         if ($currency === null) {
             return static::default();
@@ -36,11 +33,21 @@ trait InteractsWithCurrency
         $previous = static::get();
 
         config([
-            static::key() => $currency->value(),
+            static::config() => $currency->value,
         ]);
 
         CurrencyUpdated::dispatch($currency, $previous);
 
         return $currency;
+    }
+
+    public function symbol(): string
+    {
+        return $this->value |> Currencies::getSymbol(...);
+    }
+
+    protected static function config(): string
+    {
+        return 'app.currency';
     }
 }
