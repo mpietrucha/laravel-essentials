@@ -2,23 +2,25 @@
 
 namespace Mpietrucha\PHPStan;
 
-use Mpietrucha\PHPStan\Bootstrap\Action;
-use Mpietrucha\Utility\Constant;
-use Mpietrucha\Utility\Filesystem;
-use Mpietrucha\Utility\Filesystem\Path;
+use Mpietrucha\Support\Filesystem;
+use Mpietrucha\Support\Filesystem\Path;
 
 /**
  * @internal
  */
-abstract class Laravel extends Action
+abstract class Laravel
 {
     public static function due(): bool
     {
-        return Constant::undefined('LARAVEL_START');
+        return defined('LARAVEL_START') === false;
     }
 
-    protected static function handle(): void
+    public static function bootstrap(): void
     {
+        if (! static::due()) {
+            return;
+        }
+
         Path::build('vendor/larastan/larastan/bootstrap.php') |> Filesystem::requireOnce(...);
     }
 }

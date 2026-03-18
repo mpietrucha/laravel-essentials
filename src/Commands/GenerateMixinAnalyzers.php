@@ -3,19 +3,17 @@
 namespace Mpietrucha\Laravel\Essentials\Commands;
 
 use Illuminate\Console\Command;
+use Illuminate\Support\Collection;
 use Mpietrucha\Laravel\Essentials\Commands\Concerns\InteractsWithLint;
-use Mpietrucha\Laravel\Essentials\Mixin;
-use Mpietrucha\Laravel\Essentials\Mixin\Analyzer;
-use Mpietrucha\Utility\Collection;
-use Mpietrucha\Utility\Enumerable\Contracts\EnumerableInterface;
-use Mpietrucha\Utility\Filesystem;
-use Mpietrucha\Utility\Filesystem\Extension;
-use Mpietrucha\Utility\Filesystem\Path;
-use Mpietrucha\Utility\Str;
-use Mpietrucha\Utility\Type;
+use Mpietrucha\Laravel\Essentials\Macro\Mixin;
+use Mpietrucha\Laravel\Essentials\Macro\MixinAnalyzer;
+use Mpietrucha\Support\Filesystem;
+use Mpietrucha\Support\Filesystem\Extension;
+use Mpietrucha\Support\Filesystem\Path;
 
 /**
- * @phpstan-import-type MixinCollection from \Mpietrucha\Laravel\Essentials\Mixin
+ * @phpstan-import-type MixinTarget from Mixin
+ * @phpstan-import-type MixinHandlerCollection from Mixin
  */
 class GenerateMixinAnalyzers extends Command
 {
@@ -35,12 +33,19 @@ class GenerateMixinAnalyzers extends Command
 
     public function handle(): void
     {
-        $analyzers = Mixin::map()->pipeThrough([
-            fn (EnumerableInterface $map) => $this->build(...) |> $map->mapWithKeys(...),
-            fn (EnumerableInterface $map) => $map->filter(),
-            fn (EnumerableInterface $map) => Filesystem::put(...) |> $map->eachKeys(...),
-            fn (EnumerableInterface $map) => $map->keys(),
-        ]);
+        $analyzers = Mixin::storage()->map(function (Collection $handlers, string $target) {
+            $content = MixinAnalyzer::content($target, $handlers);
+
+            if ($content === null) {
+                return null;
+            }
+
+            $file = $this->file($target);
+
+            Filesystem::put($file, $content);
+
+            return $file;
+        })->filter()->keys();
 
         if ($analyzers->isEmpty()) {
             $this->warn('No registered mixins found. Register mixins in your service provider before running this command.');
@@ -50,30 +55,16 @@ class GenerateMixinAnalyzers extends Command
 
         $this->lint($analyzers);
 
-        $analyzers->each(fn (string $analyzer) => $this->components->task($analyzer));
+        $analyzers->each(function (string $analyzer) {
+            $this->components->task($analyzer);
+        });
 
-        Str::sprintf('%s mixin analyzer(s) generated in [%s].', $analyzers->count(), $this->directory()) |> $this->info(...);
+        sprintf('%s mixin analyzer(s) generated in [%s].', $analyzers->count(), $this->directory()) |> $this->info(...);
     }
 
-    /**
-     * @param  MixinCollection  $mixins
-     * @param  class-string  $destination
-     * @return null|array<string, string>
-     */
-    protected function build(Collection $mixins, string $destination): ?array
+    protected function file(string $target): string
     {
-        $content = Analyzer::content($destination, $mixins);
-
-        if (Type::null($content)) {
-            return null;
-        }
-
-        return [$this->file($destination) => $content];
-    }
-
-    protected function file(string $destination): string
-    {
-        $name = Path::name($destination);
+        $name = Path::name($target);
 
         return Path::build(Extension::set($name, 'php'), $this->directory());
     }

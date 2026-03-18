@@ -1,8 +1,9 @@
 includes:
-    - vendor/mpietrucha/utility/extension.neon
     - vendor/larastan/larastan/extension.neon
+    - vendor/mpietrucha/support/extension.neon
+    - extension.neon
 parameters:
-    level: 8
+    level: max
     paths:
         - src
         - phpstan

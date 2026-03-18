@@ -1,7 +1,8 @@
 <?php
 
-enum InteractsWithCurrency: string implements \Mpietrucha\Utility\Enums\Contracts\InteractsWithEnumInterface
+use Mpietrucha\Laravel\Essentials\Enums\Contracts\CurrencyInterface;
+
+enum InteractsWithCurrency: string implements CurrencyInterface
 {
-    use \Mpietrucha\Laravel\Essentials\Enums\Concerns\InteractsWithCurrency;
-    use \Mpietrucha\Utility\Enums\Concerns\InteractsWithEnum;
+    use Mpietrucha\Laravel\Essentials\Enums\Concerns\InteractsWithCurrency;
 }

@@ -2,15 +2,32 @@
 
 namespace Mpietrucha\Laravel\Essentials\Enums\Concerns;
 
-use Mpietrucha\Laravel\Essentials\Locale;
+use Mpietrucha\Laravel\Essentials\Enums\Contracts\LocaleInterface;
+use Mpietrucha\Laravel\Essentials\Events\LocaleUpdated;
+use Mpietrucha\Support\Enums\Concerns\InteractsWithEnum;
 
 /**
- * @phpstan-require-implements \Mpietrucha\Utility\Enums\Contracts\InteractsWithEnumInterface
+ * @phpstan-require-implements LocaleInterface
  */
 trait InteractsWithLocale
 {
-    public static function current(): static
+    use InteractsWithEnum;
+
+    public static function get(): static
     {
-        return Locale::get() |> static::from(...);
+        return app()->getLocale() |> static::from(...);
+    }
+
+    public static function set(string $locale): static
+    {
+        $locale = static::from($locale);
+
+        $previous = static::get();
+
+        $locale->value() |> app()->setLocale(...);
+
+        LocaleUpdated::dispatch($locale, $previous);
+
+        return $locale;
     }
 }

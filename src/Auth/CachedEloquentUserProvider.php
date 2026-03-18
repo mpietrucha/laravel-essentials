@@ -6,7 +6,7 @@ use Carbon\CarbonInterval;
 use Illuminate\Auth\EloquentUserProvider;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Contracts\Hashing\Hasher;
-use Mpietrucha\Utility\Str;
+use Mpietrucha\Support\Exception\InvalidArgumentException;
 
 use function Illuminate\Support\seconds;
 
@@ -31,14 +31,18 @@ class CachedEloquentUserProvider extends EloquentUserProvider
 
     protected function key(mixed $identifier): string
     {
-        $key = config('auth.providers.users.cache.key', 'eloquent:users:%s');
+        $key = config()->string('auth.providers.users.cache.key', 'eloquent:users:%s');
 
-        return Str::sprintf($key, $identifier);
+        if (! is_scalar($identifier)) {
+            InvalidArgumentException::throw('Auth identifier must be a scalar value');
+        }
+
+        return sprintf($key, $identifier);
     }
 
     protected function ttl(): CarbonInterval
     {
-        return config('auth.providers.users.cache.ttl', 60 * 60 * 24) |> seconds(...);
+        return config()->integer('auth.providers.users.cache.ttl', 60 * 60 * 24) |> seconds(...);
     }
 
     protected function flush(Authenticatable $model): void

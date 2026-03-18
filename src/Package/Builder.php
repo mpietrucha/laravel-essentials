@@ -2,13 +2,16 @@
 
 namespace Mpietrucha\Laravel\Essentials\Package;
 
-use Mpietrucha\Utility\Concerns\Creatable;
-use Mpietrucha\Utility\Contracts\CreatableInterface;
+use Mpietrucha\Laravel\Essentials\Package\Builder\Concerns\HasBladeAnonymousComponents;
+use Mpietrucha\Laravel\Essentials\Package\Builder\Concerns\HasMixins;
+use Mpietrucha\Support\Concerns\Makeable;
 use Spatie\LaravelPackageTools\Package;
 
-class Builder extends Package implements CreatableInterface
+class Builder extends Package
 {
-    use Creatable;
+    use HasBladeAnonymousComponents;
+    use HasMixins;
+    use Makeable;
 
     public function tag(): string
     {

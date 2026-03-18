@@ -4,12 +4,13 @@ declare(strict_types=1);
 
 namespace Mpietrucha\PHPStan\Formatters;
 
-use Mpietrucha\Laravel\Essentials\Mixin\Analyzer;
-use Mpietrucha\PHPStan\Concerns\InteractsWithError;
-use Mpietrucha\Utility\Arr;
+use Illuminate\Support\Arr;
+use Mpietrucha\Laravel\Essentials\Macro\MixinAnalyzer;
+use Mpietrucha\Support\Str;
 use PHPStan\Analyser\Error;
 use PHPStan\Command\AnalysisResult;
 use PHPStan\Command\ErrorFormatter\ErrorFormatter;
+use PHPStan\Command\ErrorFormatter\TableErrorFormatter;
 use PHPStan\Command\Output;
 
 /**
@@ -17,9 +18,7 @@ use PHPStan\Command\Output;
  */
 final class MixinErrorFormatter implements ErrorFormatter
 {
-    use InteractsWithError;
-
-    public function __construct(protected ErrorFormatter $table)
+    public function __construct(protected TableErrorFormatter $tableErrorFormatter)
     {
     }
 
@@ -27,15 +26,15 @@ final class MixinErrorFormatter implements ErrorFormatter
     {
         $result = $this->rewrite($result);
 
-        return $this->table()->formatErrors($result, $output);
+        return $this->tableErrorFormatter->formatErrors($result, $output);
     }
 
     protected function rewrite(AnalysisResult $result): AnalysisResult
     {
-        /** @var list<\PHPStan\Analyser\Error> $errors */
+        /** @var list<Error> $errors */
         $errors = Arr::map($result->getFileSpecificErrors(), $this->error(...));
 
-        /** @phpstan-ignore-next-line phpstanApi.constructor */
+        /** @phpstan-ignore phpstanApi.constructor */
         return new AnalysisResult(
             $errors,
             $result->getNotFileSpecificErrors(),
@@ -53,12 +52,12 @@ final class MixinErrorFormatter implements ErrorFormatter
 
     protected function error(Error $error): Error
     {
-        $indicator = Analyzer::indicator();
+        $indicator = MixinAnalyzer::indicator();
 
-        /** @phpstan-ignore-next-line phpstanApi.constructor */
+        /** @phpstan-ignore phpstanApi.constructor */
         return new Error(
-            $this->getErrorMessage($error)->remove($indicator)->toString(),
-            $this->getErrorFile($error)->remove($indicator)->toString(),
+            Str::remove($indicator, $error->getMessage()),
+            Str::remove($indicator, $error->getFile()),
             $error->getLine(),
             $error->canBeIgnored(),
             $error->getFilePath(),
@@ -70,10 +69,5 @@ final class MixinErrorFormatter implements ErrorFormatter
             $error->getMetadata(),
             $error->getFixedErrorDiff()
         );
-    }
-
-    protected function table(): ErrorFormatter
-    {
-        return $this->table;
     }
 }

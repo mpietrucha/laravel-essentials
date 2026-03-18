@@ -2,29 +2,21 @@
 
 namespace Mpietrucha\PHPStan;
 
-use Illuminate\Support\Facades\Artisan;
-use Mpietrucha\Laravel\Essentials\Mixin;
-use Mpietrucha\PHPStan\Bootstrap\Action;
-use Mpietrucha\PHPStan\Bootstrap\Cache;
+use Mpietrucha\Laravel\Essentials\Macro\Mixin;
 
 /**
  * @internal
  */
-abstract class MixinAnalyzers extends Action
+abstract class MixinAnalyzers
 {
     public static function due(): bool
     {
-        $mixins = Mixin::map();
+        $mixins = Mixin::storage();
 
         if ($mixins->isEmpty()) {
             return false;
         }
 
-        return $mixins->hash() |> Cache::dirty(...);
-    }
-
-    protected static function handle(): void
-    {
-        Artisan::call('essentials:mixin-analyzers');
+        return $mixins->toJson() |> md5(...) |> Cache::dirty(...);
     }
 }

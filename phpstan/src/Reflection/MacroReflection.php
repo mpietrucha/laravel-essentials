@@ -73,7 +73,7 @@ final class MacroReflection implements MethodReflection
     }
 
     /**
-     * @return list<\PHPStan\Reflection\FunctionVariant>
+     * @return list<FunctionVariant>
      */
     public function getVariants(): array
     {
@@ -81,9 +81,9 @@ final class MacroReflection implements MethodReflection
             new FunctionVariant(
                 TemplateTypeMap::createEmpty(),
                 null,
-                $this->closure()->getParameters(),
-                $this->closure()->isVariadic(),
-                $this->closure()->getReturnType()
+                $this->closure->getParameters(),
+                $this->closure->isVariadic(),
+                $this->closure->getReturnType()
             ),
         ];
     }
@@ -101,10 +101,5 @@ final class MacroReflection implements MethodReflection
     public function hasSideEffects(): TrinaryLogic
     {
         return TrinaryLogic::createMaybe();
-    }
-
-    protected function closure(): ClosureType
-    {
-        return $this->closure;
     }
 }

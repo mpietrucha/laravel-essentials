@@ -3,18 +3,23 @@
 namespace Mpietrucha\Laravel\Essentials\Package;
 
 use Illuminate\Contracts\Foundation\Application;
+use Mpietrucha\Laravel\Essentials\Package\Concerns\ProcessBladeAnonymousComponents;
+use Mpietrucha\Laravel\Essentials\Package\Concerns\ProcessMixins;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 
 /**
- * @property \Mpietrucha\Laravel\Essentials\Package\Builder $package
+ * @property Builder $package
  */
 abstract class ServiceProvider extends PackageServiceProvider
 {
+    use ProcessBladeAnonymousComponents;
+    use ProcessMixins;
+
     abstract public function configure(Builder $package): void;
 
     /**
-     * @param  \Mpietrucha\Laravel\Essentials\Package\Builder  $package
+     * @param  Builder  $package
      */
     public function configurePackage(Package $package): void
     {
@@ -23,7 +28,7 @@ abstract class ServiceProvider extends PackageServiceProvider
 
     public function newPackage(): Builder
     {
-        return Builder::create();
+        return Builder::make();
     }
 
     public function package(): Builder
@@ -34,5 +39,14 @@ abstract class ServiceProvider extends PackageServiceProvider
     public function app(): Application
     {
         return $this->app;
+    }
+
+    protected function bootPackageViewSharedData(): static
+    {
+        parent::bootPackageViewSharedData();
+
+        return $this
+            ->bootPackageMixins()
+            ->bootPackageBladeAnonymousComponents();
     }
 }

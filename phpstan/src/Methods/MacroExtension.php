@@ -6,10 +6,7 @@ namespace Mpietrucha\PHPStan\Methods;
 
 use Closure;
 use Mpietrucha\Laravel\Essentials\Macro;
-use Mpietrucha\Laravel\Essentials\Macro\Implementation;
 use Mpietrucha\PHPStan\Reflection\MacroReflection;
-use Mpietrucha\Utility\Normalizer;
-use Mpietrucha\Utility\Type;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\MethodsClassReflectionExtension;
 use PHPStan\Type\ClosureTypeFactory;
@@ -19,52 +16,45 @@ use PHPStan\Type\ClosureTypeFactory;
  */
 final class MacroExtension implements MethodsClassReflectionExtension
 {
-    public function __construct(protected ClosureTypeFactory $factory)
+    protected ?Closure $mixin = null;
+
+    public function __construct(protected ClosureTypeFactory $closureTypeFactory)
     {
     }
 
     public function hasMethod(ClassReflection $reflection, string $method): bool
     {
-        $destination = $reflection->getName();
-
-        if (Implementation::internal($destination)) {
-            return false;
-        }
-
-        return $this->mixin($reflection, $method) |> Normalizer::boolean(...);
+        return (bool) $this->mixin = $this->mixin($reflection, $method);
     }
 
     public function getMethod(ClassReflection $reflection, string $method): MacroReflection
     {
-        /** @var \Closure $mixin */
-        $mixin = $this->mixin($reflection, $method);
+        /** @var Closure $mixin */
+        $mixin = $this->mixin;
 
-        return new MacroReflection($reflection, $method, $this->factory()->fromClosureObject($mixin));
+        return new MacroReflection($reflection, $method, $this->closureTypeFactory->fromClosureObject($mixin));
     }
 
     protected function mixin(ClassReflection $reflection, string $method): ?Closure
     {
         while ($reflection) {
-            $map = $reflection->getName() |> Macro::map()->get(...);
+            $map = $reflection->getName() |> Macro::storage()->get(...);
 
             $reflection = $reflection->getParentClass();
 
-            if (Type::null($map)) {
+            if ($map === null) {
                 continue;
             }
 
-            if ($map->has($method) |> Normalizer::not(...)) {
+            $mixin = $map->get($method);
+
+            if ($mixin === null) {
                 continue;
             }
 
-            return $map->get($method) |> Closure::fromCallable(...);
+            return $mixin;
         }
 
         return null;
-    }
-
-    protected function factory(): ClosureTypeFactory
-    {
-        return $this->factory;
     }
 }

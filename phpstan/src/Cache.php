@@ -1,29 +1,26 @@
 <?php
 
-namespace Mpietrucha\PHPStan\Bootstrap;
+namespace Mpietrucha\PHPStan;
 
-use Mpietrucha\Utility\Collection;
-use Mpietrucha\Utility\Enumerable\Contracts\EnumerableInterface;
-use Mpietrucha\Utility\Filesystem;
-use Mpietrucha\Utility\Filesystem\Temporary;
-use Mpietrucha\Utility\Type;
-use Mpietrucha\Utility\Utilizer\Concerns\Utilizable;
-use Mpietrucha\Utility\Utilizer\Contracts\UtilizableInterface;
-use Mpietrucha\Utility\Value;
+use Illuminate\Support\Collection;
+use Mpietrucha\Support\Concerns\UtilizableStrings;
+use Mpietrucha\Support\Filesystem;
+use Mpietrucha\Support\Filesystem\Temporary;
+use Throwable;
 
 /**
  * @internal
  *
- * @phpstan-type StorageCollection \Mpietrucha\Utility\Collection<string, string>
+ * @phpstan-type StorageCollection Collection<string, string>
  */
-abstract class Cache implements UtilizableInterface
+abstract class Cache
 {
-    use Utilizable\Strings;
+    use UtilizableStrings;
 
     /**
      * @var null|StorageCollection
      */
-    protected static ?EnumerableInterface $storage = null;
+    protected static ?Collection $storage = null;
 
     public static function flush(): void
     {
@@ -34,9 +31,10 @@ abstract class Cache implements UtilizableInterface
 
     public static function dirty(string $value): bool
     {
+        /** @var null|string $indicator */
         $indicator = static::utilize();
 
-        if (Type::null($indicator)) {
+        if ($indicator === null) {
             return true;
         }
 
@@ -72,15 +70,17 @@ abstract class Cache implements UtilizableInterface
     /**
      * @return StorageCollection
      */
-    protected static function storage(): EnumerableInterface
+    protected static function storage(): Collection
     {
-        return static::$storage ??= static::file() |> Filesystem::json(...) |> Collection::create(...);
+        return static::$storage ??= static::file() |> Filesystem::json(...) |> collect(...);
     }
 
     protected static function hydrate(): ?string
     {
-        $hash = Filesystem::hash(...);
-
-        return base_path('composer.lock') |> Value::attempt($hash)->value(...);
+        try {
+            return base_path('composer.lock') |> Filesystem::hash(...) ?: null;
+        } catch (Throwable $exception) {
+            return null;
+        }
     }
 }

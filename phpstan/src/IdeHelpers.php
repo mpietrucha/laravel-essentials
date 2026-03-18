@@ -2,30 +2,21 @@
 
 namespace Mpietrucha\PHPStan;
 
-use Illuminate\Support\Facades\Artisan;
-use Mpietrucha\PHPStan\Bootstrap\Action;
-use Mpietrucha\PHPStan\Bootstrap\Cache;
-use Mpietrucha\Utility\Filesystem;
-use Mpietrucha\Utility\Type;
+use Mpietrucha\Support\Filesystem;
 
 /**
  * @internal
  */
-abstract class IdeHelpers extends Action
+abstract class IdeHelpers
 {
     public static function due(): bool
     {
         $facades = storage_path('app/framework/cache') |> Filesystem::snapshot(...);
 
-        if (Type::null($facades)) {
+        if ($facades === null) {
             return false;
         }
 
         return Cache::dirty($facades);
-    }
-
-    protected static function handle(): void
-    {
-        Artisan::call('essentials:ide-helpers');
     }
 }
