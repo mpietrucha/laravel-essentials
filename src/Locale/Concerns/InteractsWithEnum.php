@@ -4,7 +4,7 @@ namespace Mpietrucha\Laravel\Essentials\Locale\Concerns;
 
 use Mpietrucha\Laravel\Essentials\Enums\Contracts\LocaleInterface;
 use Mpietrucha\Support\Concerns\UtilizableStrings;
-use Mpietrucha\Support\Exception\RuntimeException;
+use Mpietrucha\Support\Enum;
 
 /**
  * @template TEnum of LocaleInterface = LocaleInterface
@@ -15,27 +15,15 @@ trait InteractsWithEnum
 {
     use UtilizableStrings;
 
-    protected static string $interface = LocaleInterface::class;
-
     /**
      * @return class-string<TEnum>
      */
     public static function enum(): string
     {
-        $enum = static::utilize();
-
-        if (! enum_exists($enum)) {
-            RuntimeException::throw('Enum `%s` not found', $enum);
-        }
-
-        /** @var class-string<TEnum> $enum */
         $interface = static::$interface;
 
-        if (is_a($enum, $interface, true)) {
-            return $enum;
-        }
-
-        RuntimeException::throw('Enum `%s` must implement %s', $enum, $interface);
+        /** @var class-string<TEnum> */
+        return Enum::unit(static::utilize(), $interface);
     }
 
     /**

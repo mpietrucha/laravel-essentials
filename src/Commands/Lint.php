@@ -13,12 +13,14 @@ class Lint extends Command
     /**
      * @var string
      */
+    #[\Override]
     protected $signature = 'essentials:lint
                             {path? : The path to lint}';
 
     /**
      * @var string
      */
+    #[\Override]
     protected $description = 'Lint the application files';
 
     public function handle(): void

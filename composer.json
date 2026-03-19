@@ -27,6 +27,7 @@
         "laravel/pint": "^1.2",
         "orchestra/testbench": "^11.0",
         "phpstan/phpstan": "^2.1",
+        "rector/rector": "^2.3",
         "spatie/macroable": "^2.1",
         "symfony/var-dumper": "^8.0"
     },
@@ -61,6 +62,8 @@
         ],
         "lint": "pint --verbose",
         "prettier:config": "curl -sSLO https://raw.githubusercontent.com/mpietrucha/prettier/refs/heads/main/dist/.prettierrc",
+        "refactor": "vendor/bin/rector process --ansi",
+        "refactor:dry": "@refactor --dry-run",
         "test": [
             "@test:lint",
             "@test:types"

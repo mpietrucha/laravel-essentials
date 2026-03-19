@@ -12,11 +12,13 @@ class GenerateIdeHelpers extends Command
     /**
      * @var string
      */
+    #[\Override]
     protected $signature = 'essentials:ide-helpers';
 
     /**
      * @var string
      */
+    #[\Override]
     protected $description = 'Generate IDE helpers';
 
     public function handle(): void

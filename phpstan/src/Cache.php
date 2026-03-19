@@ -79,7 +79,7 @@ abstract class Cache
     {
         try {
             return base_path('composer.lock') |> Filesystem::hash(...) ?: null;
-        } catch (Throwable $exception) {
+        } catch (Throwable) {
             return null;
         }
     }

@@ -10,13 +10,13 @@ use Mpietrucha\Laravel\Essentials\Package\ServiceProvider;
 
 class EssentialsServiceProvider extends ServiceProvider
 {
-    public function configure(Builder $package): void
+    public function configure(Builder $builder): void
     {
-        $package->name('laravel-essentials');
+        $builder->name('laravel-essentials');
 
-        $package->hasConfigFile('app');
+        $builder->hasConfigFile('app');
 
-        $package->hasConsoleCommands([
+        $builder->hasConsoleCommands([
             Lint::class,
             GenerateIdeHelpers::class,
             GenerateMixinAnalyzers::class,

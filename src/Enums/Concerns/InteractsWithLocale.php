@@ -24,10 +24,15 @@ trait InteractsWithLocale
 
         $previous = static::get();
 
-        $locale->value |> app()->setLocale(...);
+        $locale->code() |> app()->setLocale(...);
 
         LocaleUpdated::dispatch($locale, $previous);
 
         return $locale;
+    }
+
+    public function code(): string
+    {
+        return $this->value;
     }
 }

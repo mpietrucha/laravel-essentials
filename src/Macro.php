@@ -24,10 +24,12 @@ use Spatie\Macroable\Macroable as SpatieMacroable;
  */
 class Macro
 {
+    use Compatible;
+
     /**
      * @use InteractsWithStorage<MacroTarget, MacroHandler, MacroName>
      */
-    use Compatible, InteractsWithStorage;
+    use InteractsWithStorage;
 
     public static function compatible(string $target): bool
     {
@@ -46,12 +48,12 @@ class Macro
      */
     public static function use(string $target, string $name, Closure $handler, null|object|string $mixin = null): void
     {
-        if (static::incompatible($target)) {
+        if (self::incompatible($target)) {
             InvalidArgumentException::throw('Macro destination does not use any of the supported Macroable implementations');
         }
 
         $macro = function (mixed ...$arguments) use ($handler, $mixin) {
-            $context = isset($this) ? $this : null; /** @phpstan-ignore variable.undefined, isset.variable */
+            $context = $this ?? null; /** @phpstan-ignore nullCoalesce.variable */
             $scope = static::class;
 
             $handler = Instance::bind($handler, $context, $scope, $mixin);

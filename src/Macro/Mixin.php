@@ -26,10 +26,14 @@ use ReflectionMethod;
  */
 class Mixin
 {
+    use Compatible;
+
     /**
      * @use InteractsWithStorage<MixinTarget, MixinHandler, MixinName>
      */
-    use Compatible, InteractsWithStorage, Makeable;
+    use InteractsWithStorage;
+
+    use Makeable;
 
     public function __construct(protected object $handler)
     {
@@ -48,7 +52,7 @@ class Mixin
      */
     public static function build(object|string $handler): static
     {
-        if (static::incompatible($handler)) {
+        if (self::incompatible($handler)) {
             InvalidArgumentException::throw('Expected a trait name or object instance to be mixin handler');
         }
 
@@ -75,7 +79,7 @@ class Mixin
     {
         $mixin = static::build($handler);
 
-        $mixin->macros()->each(function (Closure $mixin, string $name) use ($target, $handler) {
+        $mixin->macros()->each(static function (Closure $mixin, string $name) use ($target, $handler): void {
             Macro::use($target, $name, $mixin, $handler);
         });
 
@@ -101,12 +105,12 @@ class Mixin
 
         $mixin = $this->get();
 
-        return $methods->mapWithKeys(function (ReflectionMethod $method) use ($mixin) {
-            if (! $method->isPublic()) {
+        return $methods->mapWithKeys(static function (ReflectionMethod $reflectionMethod) use ($mixin): array {
+            if (! $reflectionMethod->isPublic()) {
                 return [];
             }
 
-            return [$method->getName() => $method->getClosure($mixin)];
+            return [$reflectionMethod->getName() => $reflectionMethod->getClosure($mixin)];
         })->filter();
     }
 

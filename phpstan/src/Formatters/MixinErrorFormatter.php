@@ -16,9 +16,9 @@ use PHPStan\Command\Output;
 /**
  * @internal
  */
-final class MixinErrorFormatter implements ErrorFormatter
+final readonly class MixinErrorFormatter implements ErrorFormatter
 {
-    public function __construct(protected TableErrorFormatter $tableErrorFormatter)
+    public function __construct(private TableErrorFormatter $tableErrorFormatter)
     {
     }
 
@@ -29,28 +29,28 @@ final class MixinErrorFormatter implements ErrorFormatter
         return $this->tableErrorFormatter->formatErrors($result, $output);
     }
 
-    protected function rewrite(AnalysisResult $result): AnalysisResult
+    private function rewrite(AnalysisResult $analysisResult): AnalysisResult
     {
         /** @var list<Error> $errors */
-        $errors = Arr::map($result->getFileSpecificErrors(), $this->error(...));
+        $errors = Arr::map($analysisResult->getFileSpecificErrors(), $this->error(...));
 
         /** @phpstan-ignore phpstanApi.constructor */
         return new AnalysisResult(
             $errors,
-            $result->getNotFileSpecificErrors(),
-            $result->getInternalErrorObjects(),
-            $result->getWarnings(),
-            $result->getCollectedData(),
-            $result->isDefaultLevelUsed(),
-            $result->getProjectConfigFile(),
-            $result->isResultCacheSaved(),
-            $result->getPeakMemoryUsageBytes(),
-            $result->isResultCacheUsed(),
-            $result->getChangedProjectExtensionFilesOutsideOfAnalysedPaths()
+            $analysisResult->getNotFileSpecificErrors(),
+            $analysisResult->getInternalErrorObjects(),
+            $analysisResult->getWarnings(),
+            $analysisResult->getCollectedData(),
+            $analysisResult->isDefaultLevelUsed(),
+            $analysisResult->getProjectConfigFile(),
+            $analysisResult->isResultCacheSaved(),
+            $analysisResult->getPeakMemoryUsageBytes(),
+            $analysisResult->isResultCacheUsed(),
+            $analysisResult->getChangedProjectExtensionFilesOutsideOfAnalysedPaths()
         );
     }
 
-    protected function error(Error $error): Error
+    private function error(Error $error): Error
     {
         $indicator = MixinAnalyzer::indicator();
 

@@ -20,7 +20,7 @@ trait ProcessMixins
     {
         collect(
             $mixins ?? $this->package()->mixins ?? []
-        )->each(fn (object|string $handler, string $target) => Mixin::use($target, $handler));
+        )->each(static fn (object|string $handler, string $target) => Mixin::use($target, $handler));
 
         return $this;
     }

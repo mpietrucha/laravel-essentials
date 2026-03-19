@@ -4,7 +4,6 @@ namespace Mpietrucha\Laravel\Essentials\Enums\Concerns;
 
 use Mpietrucha\Laravel\Essentials\Enums\Contracts\CurrencyInterface;
 use Mpietrucha\Laravel\Essentials\Events\CurrencyUpdated;
-use Mpietrucha\Support\Enums\Concerns\InteractsWithEnum;
 use Symfony\Component\Intl\Currencies;
 
 /**
@@ -12,7 +11,7 @@ use Symfony\Component\Intl\Currencies;
  */
 trait InteractsWithCurrency
 {
-    use InteractsWithEnum;
+    use InteractsWithLocale;
 
     public static function get(): static
     {
@@ -33,7 +32,7 @@ trait InteractsWithCurrency
         $previous = static::get();
 
         config([
-            static::config() => $currency->value,
+            static::config() => $currency->code(),
         ]);
 
         CurrencyUpdated::dispatch($currency, $previous);
@@ -43,7 +42,7 @@ trait InteractsWithCurrency
 
     public function symbol(): string
     {
-        return $this->value |> Currencies::getSymbol(...);
+        return $this->code() |> Currencies::getSymbol(...);
     }
 
     protected static function config(): string

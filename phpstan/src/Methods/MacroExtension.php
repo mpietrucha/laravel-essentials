@@ -16,9 +16,9 @@ use PHPStan\Type\ClosureTypeFactory;
  */
 final class MacroExtension implements MethodsClassReflectionExtension
 {
-    protected ?Closure $mixin = null;
+    private ?Closure $mixin = null;
 
-    public function __construct(protected ClosureTypeFactory $closureTypeFactory)
+    public function __construct(private readonly ClosureTypeFactory $closureTypeFactory)
     {
     }
 
@@ -35,12 +35,12 @@ final class MacroExtension implements MethodsClassReflectionExtension
         return new MacroReflection($reflection, $method, $this->closureTypeFactory->fromClosureObject($mixin));
     }
 
-    protected function mixin(ClassReflection $reflection, string $method): ?Closure
+    private function mixin(ClassReflection $classReflection, string $method): ?Closure
     {
-        while ($reflection) {
-            $map = $reflection->getName() |> Macro::storage()->get(...);
+        while ($classReflection instanceof ClassReflection) {
+            $map = $classReflection->getName() |> Macro::storage()->get(...);
 
-            $reflection = $reflection->getParentClass();
+            $classReflection = $classReflection->getParentClass();
 
             if ($map === null) {
                 continue;

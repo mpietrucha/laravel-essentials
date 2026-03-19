@@ -16,15 +16,15 @@ use PHPStan\Type\Type;
 /**
  * @internal
  */
-final class MacroReflection implements MethodReflection
+final readonly class MacroReflection implements MethodReflection
 {
-    public function __construct(protected ClassReflection $reflection, protected string $name, protected ClosureType $closure)
+    public function __construct(private ClassReflection $classReflection, private string $name, private ClosureType $closure)
     {
     }
 
     public function getDeclaringClass(): ClassReflection
     {
-        return $this->reflection;
+        return $this->classReflection;
     }
 
     public function isPrivate(): bool

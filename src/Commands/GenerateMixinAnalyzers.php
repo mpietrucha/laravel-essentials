@@ -22,6 +22,7 @@ class GenerateMixinAnalyzers extends Command
     /**
      * @var string
      */
+    #[\Override]
     protected $signature = 'essentials:mixin-analyzers
                             {--directory=phpstan/cache : The output directory for generated analyzer files}
                             {--cwd= : The current working directory used for generating analyzers}';
@@ -29,11 +30,12 @@ class GenerateMixinAnalyzers extends Command
     /**
      * @var string
      */
+    #[\Override]
     protected $description = 'Generate PHPStan analyzer files for registered mixins';
 
     public function handle(): void
     {
-        $analyzers = Mixin::storage()->map(function (Collection $handlers, string $target) {
+        $analyzers = Mixin::storage()->map(function (Collection $handlers, string $target): ?string {
             $content = MixinAnalyzer::content($target, $handlers);
 
             if ($content === null) {
@@ -55,7 +57,7 @@ class GenerateMixinAnalyzers extends Command
 
         $this->lint($analyzers);
 
-        $analyzers->each(function (string $analyzer) {
+        $analyzers->each(function (string $analyzer): void {
             $this->components->task($analyzer);
         });
 

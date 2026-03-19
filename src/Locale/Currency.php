@@ -15,5 +15,8 @@ abstract class Currency
     /** @phpstan-ignore class.notFound */
     protected static string $enum = \App\Models\Currency::class;
 
+    /**
+     * @var class-string<CurrencyInterface>
+     */
     protected static string $interface = CurrencyInterface::class;
 }

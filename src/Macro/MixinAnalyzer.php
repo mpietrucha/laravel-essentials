@@ -64,7 +64,7 @@ abstract class MixinAnalyzer
      */
     protected static function uses(Collection $handlers): ?string
     {
-        $handlers = $handlers->map(function (object|string $handler) {
+        $handlers = $handlers->map(static function (object|string $handler): ?string {
             if (is_object($handler)) {
                 return null;
             }

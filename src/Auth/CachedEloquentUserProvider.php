@@ -20,6 +20,7 @@ class CachedEloquentUserProvider extends EloquentUserProvider
         $this->flush(...) |> $model::deleted(...);
     }
 
+    #[\Override]
     public function retrieveById(mixed $identifier): ?Authenticatable
     {
         $key = $this->key($identifier);
@@ -45,8 +46,8 @@ class CachedEloquentUserProvider extends EloquentUserProvider
         return config()->integer('auth.providers.users.cache.ttl', 60 * 60 * 24) |> seconds(...);
     }
 
-    protected function flush(Authenticatable $model): void
+    protected function flush(Authenticatable $authenticatable): void
     {
-        $model->getAuthIdentifier() |> $this->key(...) |> cache()->forget(...);
+        $authenticatable->getAuthIdentifier() |> $this->key(...) |> cache()->forget(...);
     }
 }

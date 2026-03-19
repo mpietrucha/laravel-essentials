@@ -16,7 +16,7 @@ abstract class ServiceProvider extends PackageServiceProvider
     use ProcessBladeAnonymousComponents;
     use ProcessMixins;
 
-    abstract public function configure(Builder $package): void;
+    abstract public function configure(Builder $builder): void;
 
     /**
      * @param  Builder  $package
@@ -26,6 +26,7 @@ abstract class ServiceProvider extends PackageServiceProvider
         $this->configure($package);
     }
 
+    #[\Override]
     public function newPackage(): Builder
     {
         return Builder::make();
@@ -41,6 +42,7 @@ abstract class ServiceProvider extends PackageServiceProvider
         return $this->app;
     }
 
+    #[\Override]
     protected function bootPackageViewSharedData(): static
     {
         parent::bootPackageViewSharedData();
