@@ -9,6 +9,7 @@ use Rector\DeadCode\Rector\ClassMethod\RemoveUselessParamTagRector;
 use Rector\DeadCode\Rector\Expression\RemoveDeadStmtRector;
 use Rector\DeadCode\Rector\Node\RemoveNonExistingVarAnnotationRector;
 use Rector\Naming\Rector\ClassMethod\RenameParamToMatchTypeRector;
+use Rector\Php74\Rector\Closure\ClosureToArrowFunctionRector;
 use RectorLaravel\Set\LaravelLevelSetList;
 
 return RectorConfig::configure()
@@ -20,6 +21,7 @@ return RectorConfig::configure()
     ])
     ->withSkip([
         RemoveDeadStmtRector::class,
+        ClosureToArrowFunctionRector::class,
         RemoveNonExistingVarAnnotationRector::class,
         RemoveUselessParamTagRector::class,
         RenameParamToMatchTypeRector::class => [
