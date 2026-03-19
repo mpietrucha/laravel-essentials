@@ -47,7 +47,7 @@ class GenerateMixinAnalyzers extends Command
             Filesystem::put($file, $content);
 
             return $file;
-        })->filter()->keys();
+        })->filter();
 
         if ($analyzers->isEmpty()) {
             $this->warn('No registered mixins found. Register mixins in your service provider before running this command.');
