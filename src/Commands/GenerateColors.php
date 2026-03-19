@@ -47,5 +47,7 @@ class GenerateColors extends Command
         Filesystem::put($output, $css);
 
         $this->lint($output);
+
+        sprintf('Colors generated successfully in [%s]', $output) |> $this->info(...);
     }
 }
