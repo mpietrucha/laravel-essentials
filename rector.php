@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-use Mpietrucha\Support\Filesystem\Path;
 use Rector\CodingStyle\Rector\ArrowFunction\StaticArrowFunctionRector;
 use Rector\CodingStyle\Rector\Closure\StaticClosureRector;
 use Rector\Config\RectorConfig;
@@ -12,10 +11,10 @@ use Rector\DeadCode\Rector\Node\RemoveNonExistingVarAnnotationRector;
 
 return RectorConfig::configure()
     ->withPaths([
-        Path::get('analyze'),
-        Path::get('src'),
-        Path::get('config'),
-        Path::get('phpstan'),
+        'analyze',
+        'src',
+        'config',
+        'phpstan',
     ])
     ->withSkip([
         RemoveDeadStmtRector::class,
@@ -40,8 +39,8 @@ return RectorConfig::configure()
     )
     ->withPhpSets(php85: true)
     ->withBootstrapFiles([
-        Path::build('vendor/larastan/larastan/bootstrap.php'),
+        'vendor/larastan/larastan/bootstrap.php',
     ])
     ->withPhpstanConfigs([
-        Path::get('phpstan.neon'),
+        'phpstan.neon',
     ]);
