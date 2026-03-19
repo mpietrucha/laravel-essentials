@@ -16,7 +16,7 @@ abstract class ServiceProvider extends PackageServiceProvider
     use ProcessBladeAnonymousComponents;
     use ProcessMixins;
 
-    abstract public function configure(Builder $builder): void;
+    abstract public function configure(Builder $package): void;
 
     /**
      * @param  Builder  $package

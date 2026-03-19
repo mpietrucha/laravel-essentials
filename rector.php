@@ -8,6 +8,7 @@ use Rector\Config\RectorConfig;
 use Rector\DeadCode\Rector\ClassMethod\RemoveUselessParamTagRector;
 use Rector\DeadCode\Rector\Expression\RemoveDeadStmtRector;
 use Rector\DeadCode\Rector\Node\RemoveNonExistingVarAnnotationRector;
+use Rector\Naming\Rector\ClassMethod\RenameParamToMatchTypeRector;
 use RectorLaravel\Set\LaravelLevelSetList;
 
 return RectorConfig::configure()
@@ -21,6 +22,10 @@ return RectorConfig::configure()
         RemoveDeadStmtRector::class,
         RemoveNonExistingVarAnnotationRector::class,
         RemoveUselessParamTagRector::class,
+        RenameParamToMatchTypeRector::class => [
+            'src/Package/ServiceProvider.php',
+            'src/EssentialsServiceProvider.php',
+        ],
     ])
     ->withRules([
         StaticClosureRector::class,
@@ -43,7 +48,7 @@ return RectorConfig::configure()
     )
     ->withPhpSets(php85: true)
     ->withBootstrapFiles([
-        'vendor/larastan/larastan/bootstrap.php',
+        'phpstan/bootstrap.php',
     ])
     ->withPhpstanConfigs([
         'phpstan.neon',
