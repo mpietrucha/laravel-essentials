@@ -39,9 +39,9 @@ return RectorConfig::configure()
         carbon: true
     )
     ->withPhpSets(php85: true)
-    ->withPhpstanConfigs([
-        Path::get('phpstan.neon'),
-    ])
     ->withBootstrapFiles([
         Path::build('vendor/larastan/larastan/bootstrap.php'),
+    ])
+    ->withPhpstanConfigs([
+        Path::get('phpstan.neon'),
     ]);
