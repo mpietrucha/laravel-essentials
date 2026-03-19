@@ -5,6 +5,7 @@ namespace Mpietrucha\PHPStan;
 use Illuminate\Support\Collection;
 use Mpietrucha\Support\Concerns\UtilizableStrings;
 use Mpietrucha\Support\Filesystem;
+use Mpietrucha\Support\Filesystem\Path;
 use Mpietrucha\Support\Filesystem\Temporary;
 use Throwable;
 
@@ -78,7 +79,7 @@ abstract class Cache
     protected static function hydrate(): ?string
     {
         try {
-            return base_path('composer.lock') |> Filesystem::hash(...) ?: null;
+            return Path::cwd('composer.lock') |> Filesystem::hash(...) ?: null;
         } catch (Throwable) {
             return null;
         }
