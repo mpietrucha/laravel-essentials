@@ -12,7 +12,6 @@ use Mpietrucha\Support\Exception\InvalidArgumentException;
 use Mpietrucha\Support\Filesystem;
 use Mpietrucha\Support\Filesystem\Temporary;
 use Mpietrucha\Support\Filesystem\Touch;
-use Mpietrucha\Support\Instance\Path;
 use Mpietrucha\Support\Reflection;
 use ReflectionMethod;
 
@@ -65,7 +64,7 @@ class Mixin
         if (Filesystem::unexists($file)) {
             Touch::file($file);
 
-            Filesystem::put($file, static::expression($handler));
+            Filesystem::put($file, MixinExpression::content($handler));
         }
 
         return Filesystem::requireOnce($file) |> static::make(...);
@@ -112,19 +111,5 @@ class Mixin
 
             return [$reflectionMethod->getName() => $reflectionMethod->getClosure($mixin)];
         })->filter();
-    }
-
-    protected static function stub(): string
-    {
-        return '<?php class %s { use %s; }; return new %s;';
-    }
-
-    protected static function expression(string $handler): string
-    {
-        $name = Path::name($handler);
-
-        $stub = static::stub();
-
-        return sprintf($stub, $name, $handler, $name);
     }
 }

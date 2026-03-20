@@ -31,9 +31,7 @@ abstract class MixinAnalyzer
     {
         $namespace = Path::namespace($target);
 
-        $indicator = static::indicator();
-
-        return Path::join($indicator, $namespace);
+        return Path::join(static::indicator(), $namespace);
     }
 
     /**
@@ -48,15 +46,13 @@ abstract class MixinAnalyzer
             return null;
         }
 
-        $stub = static::stub();
-
         $namespace = static::namespace($target);
 
         $class = Path::name($target);
 
         $target = Path::canonicalize($target);
 
-        return sprintf($stub, $namespace, $class, $target, $uses);
+        return sprintf(static::stub(), $namespace, $class, $target, $uses);
     }
 
     /**
