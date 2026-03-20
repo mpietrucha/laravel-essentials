@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Mpietrucha\PHPStan\Formatters;
+namespace Mpietrucha\PHPStan\Command\ErrorFormatter;
 
 use Illuminate\Support\Arr;
 use Mpietrucha\Laravel\Essentials\Macro\MixinAnalyzer;

@@ -1,19 +1,2 @@
-services:
-  -
-    class: Mpietrucha\PHPStan\Methods\MacroExtension
-    tags:
-        - phpstan.broker.methodsClassReflectionExtension
-  errorFormatter.mixin:
-    class: Mpietrucha\PHPStan\Formatters\MixinErrorFormatter
-    arguments:
-        - @errorFormatter.table
-  fileFinderAnalyse:
-    class: Mpietrucha\PHPStan\File\MixinFileFinder
-    arguments:
-        fileExcluder: @fileExcluderAnalyse
-        fileExtensions: %fileExtensions%
-    autowired: false
-parameters:
-    errorFormat: mixin
-    bootstrapFiles:
-        - phpstan/bootstrap.php
+includes:
+    - phpstan/extension.php
