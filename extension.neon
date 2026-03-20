@@ -7,9 +7,13 @@ services:
     class: Mpietrucha\PHPStan\Formatters\MixinErrorFormatter
     arguments:
         - @errorFormatter.table
+  fileFinderAnalyse:
+    class: Mpietrucha\PHPStan\File\MixinFileFinder
+    arguments:
+        fileExcluder: @fileExcluderAnalyse
+        fileExtensions: %fileExtensions%
+    autowired: false
 parameters:
     errorFormat: mixin
-    paths:
-        - phpstan/cache
     bootstrapFiles:
         - phpstan/bootstrap.php
