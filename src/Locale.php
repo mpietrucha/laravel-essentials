@@ -10,7 +10,7 @@ abstract class Locale
     use InteractsWithEnum;
 
     /** @phpstan-ignore class.notFound */
-    protected static string $enum = \App\Models\Locale::class;
+    protected static string $enum = \App\Enums\Locale::class;
 
     /**
      * @var class-string<LocaleInterface>

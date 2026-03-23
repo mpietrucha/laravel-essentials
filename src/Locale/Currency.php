@@ -13,7 +13,7 @@ abstract class Currency
     use InteractsWithEnum;
 
     /** @phpstan-ignore class.notFound */
-    protected static string $enum = \App\Models\Currency::class;
+    protected static string $enum = \App\Enums\Currency::class;
 
     /**
      * @var class-string<CurrencyInterface>
