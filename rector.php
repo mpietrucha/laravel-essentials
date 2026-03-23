@@ -14,9 +14,8 @@ use RectorLaravel\Set\LaravelSetList;
 
 return RectorConfig::configure()
     ->withPaths([
-        'analyze',
         'src',
-        'config',
+        'analyze',
         'phpstan',
     ])
     ->withSkip([
