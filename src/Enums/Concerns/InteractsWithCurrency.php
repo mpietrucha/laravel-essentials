@@ -6,7 +6,7 @@ use Brick\Math\RoundingMode;
 use Brick\Money\Money;
 use Mpietrucha\Laravel\Essentials\Enums\Contracts\CurrencyInterface;
 use Mpietrucha\Laravel\Essentials\Events\CurrencyUpdated;
-use Mpietrucha\Laravel\Essentials\Locale\MoneyBuilder;
+use Mpietrucha\Laravel\Essentials\Locale\Money\MoneyBuilder;
 use Symfony\Component\Intl\Currencies;
 
 /**

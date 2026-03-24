@@ -1,11 +1,12 @@
 <?php
 
-namespace Mpietrucha\Laravel\Essentials\Locale;
+namespace Mpietrucha\Laravel\Essentials\Locale\Money;
 
 use Brick\Math\RoundingMode;
 use Brick\Money\CurrencyConverter;
 use Brick\Money\Money;
 use Mpietrucha\Laravel\Essentials\Enums\Contracts\CurrencyInterface;
+use Mpietrucha\Laravel\Essentials\Locale\Currency;
 use Mpietrucha\Support\Exception\InvalidArgumentException;
 use Mpietrucha\Support\Exception\RuntimeException;
 use Swap\Swap;
