@@ -2,6 +2,7 @@
 
 namespace Mpietrucha\Laravel\Essentials\Locale;
 
+use Brick\Math\RoundingMode;
 use Brick\Money\CurrencyConverter;
 use Brick\Money\Money;
 use Mpietrucha\Laravel\Essentials\Enums\Contracts\CurrencyInterface;
@@ -30,13 +31,13 @@ abstract class MoneyBuilder
         };
     }
 
-    public static function convert(mixed $amount, mixed $targetCurrency = null, mixed $sourceCurrency = null): Money
+    public static function convert(mixed $amount, mixed $targetCurrency = null, mixed $sourceCurrency = null, RoundingMode $roundingMode = RoundingMode::HalfUp): Money
     {
         $targetCurrency = static::currency($targetCurrency);
 
         $money = static::build($amount, $sourceCurrency);
 
-        return static::getCurrencyConverter()->convert($money, $targetCurrency);
+        return static::getCurrencyConverter()->convert($money, $targetCurrency, roundingMode: $roundingMode);
     }
 
     /**
