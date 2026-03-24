@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Mpietrucha\Laravel\Essentials\Locale\Currency;
 use Mpietrucha\Laravel\Essentials\Locale\MoneyBuilder;
+use RoundingMode;
 use Throwable;
 
 /**
@@ -41,9 +42,9 @@ trait HasMoney
     /**
      * @return Attribute<null|Money, never>
      */
-    protected function convertedMoney(?string $amountAttribute = null, ?string $currencyAttribute = null, mixed $targetCurrency = null): Attribute
+    protected function convertedMoney(?string $amountAttribute = null, ?string $currencyAttribute = null, mixed $targetCurrency = null, ?RoundingMode $roundingMode = null): Attribute
     {
-        return Attribute::get(function () use ($amountAttribute, $currencyAttribute, $targetCurrency): ?Money {
+        return Attribute::get(function () use ($amountAttribute, $currencyAttribute, $targetCurrency, $roundingMode): ?Money {
             $money = $this->money($amountAttribute, $currencyAttribute)->get |> value(...);
 
             if ($money === null) {
@@ -51,7 +52,7 @@ trait HasMoney
             }
 
             try {
-                return MoneyBuilder::convert($money, $targetCurrency ?? Currency::get());
+                return MoneyBuilder::convert($money, $targetCurrency ?? Currency::get(), $roundingMode);
             } catch (Throwable) {
                 return null;
             }

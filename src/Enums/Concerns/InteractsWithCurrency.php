@@ -2,6 +2,7 @@
 
 namespace Mpietrucha\Laravel\Essentials\Enums\Concerns;
 
+use Brick\Math\RoundingMode;
 use Brick\Money\Money;
 use Mpietrucha\Laravel\Essentials\Enums\Contracts\CurrencyInterface;
 use Mpietrucha\Laravel\Essentials\Events\CurrencyUpdated;
@@ -52,9 +53,9 @@ trait InteractsWithCurrency
         return MoneyBuilder::build($amount, $this);
     }
 
-    public function convert(mixed $amount, mixed $currency): Money
+    public function convert(mixed $amount, mixed $currency, ?RoundingMode $roundingMode = null): Money
     {
-        return MoneyBuilder::convert($amount, $this, $currency);
+        return MoneyBuilder::convert($amount, $this, $currency, $roundingMode);
     }
 
     protected static function config(): string

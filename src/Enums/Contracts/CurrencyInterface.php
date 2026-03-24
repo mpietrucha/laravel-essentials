@@ -2,6 +2,7 @@
 
 namespace Mpietrucha\Laravel\Essentials\Enums\Contracts;
 
+use Brick\Math\RoundingMode;
 use Brick\Money\Money;
 
 interface CurrencyInterface extends LocaleInterface
@@ -10,5 +11,5 @@ interface CurrencyInterface extends LocaleInterface
 
     public function money(mixed $amount): Money;
 
-    public function convert(mixed $amount, mixed $currency): Money;
+    public function convert(mixed $amount, mixed $currency, ?RoundingMode $roundingMode = null): Money;
 }

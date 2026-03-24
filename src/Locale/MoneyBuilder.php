@@ -31,13 +31,13 @@ abstract class MoneyBuilder
         };
     }
 
-    public static function convert(mixed $amount, mixed $targetCurrency = null, mixed $sourceCurrency = null, RoundingMode $roundingMode = RoundingMode::HalfUp): Money
+    public static function convert(mixed $amount, mixed $targetCurrency = null, mixed $sourceCurrency = null, ?RoundingMode $roundingMode = null): Money
     {
         $targetCurrency = static::currency($targetCurrency);
 
         $money = static::build($amount, $sourceCurrency);
 
-        return static::getCurrencyConverter()->convert($money, $targetCurrency, roundingMode: $roundingMode);
+        return static::getCurrencyConverter()->convert($money, $targetCurrency, roundingMode: $roundingMode ?? RoundingMode::HalfUp);
     }
 
     /**
