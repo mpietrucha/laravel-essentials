@@ -4,10 +4,14 @@ namespace Mpietrucha\Laravel\Essentials\Models\Concerns;
 
 use Brick\Money\Money;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Model;
 use Mpietrucha\Laravel\Essentials\Locale\Currency;
 use Mpietrucha\Laravel\Essentials\Locale\MoneyBuilder;
 use Throwable;
 
+/**
+ * @phpstan-require-extends Model
+ */
 trait HasMoney
 {
     protected static string $defaultMoneyAmountAttribute = 'price';
