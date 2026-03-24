@@ -2,12 +2,14 @@
 
 namespace Mpietrucha\Laravel\Essentials\Models\Concerns;
 
+use Brick\Math\RoundingMode;
+use Brick\Money\Context;
 use Brick\Money\Money;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Mpietrucha\Laravel\Essentials\Locale\Currency;
-use Mpietrucha\Laravel\Essentials\Locale\Money\MoneyBuilder;
-use RoundingMode;
+use Mpietrucha\Laravel\Essentials\Money\CurrencyConverter;
+use Mpietrucha\Laravel\Essentials\Money\MoneyFactory;
 use Throwable;
 
 /**
@@ -22,17 +24,17 @@ trait HasMoney
     /**
      * @return Attribute<null|Money, never>
      */
-    protected function money(?string $amountAttribute = null, ?string $currencyAttribute = null): Attribute
+    protected function money(?string $amountAttribute = null, ?string $currencyAttribute = null, ?Context $context = null, ?RoundingMode $roundingMode = null): Attribute
     {
         $amountAttribute ??= static::$defaultMoneyAmountAttribute;
         $currencyAttribute ??= static::$defaultMoneyCurrencyAttribute;
 
-        return Attribute::get(function () use ($amountAttribute, $currencyAttribute): ?Money {
+        return Attribute::get(function () use ($amountAttribute, $currencyAttribute, $context, $roundingMode): ?Money {
             $amount = $this->$amountAttribute;
             $currency = $this->$currencyAttribute;
 
             try {
-                return MoneyBuilder::build($amount, $currency);
+                return MoneyFactory::from($amount, $currency, $context, $roundingMode);
             } catch (Throwable) {
                 return null;
             }
@@ -42,17 +44,17 @@ trait HasMoney
     /**
      * @return Attribute<null|Money, never>
      */
-    protected function convertedMoney(?string $amountAttribute = null, ?string $currencyAttribute = null, mixed $targetCurrency = null, ?RoundingMode $roundingMode = null): Attribute
+    protected function convertedMoney(?string $amountAttribute = null, ?string $currencyAttribute = null, mixed $targetCurrency = null, ?Context $context = null, ?RoundingMode $roundingMode = null): Attribute
     {
-        return Attribute::get(function () use ($amountAttribute, $currencyAttribute, $targetCurrency, $roundingMode): ?Money {
-            $money = $this->money($amountAttribute, $currencyAttribute)->get |> value(...);
+        return Attribute::get(function () use ($amountAttribute, $currencyAttribute, $targetCurrency, $context, $roundingMode): ?Money {
+            $money = $this->money($amountAttribute, $currencyAttribute, $context, $roundingMode)->get |> value(...);
 
             if ($money === null) {
                 return null;
             }
 
             try {
-                return MoneyBuilder::convert($money, $targetCurrency ?? Currency::get(), $roundingMode);
+                return CurrencyConverter::convert($money, $targetCurrency ?? Currency::get());
             } catch (Throwable) {
                 return null;
             }
