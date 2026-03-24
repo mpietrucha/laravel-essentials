@@ -25,6 +25,7 @@
         "driftingly/rector-laravel": "^2.1",
         "ergebnis/composer-normalize": "^2.5",
         "filament/support": "^5.4",
+        "florianv/swap": "^4.5",
         "larastan/larastan": "^3.9",
         "laravel/pint": "^1.2",
         "orchestra/testbench": "^11.0",
@@ -46,6 +47,7 @@
     "config": {
         "allow-plugins": {
             "ergebnis/composer-normalize": true,
+            "php-http/discovery": false,
             "phpstan/extension-installer": true
         },
         "optimize-autoloader": true,
