@@ -4,7 +4,7 @@ namespace Mpietrucha\Laravel\Essentials\Money;
 
 use Brick\Math\RoundingMode;
 use Brick\Money\Context;
-use Brick\Money\CurrencyConverter as Adapter;
+use Brick\Money\CurrencyConverter as BrickCurrencyConverter;
 use Brick\Money\Money;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Mpietrucha\Laravel\Essentials\Enums\Contracts\CurrencyInterface;
@@ -15,11 +15,11 @@ use Swap\Swap;
 
 abstract class CurrencyConverter
 {
-    protected static ?Adapter $adapter = null;
+    protected static ?BrickCurrencyConverter $adapter = null;
 
-    public static function adapter(): Adapter
+    public static function adapter(): BrickCurrencyConverter
     {
-        if (static::$adapter instanceof Adapter) {
+        if (static::$adapter instanceof BrickCurrencyConverter) {
             return static::$adapter;
         }
 
@@ -29,7 +29,7 @@ abstract class CurrencyConverter
             RuntimeException::throw('`%s` must be bound in the service container', Swap::class);
         }
 
-        return static::$adapter = new Adapter($swapExchangeRateProvider);
+        return static::$adapter = new BrickCurrencyConverter($swapExchangeRateProvider);
     }
 
     /**
