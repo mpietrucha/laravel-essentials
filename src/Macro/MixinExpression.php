@@ -2,7 +2,7 @@
 
 namespace Mpietrucha\Laravel\Essentials\Macro;
 
-use Mpietrucha\Support\Instance\Path;
+use Mpietrucha\Support\ClassNamespace;
 
 abstract class MixinExpression
 {
@@ -13,7 +13,7 @@ abstract class MixinExpression
 
     public static function content(string $handler): string
     {
-        $name = Path::name($handler);
+        $name = ClassNamespace::name($handler);
 
         return sprintf(static::stub(), $name, $handler, $name);
     }

@@ -3,7 +3,7 @@
 namespace Mpietrucha\Laravel\Essentials\Macro;
 
 use Illuminate\Support\Collection;
-use Mpietrucha\Support\Instance\Path;
+use Mpietrucha\Support\ClassNamespace;
 use Mpietrucha\Support\Str;
 
 /**
@@ -21,7 +21,7 @@ abstract class MixinAnalyzer
     {
         $indicator = 'Analyzers';
 
-        return $indicator . md5($indicator) . Path::delimiter();
+        return $indicator . md5($indicator) . ClassNamespace::delimiter();
     }
 
     /**
@@ -29,9 +29,9 @@ abstract class MixinAnalyzer
      */
     public static function namespace(string $target): string
     {
-        $namespace = Path::namespace($target);
+        $namespace = ClassNamespace::parent($target);
 
-        return Path::join(static::indicator(), $namespace);
+        return ClassNamespace::join(static::indicator(), $namespace);
     }
 
     /**
@@ -48,9 +48,9 @@ abstract class MixinAnalyzer
 
         $namespace = static::namespace($target);
 
-        $class = Path::name($target);
+        $class = ClassNamespace::name($target);
 
-        $target = Path::canonicalize($target);
+        $target = ClassNamespace::canonicalize($target);
 
         return sprintf(static::stub(), $namespace, $class, $target, $uses);
     }
@@ -65,7 +65,7 @@ abstract class MixinAnalyzer
                 return null;
             }
 
-            return sprintf('use %s;', Path::canonicalize($handler));
+            return sprintf('use %s;', ClassNamespace::canonicalize($handler));
         })->filter();
 
         return Str::eol() |> $handlers->join(...) |> Str::nullWhenEmpty(...);
