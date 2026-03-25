@@ -5,9 +5,8 @@ namespace Mpietrucha\Laravel\Essentials\PackageTools;
 use Mpietrucha\Laravel\Essentials\PackageTools\Package\Concerns\HasBladeAnonymousComponents;
 use Mpietrucha\Laravel\Essentials\PackageTools\Package\Concerns\HasMixins;
 use Mpietrucha\Support\Concerns\Makeable;
-use Spatie\LaravelPackageTools\Package as SpatiePackage;
 
-class Package extends SpatiePackage
+class Package extends \Spatie\LaravelPackageTools\Package
 {
     use HasBladeAnonymousComponents;
     use HasMixins;
