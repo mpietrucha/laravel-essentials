@@ -8,7 +8,6 @@ use Rector\Config\RectorConfig;
 use Rector\DeadCode\Rector\ClassMethod\RemoveUselessParamTagRector;
 use Rector\DeadCode\Rector\Expression\RemoveDeadStmtRector;
 use Rector\DeadCode\Rector\Node\RemoveNonExistingVarAnnotationRector;
-use Rector\Naming\Rector\ClassMethod\RenameParamToMatchTypeRector;
 use Rector\Php74\Rector\Closure\ClosureToArrowFunctionRector;
 use RectorLaravel\Set\LaravelSetList;
 
@@ -23,10 +22,6 @@ return RectorConfig::configure()
         ClosureToArrowFunctionRector::class,
         RemoveNonExistingVarAnnotationRector::class,
         RemoveUselessParamTagRector::class,
-        RenameParamToMatchTypeRector::class => [
-            'src/Package/ServiceProvider.php',
-            'src/LaravelEssentialsServiceProvider.php',
-        ],
     ])
     ->withRules([
         StaticClosureRector::class,

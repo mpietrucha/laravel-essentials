@@ -1,9 +1,9 @@
 <?php
 
-namespace Mpietrucha\Laravel\Essentials\Package\Builder\Concerns;
+namespace Mpietrucha\Laravel\Essentials\PackageTools\Package\Concerns;
 
 use Mpietrucha\Laravel\Essentials\Macro\Mixin;
-use Mpietrucha\Laravel\Essentials\Package\Builder;
+use Mpietrucha\Laravel\Essentials\PackageTools\Package;
 
 /**
  * @phpstan-import-type MixinTarget from Mixin
@@ -11,7 +11,7 @@ use Mpietrucha\Laravel\Essentials\Package\Builder;
  *
  * @phpstan-type Mixins array<MixinTarget, MixinHandler>
  *
- * @phpstan-require-extends Builder
+ * @phpstan-require-extends Package
  */
 trait HasMixins
 {

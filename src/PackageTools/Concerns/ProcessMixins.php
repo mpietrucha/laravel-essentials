@@ -1,13 +1,13 @@
 <?php
 
-namespace Mpietrucha\Laravel\Essentials\Package\Concerns;
+namespace Mpietrucha\Laravel\Essentials\PackageTools\Concerns;
 
-use Illuminate\Support\ServiceProvider;
 use Mpietrucha\Laravel\Essentials\Macro\Mixin;
-use Mpietrucha\Laravel\Essentials\Package\Builder\Concerns\HasMixins;
+use Mpietrucha\Laravel\Essentials\PackageTools\Package\Concerns\HasMixins;
+use Mpietrucha\Laravel\Essentials\PackageTools\PackageServiceProvider;
 
 /**
- * @phpstan-require-extends ServiceProvider
+ * @phpstan-require-extends PackageServiceProvider
  *
  * @phpstan-import-type Mixins from HasMixins
  */
@@ -19,7 +19,7 @@ trait ProcessMixins
     protected function bootPackageMixins(?array $mixins = null): static
     {
         collect(
-            $mixins ?? $this->package()->mixins ?? []
+            $mixins ?? $this->package->mixins ?? []
         )->each(static fn (object|string $handler, string $target) => Mixin::use($target, $handler));
 
         return $this;

@@ -1,11 +1,11 @@
 <?php
 
-namespace Mpietrucha\Laravel\Essentials\Package\Builder\Concerns;
+namespace Mpietrucha\Laravel\Essentials\PackageTools\Package\Concerns;
 
-use Mpietrucha\Laravel\Essentials\Package\Builder;
+use Mpietrucha\Laravel\Essentials\PackageTools\Package;
 
 /**
- * @phpstan-require-extends Builder
+ * @phpstan-require-extends Package
  */
 trait HasBladeAnonymousComponents
 {

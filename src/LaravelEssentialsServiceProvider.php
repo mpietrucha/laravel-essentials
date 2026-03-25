@@ -9,12 +9,12 @@ use Mpietrucha\Laravel\Essentials\Auth\CachedEloquentUserProvider;
 use Mpietrucha\Laravel\Essentials\Commands\GenerateIdeHelpers;
 use Mpietrucha\Laravel\Essentials\Commands\GenerateMixinAnalyzers;
 use Mpietrucha\Laravel\Essentials\Commands\Lint;
-use Mpietrucha\Laravel\Essentials\Package\Builder;
-use Mpietrucha\Laravel\Essentials\Package\ServiceProvider;
+use Mpietrucha\Laravel\Essentials\PackageTools\Package;
+use Mpietrucha\Laravel\Essentials\PackageTools\PackageServiceProvider;
 
-class LaravelEssentialsServiceProvider extends ServiceProvider
+class LaravelEssentialsServiceProvider extends PackageServiceProvider
 {
-    public function configure(Builder $package): void
+    public function configure(Package $package): void
     {
         $package->name('laravel-essentials');
 
