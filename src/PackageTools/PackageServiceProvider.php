@@ -29,4 +29,14 @@ abstract class PackageServiceProvider extends \Spatie\LaravelPackageTools\Packag
     {
         return Package::make();
     }
+
+    #[\Override]
+    protected function bootPackageViewSharedData(): static
+    {
+        parent::bootPackageViewSharedData();
+
+        return $this
+            ->bootPackageMixins()
+            ->bootPackageBladeAnonymousComponents();
+    }
 }
