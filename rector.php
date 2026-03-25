@@ -25,7 +25,7 @@ return RectorConfig::configure()
         RemoveUselessParamTagRector::class,
         RenameParamToMatchTypeRector::class => [
             'src/Package/ServiceProvider.php',
-            'src/EssentialsServiceProvider.php',
+            'src/LaravelEssentialsServiceProvider.php',
         ],
     ])
     ->withRules([

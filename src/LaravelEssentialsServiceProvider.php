@@ -12,7 +12,7 @@ use Mpietrucha\Laravel\Essentials\Commands\Lint;
 use Mpietrucha\Laravel\Essentials\Package\Builder;
 use Mpietrucha\Laravel\Essentials\Package\ServiceProvider;
 
-class EssentialsServiceProvider extends ServiceProvider
+class LaravelEssentialsServiceProvider extends ServiceProvider
 {
     public function configure(Builder $package): void
     {

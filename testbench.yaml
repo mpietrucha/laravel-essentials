@@ -1,2 +1,2 @@
 providers:
-    - Mpietrucha\Laravel\Essentials\EssentialsServiceProvider
+    - Mpietrucha\Laravel\Essentials\LaravelEssentialsServiceProvider
