@@ -54,10 +54,16 @@ trait HasMoney
             }
 
             try {
-                return CurrencyConverter::convert($money, $targetCurrency ?? Currency::get());
+                $convertedMoney = CurrencyConverter::convert($money, $targetCurrency ?? Currency::get());
             } catch (Throwable) {
                 return null;
             }
+
+            if ($money->getCurrency() |> $convertedMoney->getCurrency()->is(...)) {
+                return null;
+            }
+
+            return $convertedMoney;
         });
     }
 }
