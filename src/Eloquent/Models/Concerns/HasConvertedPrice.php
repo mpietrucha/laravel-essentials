@@ -1,6 +1,6 @@
 <?php
 
-namespace Mpietrucha\Laravel\Essentials\Models\Concerns;
+namespace Mpietrucha\Laravel\Essentials\Eloquent\Models\Concerns;
 
 use Brick\Math\RoundingMode;
 use Brick\Money\Context;
