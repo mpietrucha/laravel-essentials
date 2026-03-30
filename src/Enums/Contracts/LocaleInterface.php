@@ -2,9 +2,10 @@
 
 namespace Mpietrucha\Laravel\Essentials\Enums\Contracts;
 
+use BackedEnum;
 use Mpietrucha\Support\Enums\Contracts\EnumInterface;
 
-interface LocaleInterface extends EnumInterface
+interface LocaleInterface extends BackedEnum, EnumInterface
 {
     public static function get(): static;
 

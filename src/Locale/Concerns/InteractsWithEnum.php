@@ -23,7 +23,7 @@ trait InteractsWithEnum
         $interface = static::$interface;
 
         /** @var class-string<TEnum> */
-        return Enum::unit(static::utilize(), $interface);
+        return Enum::backed(static::utilize(), $interface);
     }
 
     /**
