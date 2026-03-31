@@ -19,6 +19,7 @@
         "mpietrucha/support": "^1.0",
         "nesbot/carbon": "^3.11",
         "spatie/laravel-package-tools": "^1.9",
+        "spatie/laravel-translation-loader": "^2.8",
         "symfony/intl": "^8.0"
     },
     "require-dev": {

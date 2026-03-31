@@ -9,6 +9,7 @@ use Mpietrucha\Laravel\Essentials\Auth\CachedEloquentUserProvider;
 use Mpietrucha\Laravel\Essentials\Commands\GenerateIdeHelpers;
 use Mpietrucha\Laravel\Essentials\Commands\GenerateMixinAnalyzers;
 use Mpietrucha\Laravel\Essentials\Commands\Lint;
+use Mpietrucha\Laravel\Essentials\Commands\SyncTranslations;
 use Mpietrucha\Laravel\Essentials\PackageTools\Package;
 use Mpietrucha\Laravel\Essentials\PackageTools\PackageServiceProvider;
 
@@ -22,6 +23,7 @@ class LaravelEssentialsServiceProvider extends PackageServiceProvider
 
         $package->hasConsoleCommands([
             Lint::class,
+            SyncTranslations::class,
             GenerateIdeHelpers::class,
             GenerateMixinAnalyzers::class,
         ]);
