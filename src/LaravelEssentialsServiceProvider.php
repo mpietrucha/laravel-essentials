@@ -12,6 +12,7 @@ use Mpietrucha\Laravel\Essentials\Commands\Lint;
 use Mpietrucha\Laravel\Essentials\Commands\SyncTranslations;
 use Mpietrucha\Laravel\Essentials\PackageTools\Package;
 use Mpietrucha\Laravel\Essentials\PackageTools\PackageServiceProvider;
+use Mpietrucha\Laravel\Essentials\Translation\SpatieTranslationLoaderManager;
 
 class LaravelEssentialsServiceProvider extends PackageServiceProvider
 {
@@ -39,5 +40,12 @@ class LaravelEssentialsServiceProvider extends PackageServiceProvider
 
             return new CachedEloquentUserProvider($hasher, $model);
         });
+    }
+
+    public function registeringPackage(): void
+    {
+        config([
+            'translation-loader.translation_manager' => SpatieTranslationLoaderManager::class,
+        ]);
     }
 }
