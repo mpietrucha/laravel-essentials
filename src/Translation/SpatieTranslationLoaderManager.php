@@ -15,6 +15,11 @@ class SpatieTranslationLoaderManager extends TranslationLoaderManager
     {
         parent::__construct($files, $path);
 
-        Path::cwd('vendor/laravel/framework/src/Illuminate/Translation/lang') |> $this->addPath(...);
+        static::getLaravelInternalLangDirectory() |> $this->addPath(...);
+    }
+
+    public static function getLaravelInternalLangDirectory(): string
+    {
+        return Path::cwd('vendor/laravel/framework/src/Illuminate/Translation/lang');
     }
 }
