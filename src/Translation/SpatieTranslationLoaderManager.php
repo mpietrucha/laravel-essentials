@@ -3,7 +3,6 @@
 namespace Mpietrucha\Laravel\Essentials\Translation;
 
 use Illuminate\Filesystem\Filesystem;
-use Mpietrucha\Support\Filesystem\Path;
 use Spatie\TranslationLoader\TranslationLoaderManager;
 
 class SpatieTranslationLoaderManager extends TranslationLoaderManager
@@ -20,6 +19,6 @@ class SpatieTranslationLoaderManager extends TranslationLoaderManager
 
     public static function getLaravelInternalLangDirectory(): string
     {
-        return Path::cwd('vendor/laravel/framework/src/Illuminate/Translation/lang');
+        return base_path('vendor/laravel/framework/src/Illuminate/Translation/lang');
     }
 }
