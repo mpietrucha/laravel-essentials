@@ -19,7 +19,7 @@ class SyncTranslations extends Command
      * @var string
      */
     #[\Override]
-    protected $signature = 'app:translations';
+    protected $signature = 'essentials:translations';
 
     /**
      * @var string
