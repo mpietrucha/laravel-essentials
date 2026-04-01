@@ -12,6 +12,7 @@ use Mpietrucha\Support\Exception\InvalidArgumentException;
 use Mpietrucha\Support\Filesystem;
 use Mpietrucha\Support\Filesystem\Temporary;
 use Mpietrucha\Support\Filesystem\Touch;
+use Mpietrucha\Support\Instance;
 use Mpietrucha\Support\Reflection;
 use ReflectionMethod;
 
@@ -48,8 +49,9 @@ class Mixin
 
     /**
      * @param  MixinHandler  $handler
+     * @param  MixinTarget  $target
      */
-    public static function build(object|string $handler): static
+    public static function build(object|string $handler, string $target): static
     {
         if (self::incompatible($handler)) {
             InvalidArgumentException::throw('Expected a trait name or object instance to be mixin handler');
@@ -58,6 +60,10 @@ class Mixin
         if (is_object($handler)) {
             return static::make($handler);
         }
+
+        Instance::traits($handler)->each(static function (string $handler) use ($target): void {
+            static::use($target, $handler);
+        });
 
         $file = Temporary::path($handler, 'mixins');
 
@@ -76,7 +82,7 @@ class Mixin
      */
     public static function use(string $target, object|string $handler): void
     {
-        $mixin = static::build($handler);
+        $mixin = static::build($handler, $target);
 
         $mixin->macros()->each(static function (Closure $mixin, string $name) use ($target, $handler): void {
             Macro::use($target, $name, $mixin, $handler);
