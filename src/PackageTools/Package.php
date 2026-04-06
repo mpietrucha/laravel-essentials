@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Mpietrucha\Laravel\Essentials\PackageTools;
 
 use Mpietrucha\Laravel\Essentials\PackageTools\Package\Concerns\HasBladeAnonymousComponents;

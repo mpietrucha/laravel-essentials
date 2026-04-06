@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Mpietrucha\PHPStan;
 
 use Mpietrucha\Laravel\Essentials\Macro\Mixin;

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Mpietrucha\Laravel\Essentials\Locale;
 
 use Mpietrucha\Laravel\Essentials\Enums\Contracts\CurrencyInterface;

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Illuminate\Support\Facades\Artisan;
 use Mpietrucha\PHPStan\IdeHelpers;
 use Mpietrucha\PHPStan\Laravel;

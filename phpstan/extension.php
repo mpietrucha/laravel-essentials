@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Mpietrucha\PHPStan\Command\ErrorFormatter\MixinErrorFormatter;
 use Mpietrucha\PHPStan\File\FileFinder;
 use Mpietrucha\PHPStan\Methods\MacroExtension;
