@@ -14,7 +14,7 @@ use PHPStan\File\FileHelper;
 /**
  * @internal
  */
-final class FileFinder
+final class CacheFileFinder
 {
     private static ?string $cacheDirectory = null;
 

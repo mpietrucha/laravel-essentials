@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 use Mpietrucha\PHPStan\Command\ErrorFormatter\MixinErrorFormatter;
-use Mpietrucha\PHPStan\File\FileFinder;
+use Mpietrucha\PHPStan\File\CacheFileFinder;
 use Mpietrucha\PHPStan\Methods\MacroExtension;
 use Mpietrucha\Support\Filesystem\Path;
 
@@ -18,7 +18,7 @@ return [
             'arguments' => ['@errorFormatter.table'],
         ],
         'fileFinderAnalyse' => [
-            'class' => FileFinder::class,
+            'class' => CacheFileFinder::class,
             'arguments' => [
                 'fileExcluder' => '@fileExcluderAnalyse',
                 'fileExtensions' => '%fileExtensions%',
@@ -29,7 +29,7 @@ return [
     'parameters' => [
         'errorFormat' => 'mixin',
         'scanDirectories' => [
-            FileFinder::cacheDirectory(),
+            CacheFileFinder::cacheDirectory(),
         ],
         'bootstrapFiles' => [
             Path::build('bootstrap.php', __DIR__),
