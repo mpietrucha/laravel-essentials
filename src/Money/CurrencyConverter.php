@@ -24,7 +24,7 @@ abstract class CurrencyConverter
         }
 
         try {
-            $swapExchangeRateProvider = app(SwapExchangeRateProvider::class);
+            $swapExchangeRateProvider = resolve(SwapExchangeRateProvider::class);
         } catch (BindingResolutionException) {
             RuntimeException::throw('`%s` must be bound in the service container', Swap::class);
         }

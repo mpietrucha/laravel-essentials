@@ -40,7 +40,7 @@ trait InteractsWithCurrency
             static::config() => $currency->code(),
         ]);
 
-        CurrencyUpdated::dispatch($currency, $previous);
+        event(new CurrencyUpdated($currency, $previous));
 
         return $currency;
     }

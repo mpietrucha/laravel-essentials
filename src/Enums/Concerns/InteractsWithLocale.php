@@ -26,7 +26,7 @@ trait InteractsWithLocale
 
         $locale->code() |> app()->setLocale(...);
 
-        LocaleUpdated::dispatch($locale, $previous);
+        event(new LocaleUpdated($locale, $previous));
 
         return $locale;
     }

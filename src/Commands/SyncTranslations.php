@@ -109,7 +109,7 @@ class SyncTranslations extends Command
 
         return $this->languageLines()->getOrPut(
             $indicator,
-            static fn (): LanguageLine => LanguageLine::firstOrNew($attributes)
+            static fn (): LanguageLine => LanguageLine::query()->firstOrNew($attributes)
         );
     }
 
