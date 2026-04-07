@@ -3,7 +3,7 @@
 namespace Mpietrucha\Laravel\Essentials;
 
 use Illuminate\Contracts\Foundation\Application;
-use Illuminate\Contracts\Hashing\Hasher;
+use Illuminate\Hashing\HashManager;
 use Illuminate\Support\Arr;
 use Mpietrucha\Laravel\Essentials\Auth\CachedEloquentUserProvider;
 use Mpietrucha\Laravel\Essentials\Commands\GenerateIdeHelpers;
@@ -33,12 +33,11 @@ class LaravelEssentialsServiceProvider extends PackageServiceProvider
     public function bootingPackage(): void
     {
         auth()->provider('cached', static function (Application $application, array $config): CachedEloquentUserProvider {
-            /** @var Hasher $hasher */
-            $hasher = $application->get('hash');
+            $hashManager = $application->get(HashManager::class);
 
             $model = Arr::string($config, 'model');
 
-            return new CachedEloquentUserProvider($hasher, $model);
+            return new CachedEloquentUserProvider($hashManager, $model);
         });
     }
 
