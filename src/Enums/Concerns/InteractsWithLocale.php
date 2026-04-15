@@ -2,6 +2,7 @@
 
 namespace Mpietrucha\Laravel\Essentials\Enums\Concerns;
 
+use Closure;
 use Mpietrucha\Laravel\Essentials\Enums\Contracts\LocaleInterface;
 use Mpietrucha\Laravel\Essentials\Events\LocaleUpdated;
 use Mpietrucha\Support\Enums\Concerns\InteractsWithEnum;
@@ -29,6 +30,19 @@ trait InteractsWithLocale
         event(new LocaleUpdated($locale, $previous));
 
         return $locale;
+    }
+
+    public static function with(string $locale, Closure $callback): mixed
+    {
+        $original = static::get();
+
+        try {
+            static::set($locale);
+
+            return $callback();
+        } finally {
+            $original->code() |> static::set(...);
+        }
     }
 
     public function code(): string
