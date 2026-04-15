@@ -20,6 +20,7 @@ return RectorConfig::configure()
         'phpstan',
     ])
     ->withSkip([
+        'phpstan/cache',
         RemoveDeadStmtRector::class,
         ClosureToArrowFunctionRector::class,
         RemoveNonExistingVarAnnotationRector::class,

@@ -28,6 +28,12 @@ return [
     ],
     'parameters' => [
         'errorFormat' => 'mixin',
+        'ignoreErrors' => [
+            [
+                'identifier' => 'missingType.generics',
+                'path' => CacheFileFinder::cacheDirectory(),
+            ],
+        ],
         'scanDirectories' => [
             CacheFileFinder::cacheDirectory(),
         ],

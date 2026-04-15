@@ -4,6 +4,7 @@ namespace Mpietrucha\Laravel\Essentials;
 
 use Closure;
 use Filament\Support\Concerns\Macroable as FilamentMacroable;
+use Illuminate\Database\Eloquent\Builder as IlluminateEloquentBuilder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Traits\Macroable as IlluminateMacroable;
 use Mpietrucha\Laravel\Essentials\Macro\Concerns\InteractsWithStorage;
@@ -33,10 +34,12 @@ class Macro
 
     public static function compatible(string $target): bool
     {
-        $traits = Instance::traits($target);
+        if (is_a($target, IlluminateEloquentBuilder::class, true)) {
+            return true;
+        }
 
-        return $traits->hasAny([
-            IlluminateMacroable::class, SpatieMacroable::class, FilamentMacroable::class,
+        return Instance::traits($target)->hasAny([
+            SpatieMacroable::class, FilamentMacroable::class, IlluminateMacroable::class,
         ]);
     }
 

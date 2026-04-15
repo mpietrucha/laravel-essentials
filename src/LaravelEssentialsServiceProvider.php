@@ -3,6 +3,7 @@
 namespace Mpietrucha\Laravel\Essentials;
 
 use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Hashing\HashManager;
 use Illuminate\Support\Arr;
 use Mpietrucha\Laravel\Essentials\Auth\CachedEloquentUserProvider;
@@ -10,6 +11,7 @@ use Mpietrucha\Laravel\Essentials\Commands\GenerateIdeHelpers;
 use Mpietrucha\Laravel\Essentials\Commands\GenerateMixinAnalyzers;
 use Mpietrucha\Laravel\Essentials\Commands\Lint;
 use Mpietrucha\Laravel\Essentials\Commands\SyncTranslations;
+use Mpietrucha\Laravel\Essentials\Mixins\EloquentBuilderMixin;
 use Mpietrucha\Laravel\Essentials\PackageTools\Package;
 use Mpietrucha\Laravel\Essentials\PackageTools\PackageServiceProvider;
 use Mpietrucha\Laravel\Essentials\Translation\SpatieTranslationLoaderManager;
@@ -21,6 +23,10 @@ class LaravelEssentialsServiceProvider extends PackageServiceProvider
         $package->name('laravel-essentials');
 
         $package->hasConfigFile('app');
+
+        $package->hasMixins([
+            Builder::class => EloquentBuilderMixin::class,
+        ]);
 
         $package->hasConsoleCommands([
             Lint::class,
