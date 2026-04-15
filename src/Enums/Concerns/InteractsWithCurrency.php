@@ -30,9 +30,9 @@ trait InteractsWithCurrency
         return static::from($currency);
     }
 
-    public static function set(string $currency): static
+    public static function set(mixed $currency): static
     {
-        $currency = static::from($currency);
+        $currency = static::build($currency);
 
         $previous = static::get();
 

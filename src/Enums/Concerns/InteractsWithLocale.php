@@ -19,9 +19,9 @@ trait InteractsWithLocale
         return app()->getLocale() |> static::from(...);
     }
 
-    public static function set(string $locale): static
+    public static function set(mixed $locale): static
     {
-        $locale = static::from($locale);
+        $locale = static::build($locale);
 
         $previous = static::get();
 
@@ -32,7 +32,7 @@ trait InteractsWithLocale
         return $locale;
     }
 
-    public static function with(string $locale, Closure $callback): mixed
+    public static function with(mixed $locale, Closure $callback): mixed
     {
         $original = static::get();
 
@@ -41,12 +41,17 @@ trait InteractsWithLocale
 
             return $callback();
         } finally {
-            $original->code() |> static::set(...);
+            $original->activate();
         }
     }
 
     public function code(): string
     {
         return $this->value;
+    }
+
+    public function activate(): void
+    {
+        static::set($this);
     }
 }

@@ -12,9 +12,11 @@ interface LocaleInterface extends BackedEnum, EnumInterface
 {
     public static function get(): static;
 
-    public static function set(string $value): static;
+    public static function set(mixed $value): static;
 
-    public static function with(string $value, Closure $callback): mixed;
+    public static function with(mixed $value, Closure $callback): mixed;
 
     public function code(): string;
+
+    public function activate(): void;
 }
