@@ -5,6 +5,7 @@ declare(strict_types=1);
 use Mpietrucha\PHPStan\Command\ErrorFormatter\MixinErrorFormatter;
 use Mpietrucha\PHPStan\File\CacheFileFinder;
 use Mpietrucha\PHPStan\Methods\MacroExtension;
+use Mpietrucha\PHPStan\ReturnTypes\FacadeExtension;
 use Mpietrucha\Support\Filesystem\Path;
 
 return [
@@ -12,6 +13,10 @@ return [
         [
             'class' => MacroExtension::class,
             'tags' => ['phpstan.broker.methodsClassReflectionExtension'],
+        ],
+        [
+            'class' => FacadeExtension::class,
+            'tags' => ['phpstan.broker.dynamicStaticMethodReturnTypeExtension'],
         ],
         'errorFormatter.mixin' => [
             'class' => MixinErrorFormatter::class,
