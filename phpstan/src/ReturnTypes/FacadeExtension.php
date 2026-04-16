@@ -4,7 +4,6 @@ namespace Mpietrucha\PHPStan\ReturnTypes;
 
 use Illuminate\Support\Arr;
 use Mpietrucha\Laravel\Essentials\Facade;
-use Mpietrucha\Support\ClassNamespace;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\StaticCall;
 use PHPStan\Analyser\Scope;
@@ -44,11 +43,10 @@ final class FacadeExtension implements DynamicStaticMethodReturnTypeExtension
 
         /** @var array<GenericClassStringType> $types */
         $types = Arr::map($classNames, static function (string $class): GenericClassStringType {
-            $facade = ClassNamespace::join('Facades', $class);
+            /** @var class-string $class */
+            $facade = Facade::for($class);
 
-            $objectType = new ObjectType($facade);
-
-            return new GenericClassStringType($objectType);
+            return new GenericClassStringType(new ObjectType($facade));
         });
 
         return TypeCombinator::union(...$types);
