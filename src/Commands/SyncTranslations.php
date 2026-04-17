@@ -60,8 +60,7 @@ class SyncTranslations extends Command
                     });
             });
 
-        $synced = $this
-            ->languageLines()
+        $synced = $this->languageLines()
             ->filter
             ->isDirty()
             ->each
