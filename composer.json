@@ -43,10 +43,7 @@
         "psr-4": {
             "Mpietrucha\\Laravel\\Essentials\\": "src/",
             "Mpietrucha\\PHPStan\\": "phpstan/src/"
-        },
-        "files": [
-            "overrides/Filament/Support/Concerns/EvaluatesClosures.php"
-        ]
+        }
     },
     "config": {
         "allow-plugins": {
