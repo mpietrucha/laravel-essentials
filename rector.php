@@ -10,6 +10,10 @@ use Rector\DeadCode\Rector\Expression\RemoveDeadStmtRector;
 use Rector\DeadCode\Rector\Node\RemoveNonExistingVarAnnotationRector;
 use Rector\Naming\Rector\ClassMethod\RenameParamToMatchTypeRector;
 use Rector\Php74\Rector\Closure\ClosureToArrowFunctionRector;
+use Rector\Php85\Rector\Property\AddOverrideAttributeToOverriddenPropertiesRector;
+use RectorLaravel\Rector\Class_\FillablePropertyToFillableAttributeRector;
+use RectorLaravel\Rector\Class_\HiddenPropertyToHiddenAttributeRector;
+use RectorLaravel\Rector\Class_\TablePropertyToTableAttributeRector;
 use RectorLaravel\Rector\ClassMethod\AddGenericReturnTypeToRelationsRector;
 use RectorLaravel\Rector\FuncCall\RemoveRedundantValueCallsRector;
 use RectorLaravel\Set\LaravelSetList;
@@ -28,6 +32,10 @@ return RectorConfig::configure()
         ClosureToArrowFunctionRector::class,
         RemoveNonExistingVarAnnotationRector::class,
         RemoveUselessParamTagRector::class,
+        FillablePropertyToFillableAttributeRector::class,
+        TablePropertyToTableAttributeRector::class,
+        HiddenPropertyToHiddenAttributeRector::class,
+        AddOverrideAttributeToOverriddenPropertiesRector::class,
         RenameParamToMatchTypeRector::class => [
             'database/migrations/create_discounts_table.php',
         ],
