@@ -12,6 +12,7 @@ use Mpietrucha\Laravel\Essentials\Commands\GenerateIdeHelpers;
 use Mpietrucha\Laravel\Essentials\Commands\GenerateMixinAnalyzers;
 use Mpietrucha\Laravel\Essentials\Commands\Lint;
 use Mpietrucha\Laravel\Essentials\Commands\SyncTranslations;
+use Mpietrucha\Laravel\Essentials\Eloquent\Models\Discount;
 use Mpietrucha\Laravel\Essentials\Mixins\BlueprintMixin;
 use Mpietrucha\Laravel\Essentials\Mixins\EloquentBuilderMixin;
 use Mpietrucha\Laravel\Essentials\PackageTools\Package;
@@ -24,7 +25,7 @@ class LaravelEssentialsServiceProvider extends PackageServiceProvider
     {
         $package->name('laravel-essentials');
 
-        $package->hasConfigFile('app');
+        $package->hasConfigFile('essentials');
 
         $package->hasMixins([
             Blueprint::class => BlueprintMixin::class,
@@ -37,6 +38,8 @@ class LaravelEssentialsServiceProvider extends PackageServiceProvider
             GenerateIdeHelpers::class,
             GenerateMixinAnalyzers::class,
         ]);
+
+        $package->hasMigration('create_discounts_table');
     }
 
     public function bootingPackage(): void
@@ -55,5 +58,10 @@ class LaravelEssentialsServiceProvider extends PackageServiceProvider
         config([
             'translation-loader.translation_manager' => SpatieTranslationLoaderManager::class,
         ]);
+    }
+
+    public function packageRegistered(): void
+    {
+        Discount::enabled() |> $this->package->runsMigrations(...);
     }
 }

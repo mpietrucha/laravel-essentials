@@ -12,7 +12,7 @@ interface CurrencyInterface extends LocaleInterface
 {
     public function symbol(): string;
 
-    public function money(mixed $amount, ?Context $context = null, ?RoundingMode $roundingMode = null): Money;
+    public function money(mixed $money, ?Context $context = null, ?RoundingMode $roundingMode = null): Money;
 
-    public function convert(mixed $amount, mixed $currency, ?Context $context = null, ?RoundingMode $roundingMode = null): Money;
+    public function convert(mixed $money, mixed $currency, ?Context $context = null, ?RoundingMode $roundingMode = null): Money;
 }

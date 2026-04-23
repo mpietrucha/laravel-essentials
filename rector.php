@@ -8,7 +8,9 @@ use Rector\Config\RectorConfig;
 use Rector\DeadCode\Rector\ClassMethod\RemoveUselessParamTagRector;
 use Rector\DeadCode\Rector\Expression\RemoveDeadStmtRector;
 use Rector\DeadCode\Rector\Node\RemoveNonExistingVarAnnotationRector;
+use Rector\Naming\Rector\ClassMethod\RenameParamToMatchTypeRector;
 use Rector\Php74\Rector\Closure\ClosureToArrowFunctionRector;
+use RectorLaravel\Rector\ClassMethod\AddGenericReturnTypeToRelationsRector;
 use RectorLaravel\Rector\FuncCall\RemoveRedundantValueCallsRector;
 use RectorLaravel\Set\LaravelSetList;
 
@@ -18,6 +20,7 @@ return RectorConfig::configure()
         'config',
         'analyze',
         'phpstan',
+        'database',
     ])
     ->withSkip([
         'phpstan/cache',
@@ -25,9 +28,15 @@ return RectorConfig::configure()
         ClosureToArrowFunctionRector::class,
         RemoveNonExistingVarAnnotationRector::class,
         RemoveUselessParamTagRector::class,
+        RenameParamToMatchTypeRector::class => [
+            'database/migrations/create_discounts_table.php',
+        ],
         RemoveRedundantValueCallsRector::class => [
-            'src/Eloquent/Models/Concerns/HasConvertedPrice.php',
+            'src/Eloquent/Models/Concerns/HasPrice.php',
             'src/Eloquent/Models/Concerns/HasMoney.php',
+        ],
+        AddGenericReturnTypeToRelationsRector::class => [
+            'src/Eloquent/Models/Discount.php',
         ],
     ])
     ->withRules([

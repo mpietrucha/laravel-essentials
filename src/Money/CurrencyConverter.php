@@ -33,11 +33,11 @@ abstract class CurrencyConverter
     }
 
     /**
-     * @return ($amount is null ? string : null|string)
+     * @return ($money is null ? string : null|string)
      */
-    public static function currency(mixed $currency = null, mixed $amount = null): ?string
+    public static function currency(mixed $currency = null, mixed $money = null): ?string
     {
-        if ($amount instanceof Money) {
+        if ($money instanceof Money) {
             return null;
         }
 
@@ -49,11 +49,11 @@ abstract class CurrencyConverter
         };
     }
 
-    public static function convert(mixed $amount, mixed $targetCurrency = null, mixed $sourceCurrency = null, ?Context $context = null, ?RoundingMode $roundingMode = null): Money
+    public static function convert(mixed $money, mixed $targetCurrency = null, mixed $sourceCurrency = null, ?Context $context = null, ?RoundingMode $roundingMode = null): Money
     {
         $roundingMode ??= RoundingMode::HalfUp;
 
-        $money = MoneyFactory::from($amount, $sourceCurrency, $context, $roundingMode);
+        $money = MoneyFactory::from($money, $sourceCurrency, $context, $roundingMode);
 
         $targetCurrency = static::currency($targetCurrency);
 

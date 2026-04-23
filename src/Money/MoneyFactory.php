@@ -9,22 +9,22 @@ use Mpietrucha\Support\Exception\InvalidArgumentException;
 
 abstract class MoneyFactory
 {
-    public static function from(mixed $amount, mixed $currency = null, ?Context $context = null, ?RoundingMode $roundingMode = null): Money
+    public static function from(mixed $money, mixed $currency = null, ?Context $context = null, ?RoundingMode $roundingMode = null): Money
     {
-        $currency = CurrencyConverter::currency($currency, $amount);
+        $currency = CurrencyConverter::currency($currency, $money);
 
         if ($currency === null) {
-            /** @var Money $amount */
-            return $amount;
+            /** @var Money $money */
+            return $money;
         }
 
         $roundingMode ??= RoundingMode::Unnecessary;
 
         return match (true) {
-            is_string($amount),
-            is_float($amount) => Money::of($amount, $currency, $context, $roundingMode),
-            is_int($amount) => Money::ofMinor($amount, $currency, $context, $roundingMode),
-            default => InvalidArgumentException::throw('Unexpected amount of type `%s`', get_debug_type($amount))
+            is_string($money),
+            is_float($money) => Money::of($money, $currency, $context, $roundingMode),
+            is_int($money) => Money::ofMinor($money, $currency, $context, $roundingMode),
+            default => InvalidArgumentException::throw('Unexpected money of type `%s`', get_debug_type($money))
         };
     }
 }

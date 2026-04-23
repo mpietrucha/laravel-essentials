@@ -2,7 +2,12 @@ includes:
     - extension.neon
 parameters:
     level: max
+    ignoreErrors:
+        - identifier: larastan.noEnvCallsOutsideOfConfig
+          path: %currentWorkingDirectory%/config
     paths:
         - src
         - phpstan
         - analyze
+        - config
+        - database

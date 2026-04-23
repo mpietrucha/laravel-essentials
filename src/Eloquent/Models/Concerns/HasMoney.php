@@ -17,24 +17,34 @@ use Throwable;
  */
 trait HasMoney
 {
-    protected static string $defaultMoneyAmountAttribute = 'price';
+    protected static string $defaultMoneyAttribute = 'price';
 
     protected static string $defaultMoneyCurrencyAttribute = 'currency';
+
+    public static function getDefaultMoneyAttribute(): string
+    {
+        return static::$defaultMoneyAttribute;
+    }
+
+    public static function getDefaultMoneyCurrencyAttribute(): string
+    {
+        return static::$defaultMoneyCurrencyAttribute;
+    }
 
     /**
      * @return Attribute<null|Money, never>
      */
-    protected function money(?string $amountAttribute = null, ?string $currencyAttribute = null, ?Context $context = null, ?RoundingMode $roundingMode = null): Attribute
+    protected function money(?string $moneyAttribute = null, ?string $currencyAttribute = null, ?Context $context = null, ?RoundingMode $roundingMode = null): Attribute
     {
-        $amountAttribute ??= static::$defaultMoneyAmountAttribute;
-        $currencyAttribute ??= static::$defaultMoneyCurrencyAttribute;
+        $moneyAttribute ??= static::getDefaultMoneyAttribute();
+        $currencyAttribute ??= static::getDefaultMoneyCurrencyAttribute();
 
-        return Attribute::get(function () use ($amountAttribute, $currencyAttribute, $context, $roundingMode): ?Money {
-            $amount = $this->$amountAttribute;
+        return Attribute::get(function () use ($moneyAttribute, $currencyAttribute, $context, $roundingMode): ?Money {
+            $money = $this->$moneyAttribute;
             $currency = $this->$currencyAttribute;
 
             try {
-                return MoneyFactory::from($amount, $currency, $context, $roundingMode);
+                return MoneyFactory::from($money, $currency, $context, $roundingMode);
             } catch (Throwable) {
                 return null;
             }
@@ -44,10 +54,10 @@ trait HasMoney
     /**
      * @return Attribute<null|Money, never>
      */
-    protected function convertedMoney(?string $amountAttribute = null, ?string $currencyAttribute = null, mixed $targetCurrency = null, ?Context $context = null, ?RoundingMode $roundingMode = null): Attribute
+    protected function convertedMoney(?string $moneyAttribute = null, ?string $currencyAttribute = null, mixed $targetCurrency = null, ?Context $context = null, ?RoundingMode $roundingMode = null): Attribute
     {
-        return Attribute::get(function () use ($amountAttribute, $currencyAttribute, $targetCurrency, $context, $roundingMode): ?Money {
-            $money = $this->money($amountAttribute, $currencyAttribute, $context, $roundingMode)->get |> value(...);
+        return Attribute::get(function () use ($moneyAttribute, $currencyAttribute, $targetCurrency, $context, $roundingMode): ?Money {
+            $money = $this->money($moneyAttribute, $currencyAttribute, $context, $roundingMode)->get |> value(...);
 
             if ($money === null) {
                 return null;

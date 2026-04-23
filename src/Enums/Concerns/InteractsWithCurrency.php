@@ -50,18 +50,18 @@ trait InteractsWithCurrency
         return $this->code() |> Currencies::getSymbol(...);
     }
 
-    public function money(mixed $amount, ?Context $context = null, ?RoundingMode $roundingMode = null): Money
+    public function money(mixed $money, ?Context $context = null, ?RoundingMode $roundingMode = null): Money
     {
-        return MoneyFactory::from($amount, $this, $context, $roundingMode);
+        return MoneyFactory::from($money, $this, $context, $roundingMode);
     }
 
-    public function convert(mixed $amount, mixed $currency, ?Context $context = null, ?RoundingMode $roundingMode = null): Money
+    public function convert(mixed $money, mixed $currency, ?Context $context = null, ?RoundingMode $roundingMode = null): Money
     {
-        return CurrencyConverter::convert($amount, $this, $currency, $context, $roundingMode);
+        return CurrencyConverter::convert($money, $this, $currency, $context, $roundingMode);
     }
 
     protected static function config(): string
     {
-        return 'app.currency';
+        return 'laravel-essentials.locale.currency';
     }
 }
