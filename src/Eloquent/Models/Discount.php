@@ -17,6 +17,18 @@ use Mpietrucha\Support\Exception\RuntimeException;
  */
 class Discount extends Model
 {
+    /** @var list<string> */
+    protected $fillable = [
+        'type',
+        'price',
+        'discount_percentage',
+        'quantity',
+        'quantity_used',
+        'notes',
+        'active_from',
+        'active_to',
+    ];
+
     final public static function enabled(): bool
     {
         return config()->boolean('essentials.discounts.enabled');

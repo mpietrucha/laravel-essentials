@@ -42,7 +42,7 @@ trait HasPrice
      */
     final public function discount(): MorphOne
     {
-        $morphOne = $this->morphOne(Discount::class, Discount::getMorphName());
+        $morphOne = $this->morphOne(Discount::getModel(), Discount::getMorphName());
 
         return $morphOne->active();
     }
@@ -52,7 +52,7 @@ trait HasPrice
      */
     final public function discounts(): MorphMany
     {
-        return $this->morphMany(Discount::class, Discount::getMorphName());
+        return $this->morphMany(Discount::getModel(), Discount::getMorphName());
     }
 
     /**
