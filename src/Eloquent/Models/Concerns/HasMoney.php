@@ -17,6 +17,8 @@ use Throwable;
  */
 trait HasMoney
 {
+    use HasAttributeMutator;
+
     protected static string $defaultMoneyAttribute = 'price';
 
     protected static string $defaultMoneyCurrencyAttribute = 'currency';

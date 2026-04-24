@@ -241,7 +241,11 @@ class Discount extends Model
     protected function discountMultiplier(): Attribute
     {
         return Attribute::get(function (): float|int {
-            $discountPercentage = $this->discount_percentage ?? 0;
+            $discountPercentage = $this->discount_percentage;
+
+            if ($discountPercentage === null) {
+                return 1;
+            }
 
             return (100 - $discountPercentage) / 100;
         });
