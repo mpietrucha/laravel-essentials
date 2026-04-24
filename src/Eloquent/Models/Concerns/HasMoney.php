@@ -17,18 +17,18 @@ use Throwable;
  */
 trait HasMoney
 {
-    use UsesDecoratedAttributes;
+    use DeclaresDecoratedAttributes;
 
     protected static string $defaultMoneyAttribute = 'price';
 
     protected static string $defaultMoneyCurrencyAttribute = 'currency';
 
-    public static function getDefaultMoneyAttribute(): string
+    public static function getMoneyAttribute(): string
     {
         return static::$defaultMoneyAttribute;
     }
 
-    public static function getDefaultMoneyCurrencyAttribute(): string
+    public static function getMoneyCurrencyAttribute(): string
     {
         return static::$defaultMoneyCurrencyAttribute;
     }
@@ -38,8 +38,8 @@ trait HasMoney
      */
     protected function money(?string $moneyAttribute = null, ?string $currencyAttribute = null, ?Context $context = null, ?RoundingMode $roundingMode = null): Attribute
     {
-        $moneyAttribute ??= static::getDefaultMoneyAttribute();
-        $currencyAttribute ??= static::getDefaultMoneyCurrencyAttribute();
+        $moneyAttribute ??= static::getMoneyAttribute();
+        $currencyAttribute ??= static::getMoneyCurrencyAttribute();
 
         return Attribute::get(function () use ($moneyAttribute, $currencyAttribute, $context, $roundingMode): ?Money {
             $money = $this->$moneyAttribute;

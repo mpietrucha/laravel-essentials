@@ -18,22 +18,22 @@ trait HasPrice
 {
     use HasMoney;
 
-    public static function getDefaultPriceAttribute(): string
+    public static function getPriceAttribute(): string
     {
-        return static::getDefaultMoneyAttribute();
+        return static::getMoneyAttribute();
     }
 
-    public static function getDefaultPriceCurrencyAttribute(): string
+    public static function getPriceCurrencyAttribute(): string
     {
-        return static::getDefaultMoneyCurrencyAttribute();
+        return static::getMoneyCurrencyAttribute();
     }
 
-    final public static function getDefaultDiscountRelationName(): string
+    final public static function getDiscountRelationName(): string
     {
         return 'discount';
     }
 
-    final public static function getDefaultDiscountsRelationName(): string
+    final public static function getDiscountsRelationName(): string
     {
         return 'discounts';
     }
@@ -61,8 +61,8 @@ trait HasPrice
      */
     protected function convertedPrice(?string $priceAttribute = null, ?string $currencyAttribute = null, mixed $targetCurrency = null, ?Context $context = null, ?RoundingMode $roundingMode = null): Attribute
     {
-        $priceAttribute ??= static::getDefaultPriceAttribute();
-        $currencyAttribute ??= static::getDefaultPriceCurrencyAttribute();
+        $priceAttribute ??= static::getPriceAttribute();
+        $currencyAttribute ??= static::getPriceCurrencyAttribute();
 
         return Attribute::get(function () use ($priceAttribute, $currencyAttribute, $targetCurrency, $context, $roundingMode): ?string {
             $money = $this->convertedMoney($priceAttribute, $currencyAttribute, $targetCurrency, $context, $roundingMode)->value();
@@ -80,8 +80,8 @@ trait HasPrice
      */
     protected function discountedPrice(?string $discountRelation = null, ?string $priceAttribute = null, ?string $currencyAttribute = null, ?Context $context = null, ?RoundingMode $roundingMode = null): Attribute
     {
-        $priceAttribute ??= static::getDefaultPriceAttribute();
-        $discountRelation ??= static::getDefaultDiscountRelationName();
+        $priceAttribute ??= static::getPriceAttribute();
+        $discountRelation ??= static::getDiscountRelationName();
 
         return Attribute::get(function () use ($discountRelation, $priceAttribute, $currencyAttribute, $context, $roundingMode): ?string {
             if (Discount::disabled()) {

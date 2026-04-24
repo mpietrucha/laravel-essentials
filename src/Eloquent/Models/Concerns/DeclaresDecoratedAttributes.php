@@ -13,7 +13,7 @@ use ReflectionNamedType;
 /**
  * @phpstan-require-extends Model
  */
-trait UsesDecoratedAttributes
+trait DeclaresDecoratedAttributes
 {
     /**
      * @param  string  $key
