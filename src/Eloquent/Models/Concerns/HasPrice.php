@@ -4,10 +4,11 @@ namespace Mpietrucha\Laravel\Essentials\Eloquent\Models\Concerns;
 
 use Brick\Math\RoundingMode;
 use Brick\Money\Context;
-use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
+use Illuminate\Support\Arr;
+use Mpietrucha\Laravel\Essentials\Eloquent\Casts\Attribute;
 use Mpietrucha\Laravel\Essentials\Eloquent\Models\Discount;
 
 /**
@@ -64,7 +65,7 @@ trait HasPrice
         $currencyAttribute ??= static::getDefaultPriceCurrencyAttribute();
 
         return Attribute::get(function () use ($priceAttribute, $currencyAttribute, $targetCurrency, $context, $roundingMode): ?string {
-            $money = $this->convertedMoney($priceAttribute, $currencyAttribute, $targetCurrency, $context, $roundingMode)->get |> value(...);
+            $money = $this->convertedMoney($priceAttribute, $currencyAttribute, $targetCurrency, $context, $roundingMode)->value();
 
             if ($money === null) {
                 return null;
@@ -79,6 +80,7 @@ trait HasPrice
      */
     protected function discountedPrice(?string $discountRelation = null, ?string $priceAttribute = null, ?string $currencyAttribute = null, ?Context $context = null, ?RoundingMode $roundingMode = null): Attribute
     {
+        $priceAttribute ??= static::getDefaultPriceAttribute();
         $discountRelation ??= static::getDefaultDiscountRelationName();
 
         return Attribute::get(function () use ($discountRelation, $priceAttribute, $currencyAttribute, $context, $roundingMode): ?string {
@@ -86,7 +88,7 @@ trait HasPrice
                 return null;
             }
 
-            $discountedPrice = $this->money($priceAttribute, $currencyAttribute, $context, $roundingMode)->get |> value(...);
+            $discountedPrice = $this->money($priceAttribute, $currencyAttribute, $context, $roundingMode)->value();
 
             if ($discountedPrice === null) {
                 return null;
@@ -95,11 +97,14 @@ trait HasPrice
             /** @var null|Discount $discount */
             $discount = $this->loadMissing($discountRelation)->$discountRelation;
 
-            if ($discount instanceof Discount) {
-                return $discount->calculate($discountedPrice);
+            if (! $discount instanceof Discount) {
+                return $discountedPrice->getAmount()->toString();
             }
 
-            return $discountedPrice->getAmount()->toString();
+            /** @var null|string $priceCast */
+            $priceCast = Arr::get($this->getCasts(), $priceAttribute);
+
+            return $discount->calculate($discountedPrice, $priceCast, $discountedPrice->getCurrency(), $context, $roundingMode);
         });
     }
 
@@ -121,7 +126,7 @@ trait HasPrice
                 return null;
             }
 
-            $referencePrice = $this->money($priceAttribute, $currencyAttribute, $context, $roundingMode)->get |> value(...);
+            $referencePrice = $this->money($priceAttribute, $currencyAttribute, $context, $roundingMode)->value();
 
             if ($referencePrice === null) {
                 return null;
@@ -133,7 +138,7 @@ trait HasPrice
                 $currencyAttribute,
                 $context,
                 $roundingMode
-            )->get |> value(...);
+            )->value();
 
             $referencePrice = $referencePrice->getAmount()->toString();
 

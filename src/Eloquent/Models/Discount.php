@@ -2,24 +2,46 @@
 
 namespace Mpietrucha\Laravel\Essentials\Eloquent\Models;
 
-use Brick\Money\Money;
+use Brick\Math\RoundingMode;
+use Brick\Money\Context;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
-use Mpietrucha\Laravel\Essentials\Enums\DiscountType;
+use Mpietrucha\Laravel\Essentials\Eloquent\Casts\Attribute;
+use Mpietrucha\Laravel\Essentials\Eloquent\Models\Concerns\HasMoney;
 use Mpietrucha\Laravel\Essentials\Facade;
-use Mpietrucha\Support\Enum;
+use Mpietrucha\Laravel\Essentials\Money\MoneyFactory;
+use Mpietrucha\Support\Exception\LogicException;
 use Mpietrucha\Support\Exception\RuntimeException;
+use Throwable;
 
 /**
  * @phpstan-type DiscountBuilder Builder<static>
+ *
+ * @property int $id
+ * @property int|null $quantity
+ * @property int|null $quantity_used
+ * @property string|null $price
+ * @property int|null $discount_percentage
+ * @property string|null $notes
+ * @property Carbon|null $active_from
+ * @property Carbon|null $active_to
+ * @property Carbon|null $finished_at
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property-read Model $discountable
+ * @property-read int|float $discount_multiplier
  */
 class Discount extends Model
 {
-    /** @var list<string> */
+    use HasMoney;
+
+    /**
+     * @var list<string>
+     */
     protected $fillable = [
-        'type',
         'price',
         'discount_percentage',
         'quantity',
@@ -27,7 +49,10 @@ class Discount extends Model
         'notes',
         'active_from',
         'active_to',
+        'finished_at',
     ];
+
+    protected bool $hasMergedPriceCast = false;
 
     final public static function enabled(): bool
     {
@@ -64,30 +89,142 @@ class Discount extends Model
         return 'discountable';
     }
 
-    /**
-     * @return class-string<DiscountType>
-     */
-    final public static function getDiscountType(): string
-    {
-        return Enum::backed(
-            config()->string('essentials.discounts.type'),
-            DiscountType::class
-        );
-    }
-
     #[\Override]
     final public function getTable(): string
     {
         return config()->string('essentials.discounts.table');
     }
 
-    /**
-     * @return numeric-string
-     */
-    public function calculate(Money $money): string
+    public function isBundle(): bool
     {
-        // wip
-        return '100';
+        if ($this->price === null) {
+            return false;
+        }
+
+        if ($this->quantity === null) {
+            return false;
+        }
+
+        return $this->quantity_used !== null;
+    }
+
+    public function isPromotion(): bool
+    {
+        if ($this->quantity !== null || $this->quantity_used !== null) {
+            return false;
+        }
+
+        if ($this->price === null) {
+            return false;
+        }
+
+        return $this->discount_percentage !== null;
+    }
+
+    public function hasValidDates(): bool
+    {
+        if ($this->finished_at instanceof Carbon) {
+            return false;
+        }
+
+        $validTo = $this->active_to?->isNowOrFuture() ?? true;
+        $validFrom = $this->active_from?->isNowOrPast() ?? true;
+
+        return $validTo && $validFrom;
+    }
+
+    final public function hasInvalidDates(): bool
+    {
+        return ! $this->hasValidDates();
+    }
+
+    public function isBundleActive(): bool
+    {
+        if ($this->isPromotion()) {
+            return false;
+        }
+
+        if ($this->hasInvalidDates()) {
+            return false;
+        }
+
+        return $this->quantity_used < $this->quantity;
+    }
+
+    public function isPromotionActive(): bool
+    {
+        if ($this->isBundle()) {
+            return false;
+        }
+
+        return $this->hasValidDates();
+    }
+
+    public function isActive(): bool
+    {
+        if ($this->isBundleActive()) {
+            return true;
+        }
+
+        return $this->isPromotionActive();
+    }
+
+    /**
+     * @return null|numeric-string
+     */
+    public function calculate(mixed $originalPrice, ?string $originalPriceCast = null, mixed $currency = null, ?Context $context = null, ?RoundingMode $roundingMode = null): ?string
+    {
+        try {
+            $originalPrice = MoneyFactory::from($originalPrice, $currency, $context, $roundingMode);
+        } catch (Throwable) {
+            return null;
+        }
+
+        $this->ensureMergedPriceCast($originalPriceCast);
+
+        $discountedPrice = $this->money(
+            static::getDefaultMoneyAttribute(),
+            $originalPrice->getCurrency(),
+            $context,
+            $roundingMode,
+        )->value();
+
+        if ($this->isBundleActive()) {
+            return $discountedPrice?->getAmount()->toString();
+        }
+
+        if ($this->isPromotionActive() === false) {
+            return null;
+        }
+
+        $discountedPrice ??= $originalPrice->multipliedBy(
+            $this->discount_multiplier,
+            $roundingMode ?? RoundingMode::HalfUp
+        );
+
+        return $discountedPrice->getAmount()->toString();
+    }
+
+    public function finish(): static
+    {
+        $this->finished_at ??= now();
+
+        return $this;
+    }
+
+    public function incrementBundleUsage(): static
+    {
+        if ($this->isBundleActive() === false) {
+            LogicException::throw('Only bundles can increment usage');
+        }
+
+        $this->quantity_used++;
+
+        if ($this->isBundleActive() === false) {
+            $this->finish();
+        }
+
+        return $this;
     }
 
     /**
@@ -99,51 +236,93 @@ class Discount extends Model
     }
 
     /**
-     * @param  DiscountBuilder  $builder
-     * @return DiscountBuilder
+     * @return Attribute<int|float, never>
      */
-    #[Scope]
-    protected function active(Builder $builder): Builder
+    protected function discountMultiplier(): Attribute
     {
-        return $builder->where(static function (Builder $builder): void {
-            $builder->promotion();
+        return Attribute::get(function (): float|int {
+            $discountPercentage = $this->discount_percentage ?? 0;
 
-            $builder->orWhere(static fn (Builder $builder) => $builder->bundle());
+            return (100 - $discountPercentage) / 100;
         });
     }
 
     /**
      * @param  DiscountBuilder  $builder
-     * @return DiscountBuilder
      */
     #[Scope]
-    protected function promotion(Builder $builder): Builder
+    protected function bundle(Builder $builder): void
     {
-        return $builder->where(static function (Builder $builder): void {
-            $builder->where('type', self::getDiscountType()::Promotion);
-
-            $builder->where(static function (Builder $builder): void {
-                $builder->whereNotNull('price');
-                $builder->orWhereNotNull('discount_percentage');
-            });
-
-            $builder->validDates();
-        });
-    }
-
-    /**
-     * @param  DiscountBuilder  $builder
-     * @return DiscountBuilder
-     */
-    #[Scope]
-    protected function bundle(Builder $builder): Builder
-    {
-        return $builder->where(static function (Builder $builder): void {
-            $builder->where('type', self::getDiscountType()::Bundle);
-
+        $builder->where(static function (Builder $builder): void {
             $builder->whereNotNull('quantity');
             $builder->whereNotNull('quantity_used');
             $builder->whereNotNull('price');
+        });
+    }
+
+    /**
+     * @param  DiscountBuilder  $builder
+     */
+    #[Scope]
+    protected function promotion(Builder $builder): void
+    {
+        $builder->where(static function (Builder $builder): void {
+            $builder->whereNull('quantity');
+            $builder->whereNull('quantity_used');
+
+            $builder->whereNotNull('price');
+            $builder->orWhereNotNull('discount_percentage');
+        });
+    }
+
+    /**
+     * @param  DiscountBuilder  $builder
+     */
+    #[Scope]
+    protected function validDates(Builder $builder): void
+    {
+        $builder->whereNull('finished_at');
+
+        $builder->where(static function (Builder $builder): void {
+            $activeFrom = 'active_from';
+
+            $builder->whereNull($activeFrom);
+
+            $builder->orWhereNowOrPast($activeFrom);
+        });
+
+        $builder->where(static function (Builder $builder): void {
+            $activeTo = 'active_to';
+
+            $builder->whereNull($activeTo);
+
+            $builder->orWhereNowOrFuture($activeTo);
+        });
+    }
+
+    /**
+     * @param  DiscountBuilder  $builder
+     */
+    #[Scope]
+    protected function activeBundle(Builder $builder): void
+    {
+        $builder->where(static function (Builder $builder): void {
+            $builder->bundle();
+
+            $builder->validDates();
+
+            $builder->whereColumn('quantity_used', '<', 'quantity');
+        });
+    }
+
+    /**
+     * @param  DiscountBuilder  $builder
+     */
+    #[Scope]
+    protected function activePromotion(Builder $builder): void
+    {
+        $builder->where(static function (Builder $builder): void {
+            $builder->promotion();
 
             $builder->validDates();
         });
@@ -151,24 +330,15 @@ class Discount extends Model
 
     /**
      * @param  DiscountBuilder  $builder
-     * @return DiscountBuilder
      */
     #[Scope]
-    protected function validDates(Builder $builder): Builder
+    protected function active(Builder $builder): void
     {
         $builder->where(static function (Builder $builder): void {
-            $builder->whereNull(
-                $activeFrom = 'active_from'
-            )->orWhereNowOrPast($activeFrom);
-        });
+            $builder->activePromotion();
 
-        $builder->where(static function (Builder $builder): void {
-            $builder->whereNull(
-                $activeTo = 'active_to'
-            )->orWhereNowOrFuture($activeTo);
+            $builder->orWhere(static fn (Builder $builder) => $builder->activeBundle());
         });
-
-        return $builder;
     }
 
     /**
@@ -178,7 +348,26 @@ class Discount extends Model
     protected function casts(): array
     {
         return [
-            'type' => self::getDiscountType(),
+            'active_from' => 'datetime',
+            'active_to' => 'datetime',
+            'finished_at' => 'datetime',
         ];
+    }
+
+    protected function ensureMergedPriceCast(?string $priceCast): void
+    {
+        if ($this->hasMergedPriceCast) {
+            return;
+        }
+
+        if ($priceCast === null) {
+            return;
+        }
+
+        $this->hasMergedPriceCast = true;
+
+        $this->mergeCasts([
+            static::getDefaultMoneyAttribute() => $priceCast,
+        ]);
     }
 }

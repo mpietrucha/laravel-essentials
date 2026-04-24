@@ -9,6 +9,7 @@ use Rector\DeadCode\Rector\ClassMethod\RemoveUselessParamTagRector;
 use Rector\DeadCode\Rector\Expression\RemoveDeadStmtRector;
 use Rector\DeadCode\Rector\Node\RemoveNonExistingVarAnnotationRector;
 use Rector\Naming\Rector\ClassMethod\RenameParamToMatchTypeRector;
+use Rector\Php70\Rector\Ternary\TernaryToNullCoalescingRector;
 use Rector\Php74\Rector\Closure\ClosureToArrowFunctionRector;
 use Rector\Php85\Rector\Property\AddOverrideAttributeToOverriddenPropertiesRector;
 use RectorLaravel\Rector\Class_\FillablePropertyToFillableAttributeRector;
@@ -36,12 +37,15 @@ return RectorConfig::configure()
         TablePropertyToTableAttributeRector::class,
         HiddenPropertyToHiddenAttributeRector::class,
         AddOverrideAttributeToOverriddenPropertiesRector::class,
+        TernaryToNullCoalescingRector::class => [
+            'src/Macro.php',
+        ],
         RenameParamToMatchTypeRector::class => [
             'database/migrations/create_discounts_table.php',
+            'src/Eloquent/Models/Discount.php',
         ],
         RemoveRedundantValueCallsRector::class => [
-            'src/Eloquent/Models/Concerns/HasPrice.php',
-            'src/Eloquent/Models/Concerns/HasMoney.php',
+            'src/Eloquent/Casts/Attribute.php',
         ],
         AddGenericReturnTypeToRelationsRector::class => [
             'src/Eloquent/Models/Discount.php',

@@ -4,7 +4,6 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 use Mpietrucha\Laravel\Essentials\Eloquent\Models\Discount;
-use Mpietrucha\Laravel\Essentials\Enums\DiscountType;
 
 return new class extends Migration
 {
@@ -16,8 +15,6 @@ return new class extends Migration
         Schema::create($model::getTable(), static function (Blueprint $table) use ($model): void {
             $table->id();
 
-            $table->enum('type', DiscountType::cases());
-
             $table->unsignedInteger('quantity')->nullable();
             $table->unsignedInteger('quantity_used')->nullable();
 
@@ -28,6 +25,8 @@ return new class extends Migration
 
             $table->timestamp('active_from')->nullable();
             $table->timestamp('active_to')->nullable();
+
+            $table->timestamp('finished_at')->nullable();
 
             $model::getMorphName() |> $table->mixedMorphs(...);
 

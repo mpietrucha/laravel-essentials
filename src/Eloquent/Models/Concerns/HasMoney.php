@@ -5,8 +5,8 @@ namespace Mpietrucha\Laravel\Essentials\Eloquent\Models\Concerns;
 use Brick\Math\RoundingMode;
 use Brick\Money\Context;
 use Brick\Money\Money;
-use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
+use Mpietrucha\Laravel\Essentials\Eloquent\Casts\Attribute;
 use Mpietrucha\Laravel\Essentials\Locale\Currency;
 use Mpietrucha\Laravel\Essentials\Money\CurrencyConverter;
 use Mpietrucha\Laravel\Essentials\Money\MoneyFactory;
@@ -57,7 +57,7 @@ trait HasMoney
     protected function convertedMoney(?string $moneyAttribute = null, ?string $currencyAttribute = null, mixed $targetCurrency = null, ?Context $context = null, ?RoundingMode $roundingMode = null): Attribute
     {
         return Attribute::get(function () use ($moneyAttribute, $currencyAttribute, $targetCurrency, $context, $roundingMode): ?Money {
-            $money = $this->money($moneyAttribute, $currencyAttribute, $context, $roundingMode)->get |> value(...);
+            $money = $this->money($moneyAttribute, $currencyAttribute, $context, $roundingMode)->value();
 
             if ($money === null) {
                 return null;

@@ -56,7 +56,7 @@ class Macro
         }
 
         $macro = function (mixed ...$arguments) use ($handler, $mixin) {
-            $context = $this ?? null; /** @phpstan-ignore nullCoalesce.variable */
+            $context = isset($this) ? $this : null; /** @phpstan-ignore variable.undefined, isset.variable */
             $scope = static::class;
 
             $handler = Instance::bind($handler, $context, $scope, $mixin);
