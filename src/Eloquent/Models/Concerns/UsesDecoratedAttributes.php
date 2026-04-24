@@ -13,7 +13,7 @@ use ReflectionNamedType;
 /**
  * @phpstan-require-extends Model
  */
-trait HasAttributeMutator
+trait UsesDecoratedAttributes
 {
     /**
      * @param  string  $key
