@@ -18,14 +18,14 @@ trait HasPrice
 {
     use HasMoney;
 
-    public static function getPriceAttribute(): string
+    public static function getDefaultPriceAttribute(): string
     {
-        return static::getMoneyAttribute();
+        return static::getDefaultMoneyAttribute();
     }
 
-    public static function getPriceCurrencyAttribute(): string
+    public static function getDefaultPriceCurrencyAttribute(): string
     {
-        return static::getMoneyCurrencyAttribute();
+        return static::getDefaultMoneyCurrencyAttribute();
     }
 
     final public static function getDiscountRelationName(): string
@@ -61,8 +61,8 @@ trait HasPrice
      */
     protected function convertedPrice(?string $priceAttribute = null, ?string $currencyAttribute = null, mixed $targetCurrency = null, ?Context $context = null, ?RoundingMode $roundingMode = null): Attribute
     {
-        $priceAttribute ??= static::getPriceAttribute();
-        $currencyAttribute ??= static::getPriceCurrencyAttribute();
+        $priceAttribute ??= static::getDefaultPriceAttribute();
+        $currencyAttribute ??= static::getDefaultPriceCurrencyAttribute();
 
         return Attribute::get(function () use ($priceAttribute, $currencyAttribute, $targetCurrency, $context, $roundingMode): ?string {
             $money = $this->convertedMoney($priceAttribute, $currencyAttribute, $targetCurrency, $context, $roundingMode)->value();
@@ -80,7 +80,7 @@ trait HasPrice
      */
     protected function discountedPrice(?string $discountRelation = null, ?string $priceAttribute = null, ?string $currencyAttribute = null, ?Context $context = null, ?RoundingMode $roundingMode = null): Attribute
     {
-        $priceAttribute ??= static::getPriceAttribute();
+        $priceAttribute ??= static::getDefaultPriceAttribute();
         $discountRelation ??= static::getDiscountRelationName();
 
         return Attribute::get(function () use ($discountRelation, $priceAttribute, $currencyAttribute, $context, $roundingMode): ?string {

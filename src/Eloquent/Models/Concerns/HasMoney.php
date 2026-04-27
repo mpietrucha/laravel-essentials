@@ -23,12 +23,12 @@ trait HasMoney
 
     protected static string $defaultMoneyCurrencyAttribute = 'currency';
 
-    public static function getMoneyAttribute(): string
+    public static function getDefaultMoneyAttribute(): string
     {
         return static::$defaultMoneyAttribute;
     }
 
-    public static function getMoneyCurrencyAttribute(): string
+    public static function getDefaultMoneyCurrencyAttribute(): string
     {
         return static::$defaultMoneyCurrencyAttribute;
     }
@@ -38,8 +38,8 @@ trait HasMoney
      */
     protected function money(?string $moneyAttribute = null, ?string $currencyAttribute = null, ?Context $context = null, ?RoundingMode $roundingMode = null): Attribute
     {
-        $moneyAttribute ??= static::getMoneyAttribute();
-        $currencyAttribute ??= static::getMoneyCurrencyAttribute();
+        $moneyAttribute ??= static::getDefaultMoneyAttribute();
+        $currencyAttribute ??= static::getDefaultMoneyCurrencyAttribute();
 
         return Attribute::get(function () use ($moneyAttribute, $currencyAttribute, $context, $roundingMode): ?Money {
             $money = $this->$moneyAttribute;

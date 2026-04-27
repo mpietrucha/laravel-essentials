@@ -183,7 +183,7 @@ class Discount extends Model
         $this->ensureMergedPriceCast($originalPriceCast);
 
         $discountedPrice = $this->money(
-            static::getMoneyAttribute(),
+            static::getDefaultMoneyAttribute(),
             $originalPrice->getCurrency(),
             $context,
             $roundingMode,
@@ -371,7 +371,7 @@ class Discount extends Model
         $this->hasMergedPriceCast = true;
 
         $this->mergeCasts([
-            static::getMoneyAttribute() => $priceCast,
+            static::getDefaultMoneyAttribute() => $priceCast,
         ]);
     }
 }
