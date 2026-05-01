@@ -1,42 +1,56 @@
 <?php
 
+use Facades\Mpietrucha\Laravel\Essentials\Eloquent\Models\Discount;
+use Facades\Mpietrucha\Laravel\Essentials\Eloquent\Models\Discount\Quota;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-use Mpietrucha\Laravel\Essentials\Eloquent\Models\Discount;
 
 return new class extends Migration
 {
     public function up(): void
     {
-        $model = Discount::getModelFacade();
-
-        /** @phpstan-ignore argument.type */
-        Schema::create($model::getTable(), static function (Blueprint $table) use ($model): void {
+        Schema::create(Quota::getTable(), static function (Blueprint $table): void {
             $table->id();
 
-            $table->unsignedInteger('quantity')->nullable();
-            $table->unsignedInteger('quantity_used')->nullable();
+            $table->string('name')->nullable();
+            $table->text('notes')->nullable();
+
+            $table->unsignedTinyInteger('quantity')->nullable();
+            $table->unsignedTinyInteger('quantity_used')->nullable();
+
+            self::timestamps($table);
+        });
+
+        Schema::create(Discount::getTable(), static function (Blueprint $table): void {
+            $table->id();
+
+            $table->foreignIdFor(Quota::getModel())->nullable();
 
             $table->decimal('price', 10, 2)->nullable();
             $table->unsignedTinyInteger('discount_percentage')->nullable();
 
-            $table->text('notes')->nullable();
+            Discount::getMorphName() |> $table->mixedMorphs(...);
 
-            $table->timestamp('active_from')->nullable();
-            $table->timestamp('active_to')->nullable();
-
-            $table->timestamp('finished_at')->nullable();
-
-            $model::getMorphName() |> $table->mixedMorphs(...);
-
-            $table->timestamps();
+            self::timestamps($table);
         });
     }
 
     public function down(): void
     {
-        /** @phpstan-ignore argument.type */
-        Discount::getModelFacade()::getTable() |> Schema::dropIfExists(...);
+        Quota::getTable() |> Schema::dropIfExists(...);
+
+        Discount::getTable() |> Schema::dropIfExists(...);
+    }
+
+    protected static function timestamps(Blueprint $table): void
+    {
+        $table->timestamp('active_from')->nullable();
+        $table->timestamp('active_to')->nullable();
+
+        $table->timestamp('finished_at')->nullable();
+
+        $table->softDeletes();
+        $table->timestamps();
     }
 };

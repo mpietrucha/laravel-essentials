@@ -6,7 +6,6 @@ use Brick\Math\RoundingMode;
 use Brick\Money\Context;
 use Brick\Money\Money;
 use Illuminate\Database\Eloquent\Model;
-use Mpietrucha\Laravel\Essentials\Eloquent\Casts\Attribute;
 use Mpietrucha\Laravel\Essentials\Locale\Currency;
 use Mpietrucha\Laravel\Essentials\Money\CurrencyConverter;
 use Mpietrucha\Laravel\Essentials\Money\MoneyFactory;
@@ -17,65 +16,84 @@ use Throwable;
  */
 trait HasMoney
 {
-    use DeclaresDecoratedAttributes;
+    protected static string $defaultCurrencyAttribute = 'currency';
 
-    protected static string $defaultMoneyAttribute = 'price';
-
-    protected static string $defaultMoneyCurrencyAttribute = 'currency';
-
-    public static function getDefaultMoneyAttribute(): string
+    public static function getDefaultCurrencyAttribute(): string
     {
-        return static::$defaultMoneyAttribute;
+        return static::$defaultCurrencyAttribute;
     }
 
-    public static function getDefaultMoneyCurrencyAttribute(): string
+    public function getMoneyAttributeValue(string $moneyAttribute): mixed
     {
-        return static::$defaultMoneyCurrencyAttribute;
+        return rescue(
+            fn () => data_get($this, $moneyAttribute),
+            fn () => data_get($this->getAttributes(), $moneyAttribute)
+        );
     }
 
-    /**
-     * @return Attribute<null|Money, never>
-     */
-    protected function money(?string $moneyAttribute = null, ?string $currencyAttribute = null, ?Context $context = null, ?RoundingMode $roundingMode = null): Attribute
+    public function getCurrencyAttributeValue(?string $currencyAttribute = null): mixed
     {
-        $moneyAttribute ??= static::getDefaultMoneyAttribute();
-        $currencyAttribute ??= static::getDefaultMoneyCurrencyAttribute();
+        $currencyAttribute ??= static::getDefaultCurrencyAttribute();
 
-        return Attribute::get(function () use ($moneyAttribute, $currencyAttribute, $context, $roundingMode): ?Money {
-            $money = $this->$moneyAttribute;
-            $currency = $this->$currencyAttribute;
-
-            try {
-                return MoneyFactory::from($money, $currency, $context, $roundingMode);
-            } catch (Throwable) {
-                return null;
-            }
-        });
+        return data_get($this, $currencyAttribute);
     }
 
-    /**
-     * @return Attribute<null|Money, never>
-     */
-    protected function convertedMoney(?string $moneyAttribute = null, ?string $currencyAttribute = null, mixed $targetCurrency = null, ?Context $context = null, ?RoundingMode $roundingMode = null): Attribute
+    public function castMoneyAttribute(mixed $money, string $moneyAttribute): mixed
     {
-        return Attribute::get(function () use ($moneyAttribute, $currencyAttribute, $targetCurrency, $context, $roundingMode): ?Money {
-            $money = $this->money($moneyAttribute, $currencyAttribute, $context, $roundingMode)->value();
+        if (! is_scalar($money)) {
+            return $money;
+        }
 
-            if ($money === null) {
-                return null;
-            }
+        try {
+            $cast = $this->getCastType($moneyAttribute);
+        } catch (Throwable) {
+            return $money;
+        }
 
-            try {
-                $convertedMoney = CurrencyConverter::convert($money, $targetCurrency ?? Currency::get());
-            } catch (Throwable) {
-                return null;
-            }
+        if ($cast === 'int' || $cast === 'integer') {
+            return (int) $money;
+        }
 
-            if ($money->getCurrency() |> $convertedMoney->getCurrency()->is(...)) {
-                return null;
-            }
+        return $money;
+    }
 
-            return $convertedMoney;
-        });
+    public function getMoney(string $moneyAttribute, ?string $currencyAttribute = null, ?Context $context = null, ?RoundingMode $roundingMode = null): ?Money
+    {
+        $money = $this->getMoneyAttributeValue($moneyAttribute);
+        $currency = $this->getCurrencyAttributeValue($currencyAttribute);
+
+        try {
+            return MoneyFactory::from(
+                $this->castMoneyAttribute($money, $moneyAttribute),
+                $currency,
+                $context,
+                $roundingMode,
+            );
+        } catch (Throwable) {
+            return null;
+        }
+    }
+
+    public function getConvertedMoney(string $moneyAttribute, ?string $currencyAttribute = null, mixed $targetCurrency = null, ?Context $context = null, ?RoundingMode $roundingMode = null): ?Money
+    {
+        $money = $this->getMoney($moneyAttribute, $currencyAttribute, $context, $roundingMode);
+
+        if ($money === null) {
+            return null;
+        }
+
+        $targetCurrency ??= Currency::get();
+
+        try {
+            $convertedMoney = CurrencyConverter::convert($money, $targetCurrency);
+        } catch (Throwable) {
+            return null;
+        }
+
+        if ($money->getCurrency() |> $convertedMoney->getCurrency()->is(...)) {
+            return null;
+        }
+
+        return $convertedMoney;
     }
 }

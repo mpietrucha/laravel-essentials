@@ -4,10 +4,10 @@ namespace Mpietrucha\Laravel\Essentials\Eloquent\Models\Concerns;
 
 use Brick\Math\RoundingMode;
 use Brick\Money\Context;
+use Brick\Money\Money;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
-use Illuminate\Support\Arr;
 use Mpietrucha\Laravel\Essentials\Eloquent\Casts\Attribute;
 use Mpietrucha\Laravel\Essentials\Eloquent\Models\Discount;
 
@@ -16,32 +16,20 @@ use Mpietrucha\Laravel\Essentials\Eloquent\Models\Discount;
  */
 trait HasPrice
 {
+    use DeclaresDecoratedAttributes;
     use HasMoney;
+
+    protected static string $defaultPriceAttribute = 'price';
 
     public static function getDefaultPriceAttribute(): string
     {
-        return static::getDefaultMoneyAttribute();
-    }
-
-    public static function getDefaultPriceCurrencyAttribute(): string
-    {
-        return static::getDefaultMoneyCurrencyAttribute();
-    }
-
-    final public static function getDiscountRelationName(): string
-    {
-        return 'discount';
-    }
-
-    final public static function getDiscountsRelationName(): string
-    {
-        return 'discounts';
+        return static::$defaultPriceAttribute;
     }
 
     /**
      * @return MorphOne<Discount, $this>
      */
-    final public function discount(): MorphOne
+    public function discount(): MorphOne
     {
         $morphOne = $this->morphOne(Discount::getModel(), Discount::getMorphName());
 
@@ -51,98 +39,157 @@ trait HasPrice
     /**
      * @return MorphMany<Discount, $this>
      */
-    final public function discounts(): MorphMany
+    public function discounts(): MorphMany
     {
-        return $this->morphMany(Discount::getModel(), Discount::getMorphName());
+        $morphMany = $this->morphMany(Discount::getModel(), Discount::getMorphName());
+
+        return $morphMany->valid();
     }
 
-    /**
-     * @return Attribute<null|numeric-string, never>
-     */
-    protected function convertedPrice(?string $priceAttribute = null, ?string $currencyAttribute = null, mixed $targetCurrency = null, ?Context $context = null, ?RoundingMode $roundingMode = null): Attribute
+    public function getPriceAttributeValue(?string $priceAttribute = null): mixed
     {
         $priceAttribute ??= static::getDefaultPriceAttribute();
-        $currencyAttribute ??= static::getDefaultPriceCurrencyAttribute();
 
-        return Attribute::get(function () use ($priceAttribute, $currencyAttribute, $targetCurrency, $context, $roundingMode): ?string {
-            $money = $this->convertedMoney($priceAttribute, $currencyAttribute, $targetCurrency, $context, $roundingMode)->value();
-
-            if ($money === null) {
-                return null;
-            }
-
-            return $money->getAmount()->toString();
-        });
+        return $this->getMoneyAttributeValue($priceAttribute);
     }
 
-    /**
-     * @return Attribute<null|numeric-string, never>
-     */
-    protected function discountedPrice(?string $discountRelation = null, ?string $priceAttribute = null, ?string $currencyAttribute = null, ?Context $context = null, ?RoundingMode $roundingMode = null): Attribute
+    public function castPriceAttribute(mixed $price, ?string $priceAttribute = null): mixed
     {
         $priceAttribute ??= static::getDefaultPriceAttribute();
-        $discountRelation ??= static::getDiscountRelationName();
 
-        return Attribute::get(function () use ($discountRelation, $priceAttribute, $currencyAttribute, $context, $roundingMode): ?string {
-            if (Discount::disabled()) {
-                return null;
-            }
+        return $this->castMoneyAttribute($price, $priceAttribute);
+    }
 
-            $discountedPrice = $this->money($priceAttribute, $currencyAttribute, $context, $roundingMode)->value();
+    public function getPrice(?string $priceAttribute = null, ?string $currencyAttribute = null, ?Context $context = null, ?RoundingMode $roundingMode = null): ?Money
+    {
+        $priceAttribute ??= static::getDefaultPriceAttribute();
 
-            if ($discountedPrice === null) {
-                return null;
-            }
+        return $this->getMoney($priceAttribute, $currencyAttribute, $context, $roundingMode);
+    }
 
-            /** @var null|Discount $discount */
-            $discount = $this->loadMissing($discountRelation)->$discountRelation;
+    public function getConvertedPrice(mixed $targetCurrency = null, ?string $priceAttribute = null, ?string $currencyAttribute = null, ?Context $context = null, ?RoundingMode $roundingMode = null): ?Money
+    {
+        $priceAttribute ??= static::getDefaultPriceAttribute();
 
-            if (! $discount instanceof Discount) {
-                return $discountedPrice->getAmount()->toString();
-            }
+        return $this->getConvertedMoney($priceAttribute, $currencyAttribute, $targetCurrency, $context, $roundingMode);
+    }
 
-            /** @var null|string $priceCast */
-            $priceCast = Arr::get($this->getCasts(), $priceAttribute);
+    public function getDiscountedPrice(?string $priceAttribute = null, ?string $currencyAttribute = null, ?Context $context = null, ?RoundingMode $roundingMode = null): ?Money
+    {
+        if (Discount::disabled()) {
+            return null;
+        }
 
-            return $discount->calculate($discountedPrice, $priceCast, $discountedPrice->getCurrency(), $context, $roundingMode);
-        });
+        $price = $this->getPrice($priceAttribute, $currencyAttribute, $context, $roundingMode);
+
+        if ($price === null) {
+            return null;
+        }
+
+        /** @var null|Discount $discount */
+        $discount = $this->loadMissing($discountRelation = 'discount')->$discountRelation;
+
+        if (! $discount instanceof Discount) {
+            return $price;
+        }
+
+        return $discount->calculate($price, null, $priceAttribute, $context, $roundingMode);
+    }
+
+    public function getConvertedDiscountedPrice(mixed $targetCurrency = null, string $discountedPriceAttribute = 'discounted_price', ?string $currencyAttribute = null, ?Context $context = null, ?RoundingMode $roundingMode = null): ?Money
+    {
+        if (Discount::disabled()) {
+            return null;
+        }
+
+        return $this->getConvertedPrice($targetCurrency, $discountedPriceAttribute, $currencyAttribute, $context, $roundingMode);
+    }
+
+    public function getReferencePrice(?string $priceAttribute = null, ?string $currencyAttribute = null, ?Context $context = null, ?RoundingMode $roundingMode = null): ?Money
+    {
+        if (Discount::disabled()) {
+            return null;
+        }
+
+        $price = $this->getPrice($priceAttribute, $currencyAttribute, $context, $roundingMode);
+
+        if ($price === null) {
+            return null;
+        }
+
+        $discountedPrice = $this->getDiscountedPrice($priceAttribute, $currencyAttribute, $context, $roundingMode);
+
+        if ($discountedPrice === null) {
+            return null;
+        }
+
+        return $price->isEqualTo($discountedPrice) ? null : $price;
     }
 
     /**
      * @return Attribute<null|numeric-string, never>
      */
-    protected function convertedDiscountedPrice(string $discountedPriceAttribute = 'discounted_price', ?string $currencyAttribute = null, mixed $targetCurrency = null, ?Context $context = null, ?RoundingMode $roundingMode = null): Attribute
+    protected function price(?string $priceAttribute = null, ?string $currencyAttribute = null, ?Context $context = null, ?RoundingMode $roundingMode = null): Attribute
     {
-        return $this->convertedPrice($discountedPriceAttribute, $currencyAttribute, $targetCurrency, $context, $roundingMode);
+        return Attribute::getMoneyAmount(fn (): ?Money => $this->getPrice(
+            $priceAttribute,
+            $currencyAttribute,
+            $context,
+            $roundingMode,
+        ));
     }
 
     /**
      * @return Attribute<null|numeric-string, never>
      */
-    protected function referencePrice(?string $discountRelation = null, ?string $priceAttribute = null, ?string $currencyAttribute = null, ?Context $context = null, ?RoundingMode $roundingMode = null): Attribute
+    protected function convertedPrice(mixed $targetCurrency = null, ?string $priceAttribute = null, ?string $currencyAttribute = null, ?Context $context = null, ?RoundingMode $roundingMode = null): Attribute
     {
-        return Attribute::get(function () use ($discountRelation, $priceAttribute, $currencyAttribute, $context, $roundingMode): ?string {
-            if (Discount::disabled()) {
-                return null;
-            }
+        return Attribute::getMoneyAmount(fn (): ?Money => $this->getConvertedPrice(
+            $targetCurrency,
+            $priceAttribute,
+            $currencyAttribute,
+            $context,
+            $roundingMode,
+        ));
+    }
 
-            $referencePrice = $this->money($priceAttribute, $currencyAttribute, $context, $roundingMode)->value();
+    /**
+     * @return Attribute<null|numeric-string, never>
+     */
+    protected function discountedPrice(?string $priceAttribute = null, ?string $currencyAttribute = null, ?Context $context = null, ?RoundingMode $roundingMode = null): Attribute
+    {
+        return Attribute::getMoneyAmount(fn (): ?Money => $this->getDiscountedPrice(
+            $priceAttribute,
+            $currencyAttribute,
+            $context,
+            $roundingMode,
+        ));
+    }
 
-            if ($referencePrice === null) {
-                return null;
-            }
+    /**
+     * @return Attribute<null|numeric-string, never>
+     */
+    protected function convertedDiscountedPrice(mixed $targetCurrency = null, string $discountedPriceAttribute = 'discounted_price', ?string $currencyAttribute = null, ?Context $context = null, ?RoundingMode $roundingMode = null): Attribute
+    {
+        return Attribute::getMoneyAmount(fn (): ?Money => $this->getConvertedPrice(
+            $targetCurrency,
+            $discountedPriceAttribute,
+            $currencyAttribute,
+            $context,
+            $roundingMode,
+        ));
+    }
 
-            $discountedPrice = $this->discountedPrice(
-                $discountRelation,
-                $priceAttribute,
-                $currencyAttribute,
-                $context,
-                $roundingMode
-            )->value();
-
-            $referencePrice = $referencePrice->getAmount()->toString();
-
-            return $referencePrice === $discountedPrice ? null : $referencePrice;
-        });
+    /**
+     * @return Attribute<null|numeric-string, never>
+     */
+    protected function referencePrice(?string $priceAttribute = null, ?string $currencyAttribute = null, ?Context $context = null, ?RoundingMode $roundingMode = null): Attribute
+    {
+        return Attribute::getMoneyAmount(fn (): ?Money => $this->getReferencePrice(
+            $priceAttribute,
+            $currencyAttribute,
+            $context,
+            $roundingMode,
+        ));
     }
 }

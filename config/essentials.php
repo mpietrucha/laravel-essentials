@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use Mpietrucha\Laravel\Essentials\Eloquent\Models\Discount;
+use Mpietrucha\Laravel\Essentials\Eloquent\Models\Discount\Quota;
 
 return [
     'locale' => [
@@ -12,8 +13,16 @@ return [
     'discounts' => [
         'enabled' => true,
 
-        'table' => 'discounts',
+        'quota' => [
+            'table' => 'discount_quotas',
 
-        'model' => Discount::class,
+            'model' => Quota::class,
+        ],
+
+        'discount' => [
+            'table' => 'discounts',
+
+            'model' => Discount::class,
+        ],
     ],
 ];
