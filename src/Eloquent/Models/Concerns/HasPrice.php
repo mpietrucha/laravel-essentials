@@ -96,11 +96,13 @@ trait HasPrice
         return $discount->calculate($price, null, $priceAttribute, $context, $roundingMode);
     }
 
-    public function getConvertedDiscountedPrice(mixed $targetCurrency = null, string $discountedPriceAttribute = 'discounted_price', ?string $currencyAttribute = null, ?Context $context = null, ?RoundingMode $roundingMode = null): ?Money
+    public function getConvertedDiscountedPrice(mixed $targetCurrency = null, ?string $discountedPriceAttribute = null, ?string $currencyAttribute = null, ?Context $context = null, ?RoundingMode $roundingMode = null): ?Money
     {
         if (Discount::disabled()) {
             return null;
         }
+
+        $discountedPriceAttribute ??= 'discounted_price';
 
         return $this->getConvertedPrice($targetCurrency, $discountedPriceAttribute, $currencyAttribute, $context, $roundingMode);
     }
@@ -169,9 +171,9 @@ trait HasPrice
     /**
      * @return Attribute<null|numeric-string, never>
      */
-    protected function convertedDiscountedPrice(mixed $targetCurrency = null, string $discountedPriceAttribute = 'discounted_price', ?string $currencyAttribute = null, ?Context $context = null, ?RoundingMode $roundingMode = null): Attribute
+    protected function convertedDiscountedPrice(mixed $targetCurrency = null, ?string $discountedPriceAttribute = null, ?string $currencyAttribute = null, ?Context $context = null, ?RoundingMode $roundingMode = null): Attribute
     {
-        return Attribute::getMoneyAmount(fn (): ?Money => $this->getConvertedPrice(
+        return Attribute::getMoneyAmount(fn (): ?Money => $this->getconvertedDiscountedPrice(
             $targetCurrency,
             $discountedPriceAttribute,
             $currencyAttribute,
