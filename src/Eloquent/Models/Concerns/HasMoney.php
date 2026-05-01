@@ -6,6 +6,7 @@ use Brick\Math\RoundingMode;
 use Brick\Money\Context;
 use Brick\Money\Money;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Arr;
 use Mpietrucha\Laravel\Essentials\Locale\Currency;
 use Mpietrucha\Laravel\Essentials\Money\CurrencyConverter;
 use Mpietrucha\Laravel\Essentials\Money\MoneyFactory;
@@ -25,29 +26,27 @@ trait HasMoney
 
     public function getMoneyAttributeValue(string $attribute): mixed
     {
-        $attributes = $this->getAttributes();
-
-        if (array_key_exists($attribute, $attributes)) {
-            return $attributes[$attribute];
-        }
-
-        return data_get($this, $attribute);
+        return Arr::get(
+            $this->getAttributes(),
+            $attribute,
+            fn () => data_get($this, $attribute)
+        );
     }
 
-    public function getCurrencyAttributeValue(?string $currencyAttribute = null): mixed
+    public function getCurrencyAttributeValue(?string $attribute = null): mixed
     {
-        $currencyAttribute ??= static::getDefaultCurrencyAttribute();
-
-        return $this->getMoneyAttributeValue($currencyAttribute);
+        return $this->getMoneyAttributeValue(
+            $attribute ?? static::getDefaultCurrencyAttribute()
+        );
     }
 
-    public function castMoneyAttribute(mixed $money, string $moneyAttribute): mixed
+    public function castMoneyAttribute(mixed $money, string $attribute): mixed
     {
         if (! is_scalar($money)) {
             return $money;
         }
 
-        $cast = rescue(fn () => $this->getCastType($moneyAttribute));
+        $cast = rescue(fn () => $this->getCastType($attribute));
 
         if ($cast === 'int' || $cast === 'integer') {
             return (int) $money;

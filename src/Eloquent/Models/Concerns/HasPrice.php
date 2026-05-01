@@ -54,18 +54,18 @@ trait HasPrice
         return $morphMany->valid();
     }
 
-    public function getPriceAttributeValue(?string $priceAttribute = null): mixed
+    public function getPriceAttributeValue(?string $attribute = null): mixed
     {
-        $priceAttribute ??= static::getDefaultPriceAttribute();
-
-        return $this->getMoneyAttributeValue($priceAttribute);
+        return $this->getMoneyAttributeValue(
+            $attribute ?? static::getDefaultPriceAttribute()
+        );
     }
 
-    public function castPriceAttribute(mixed $price, ?string $priceAttribute = null): mixed
+    public function castPriceAttribute(mixed $price, ?string $attribute = null): mixed
     {
-        $priceAttribute ??= static::getDefaultPriceAttribute();
+        $attribute ??= static::getDefaultPriceAttribute();
 
-        return $this->castMoneyAttribute($price, $priceAttribute);
+        return $this->castMoneyAttribute($price, $attribute);
     }
 
     public function getPrice(?string $priceAttribute = null, ?string $currencyAttribute = null, ?Context $context = null, ?RoundingMode $roundingMode = null): ?Money
