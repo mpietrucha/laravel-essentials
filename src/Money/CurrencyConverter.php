@@ -4,6 +4,7 @@ namespace Mpietrucha\Laravel\Essentials\Money;
 
 use Brick\Math\RoundingMode;
 use Brick\Money\Context;
+use Brick\Money\Currency as BrickCurrency;
 use Brick\Money\CurrencyConverter as BrickCurrencyConverter;
 use Brick\Money\Money;
 use Illuminate\Contracts\Container\BindingResolutionException;
@@ -42,6 +43,7 @@ abstract class CurrencyConverter
         }
 
         return match (true) {
+            $currency instanceof BrickCurrency => $currency->getCurrencyCode(),
             $currency instanceof CurrencyInterface => $currency->code(),
             is_string($currency) => $currency,
             is_null($currency) => Currency::get()->code(),
