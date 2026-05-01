@@ -6,6 +6,7 @@ use Closure;
 use Illuminate\Support\Collection;
 use Mpietrucha\Laravel\Essentials\Macro;
 use Mpietrucha\Laravel\Essentials\Macro\Concerns\InteractsWithStorage;
+use Mpietrucha\Support\ClassNamespace;
 use Mpietrucha\Support\Concerns\Compatible;
 use Mpietrucha\Support\Concerns\Makeable;
 use Mpietrucha\Support\Exception\InvalidArgumentException;
@@ -59,7 +60,7 @@ class Mixin
             return static::make($handler);
         }
 
-        $file = Temporary::path($handler, 'mixins');
+        $file = Temporary::path(ClassNamespace::toPath($handler), 'mixins');
 
         if (Filesystem::unexists($file)) {
             Touch::file($file);
