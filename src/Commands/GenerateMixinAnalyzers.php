@@ -7,6 +7,7 @@ use Illuminate\Support\Collection;
 use Mpietrucha\Laravel\Essentials\Commands\Concerns\InteractsWithLint;
 use Mpietrucha\Laravel\Essentials\Macro\Mixin;
 use Mpietrucha\Laravel\Essentials\Macro\MixinAnalyzer;
+use Mpietrucha\Support\ClassNamespace;
 use Mpietrucha\Support\Filesystem;
 use Mpietrucha\Support\Filesystem\Extension;
 use Mpietrucha\Support\Filesystem\Path;
@@ -66,7 +67,7 @@ class GenerateMixinAnalyzers extends Command
 
     protected function file(string $target): string
     {
-        $name = Path::name($target);
+        $name = ClassNamespace::name($target);
 
         return Path::build(Extension::set($name, 'php'), $this->directory());
     }
