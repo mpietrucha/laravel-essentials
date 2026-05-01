@@ -38,6 +38,11 @@ class Discount extends Model
         'discount_percentage',
     ];
 
+    protected $with = [
+        'quota',
+        'discountable',
+    ];
+
     public static function enabled(): bool
     {
         return config()->boolean('essentials.discounts.enabled');
@@ -57,7 +62,7 @@ class Discount extends Model
         return config()->string('essentials.discounts.discount.model');
     }
 
-    public static function getMorphName(): string
+    final public static function getMorphName(): string
     {
         return 'discountable';
     }
@@ -73,7 +78,7 @@ class Discount extends Model
      */
     public function discountable(): MorphTo
     {
-        return static::getMorphName() |> $this->morphTo(...);
+        return self::getMorphName() |> $this->morphTo(...);
     }
 
     /**

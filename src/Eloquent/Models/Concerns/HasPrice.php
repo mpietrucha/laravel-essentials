@@ -5,6 +5,8 @@ namespace Mpietrucha\Laravel\Essentials\Eloquent\Models\Concerns;
 use Brick\Math\RoundingMode;
 use Brick\Money\Context;
 use Brick\Money\Money;
+use Illuminate\Database\Eloquent\Attributes\Scope;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
@@ -31,7 +33,10 @@ trait HasPrice
      */
     public function discount(): MorphOne
     {
-        $morphOne = $this->morphOne(Discount::getModel(), Discount::getMorphName());
+        $morphOne = $this->morphOne(Discount::getModel(), $discountable = Discount::getMorphName());
+
+        $morphOne->without($discountable);
+        $morphOne->chaperone($discountable);
 
         return $morphOne->active();
     }
@@ -41,7 +46,10 @@ trait HasPrice
      */
     public function discounts(): MorphMany
     {
-        $morphMany = $this->morphMany(Discount::getModel(), Discount::getMorphName());
+        $morphMany = $this->morphMany(Discount::getModel(), $discountable = Discount::getMorphName());
+
+        $morphMany->without($discountable);
+        $morphMany->chaperone($discountable);
 
         return $morphMany->valid();
     }
@@ -193,5 +201,14 @@ trait HasPrice
             $context,
             $roundingMode,
         ));
+    }
+
+    /**
+     * @param  Builder<static>  $builder
+     */
+    #[Scope]
+    protected function withDiscount(Builder $builder): void
+    {
+        $builder->with('discount');
     }
 }
