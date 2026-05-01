@@ -41,11 +41,7 @@ trait HasMoney
             return $money;
         }
 
-        try {
-            $cast = $this->getCastType($moneyAttribute);
-        } catch (Throwable) {
-            return $money;
-        }
+        $cast = rescue(fn () => $this->getCastType($moneyAttribute));
 
         if ($cast === 'int' || $cast === 'integer') {
             return (int) $money;
