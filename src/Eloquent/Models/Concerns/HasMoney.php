@@ -25,10 +25,7 @@ trait HasMoney
 
     public function getMoneyAttributeValue(string $moneyAttribute): mixed
     {
-        return rescue(
-            fn () => data_get($this, $moneyAttribute),
-            fn () => data_get($this->getAttributes(), $moneyAttribute)
-        );
+        return data_get($this->getAttributes(), $moneyAttribute);
     }
 
     public function getCurrencyAttributeValue(?string $currencyAttribute = null): mixed
@@ -54,7 +51,7 @@ trait HasMoney
             return (int) $money;
         }
 
-        return $money;
+        return (string) $money;
     }
 
     public function getMoney(string $moneyAttribute, ?string $currencyAttribute = null, ?Context $context = null, ?RoundingMode $roundingMode = null): ?Money
