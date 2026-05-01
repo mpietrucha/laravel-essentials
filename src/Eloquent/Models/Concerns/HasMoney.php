@@ -23,16 +23,22 @@ trait HasMoney
         return static::$defaultCurrencyAttribute;
     }
 
-    public function getMoneyAttributeValue(string $moneyAttribute): mixed
+    public function getMoneyAttributeValue(string $attribute): mixed
     {
-        return data_get($this->getAttributes(), $moneyAttribute);
+        $attributes = $this->getAttributes();
+
+        if (array_key_exists($attribute, $attributes)) {
+            return $attributes[$attribute];
+        }
+
+        return data_get($this, $attribute);
     }
 
     public function getCurrencyAttributeValue(?string $currencyAttribute = null): mixed
     {
         $currencyAttribute ??= static::getDefaultCurrencyAttribute();
 
-        return data_get($this, $currencyAttribute);
+        return $this->getMoneyAttributeValue($currencyAttribute);
     }
 
     public function castMoneyAttribute(mixed $money, string $moneyAttribute): mixed
