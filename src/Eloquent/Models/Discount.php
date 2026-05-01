@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Support\Arr;
 use Mpietrucha\Laravel\Essentials\Eloquent\Casts\Attribute;
 use Mpietrucha\Laravel\Essentials\Eloquent\Models\Concerns\DeclaresDecoratedAttributes;
 use Mpietrucha\Laravel\Essentials\Eloquent\Models\Discount\Concerns\InteractsWithTimestamps;
@@ -113,7 +114,7 @@ class Discount extends Model
 
     public function getPrice(?string $priceAttribute = null, ?string $currencyAttribute = null, mixed $currency = null, ?Context $context = null, ?RoundingMode $roundingMode = null): ?Money
     {
-        $price = $this->getAttributeValue('value');
+        $price = Arr::get($this->getAttributes(), 'price');
 
         if ($price === null) {
             return null;
