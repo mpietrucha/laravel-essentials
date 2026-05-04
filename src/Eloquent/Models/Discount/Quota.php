@@ -5,6 +5,8 @@ namespace Mpietrucha\Laravel\Essentials\Eloquent\Models\Discount;
 use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Mpietrucha\Laravel\Essentials\Eloquent\Casts\Attribute;
+use Mpietrucha\Laravel\Essentials\Eloquent\Models\Concerns\DeclaresDecoratedAttributes;
 use Mpietrucha\Laravel\Essentials\Eloquent\Models\Discount\Concerns\InteractsWithTimestamps;
 use Mpietrucha\Support\Exception\LogicException;
 
@@ -18,6 +20,7 @@ use Mpietrucha\Support\Exception\LogicException;
  */
 class Quota extends Model
 {
+    use DeclaresDecoratedAttributes;
     use InteractsWithTimestamps;
 
     /**
@@ -104,6 +107,20 @@ class Quota extends Model
         }
 
         return $this;
+    }
+
+    /**
+     * @return Attribute<int|string, never>
+     */
+    protected function capacity(): Attribute
+    {
+        return Attribute::get(function (): ?string {
+            if ($this->hasInvalidCapacity()) {
+                return null;
+            }
+
+            return sprintf('%s/%s', $this->quantity, $this->quantity_used);
+        });
     }
 
     /**
