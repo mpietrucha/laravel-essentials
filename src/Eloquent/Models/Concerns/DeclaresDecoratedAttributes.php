@@ -39,12 +39,24 @@ trait DeclaresDecoratedAttributes
             return $set(false);
         }
 
-        $returnType = new ReflectionMethod($this, $method)->getReturnType();
+        $attribute = with(new ReflectionMethod($this, $method), static function (ReflectionMethod $reflectionMethod): ?string {
+            $returnType = $reflectionMethod->getReturnType();
 
-        if (! $returnType instanceof ReflectionNamedType) {
+            if ($returnType === null) {
+                return null;
+            }
+
+            if (! $returnType instanceof ReflectionNamedType) {
+                return null;
+            }
+
+            return $returnType->getName();
+        });
+
+        if ($attribute === null) {
             return $set(false);
         }
 
-        return is_a($returnType->getName(), Attribute::class, true) |> $set;
+        return is_a($attribute, Attribute::class, true) |> $set;
     }
 }

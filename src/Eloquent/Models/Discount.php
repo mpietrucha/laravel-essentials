@@ -21,8 +21,6 @@ use Throwable;
  * @property null|string $price
  * @property int|null $discount_percentage
  * @property-read int|float $discount_multiplier
- *
- * @phpstan-type ModelClass class-string<static>
  */
 class Discount extends Phase
 {
@@ -53,11 +51,11 @@ class Discount extends Phase
     }
 
     /**
-     * @return ModelClass
+     * @return class-string<static>
      */
     public static function getModel(): string
     {
-        /** @var ModelClass */
+        /** @phpstan-ignore return.type */
         return config()->string('essentials.discounts.discount.model');
     }
 
@@ -140,22 +138,18 @@ class Discount extends Phase
             return null;
         }
 
-        return $this->calculate(
-            $this->getOriginalPrice($priceAttribute, $currencyAttribute, $context, $roundingMode),
-            null,
-            $priceAttribute,
-            $context,
-            $roundingMode
-        );
+        $price = $this->getOriginalPrice($priceAttribute, $currencyAttribute, $context, $roundingMode);
+
+        if (! $price instanceof Money) {
+            return null;
+        }
+
+        return $this->calculate($price, null, $priceAttribute, $context, $roundingMode);
     }
 
     public function calculate(mixed $price, mixed $currency = null, ?string $priceAttribute = null, ?Context $context = null, ?RoundingMode $roundingMode = null): ?Money
     {
-        if ($price === null) {
-            return null;
-        }
-
-        if (self::disabled()) {
+        if (self::disabled() || $price === null) {
             return null;
         }
 
@@ -165,13 +159,13 @@ class Discount extends Phase
             return null;
         }
 
-        return $this->getPrice(
-            $priceAttribute,
-            null,
-            $price->getCurrency(),
-            $context,
-            $roundingMode
-        ) ?? $price->multipliedBy($this->discount_multiplier, $roundingMode ?? RoundingMode::HalfUp);
+        $multiplier = $this->discount_multiplier;
+
+        if ($multiplier < 1) {
+            return $price->multipliedBy($multiplier, $roundingMode ?? RoundingMode::HalfUp);
+        }
+
+        return $this->getPrice($priceAttribute, null, $price->getCurrency(), $context, $roundingMode);
     }
 
     /**
@@ -220,13 +214,13 @@ class Discount extends Phase
     protected function discountMultiplier(): Attribute
     {
         return Attribute::get(function (): float|int {
-            $discountPercentage = $this->discount_percentage;
+            $percentage = $this->discount_percentage;
 
-            if ($discountPercentage === null) {
+            if ($percentage === null) {
                 return 1;
             }
 
-            return (100 - $discountPercentage) / 100;
+            return (100 - $percentage) / 100;
         });
     }
 

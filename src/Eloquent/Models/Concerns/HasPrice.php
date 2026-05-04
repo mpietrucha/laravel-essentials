@@ -56,9 +56,9 @@ trait HasPrice
 
     public function getPriceAttributeValue(?string $attribute = null): mixed
     {
-        return $this->getMoneyAttributeValue(
-            $attribute ?? static::getDefaultPriceAttribute()
-        );
+        $attribute ??= static::getDefaultPriceAttribute();
+
+        return $this->getMoneyAttributeValue($attribute);
     }
 
     public function castPriceAttribute(mixed $price, ?string $attribute = null): mixed

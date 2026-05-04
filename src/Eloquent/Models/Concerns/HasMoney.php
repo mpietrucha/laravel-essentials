@@ -26,18 +26,18 @@ trait HasMoney
 
     public function getMoneyAttributeValue(string $attribute): mixed
     {
-        return Arr::get(
-            $this->getAttributes(),
-            $attribute,
-            fn () => data_get($this, $attribute)
-        );
+        $attributes = $this->getAttributes();
+
+        return Arr::get($attributes, $attribute, function () use ($attribute) {
+            return data_get($this, $attribute);
+        });
     }
 
     public function getCurrencyAttributeValue(?string $attribute = null): mixed
     {
-        return $this->getMoneyAttributeValue(
-            $attribute ?? static::getDefaultCurrencyAttribute()
-        );
+        $attribute ??= static::getDefaultCurrencyAttribute();
+
+        return $this->getMoneyAttributeValue($attribute);
     }
 
     public function castMoneyAttribute(mixed $money, string $attribute): mixed
@@ -46,13 +46,15 @@ trait HasMoney
             return $money;
         }
 
-        $cast = rescue(fn () => $this->getCastType($attribute));
+        $cast = rescue(function () use ($attribute): string {
+            return $this->getCastType($attribute);
+        });
 
-        if ($cast === 'int' || $cast === 'integer') {
-            return (int) $money;
-        }
-
-        return (string) $money;
+        return match ($cast) {
+            'int',
+            'integer' => (int) $money,
+            default => (string) $money,
+        };
     }
 
     public function getMoney(string $moneyAttribute, ?string $currencyAttribute = null, ?Context $context = null, ?RoundingMode $roundingMode = null): ?Money
@@ -88,7 +90,9 @@ trait HasMoney
             return null;
         }
 
-        if ($money->getCurrency() |> $convertedMoney->getCurrency()->is(...)) {
+        $sourceCurrency = $money->getCurrency();
+
+        if ($convertedMoney->getCurrency()->is($sourceCurrency)) {
             return null;
         }
 

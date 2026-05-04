@@ -12,8 +12,6 @@ use Mpietrucha\Support\Exception\LogicException;
  * @property null|string $notes
  * @property null|int $limit
  * @property null|int $limit_used
- *
- * @phpstan-type ModelClass class-string<static>
  */
 class Quota extends Phase
 {
@@ -28,11 +26,11 @@ class Quota extends Phase
     ];
 
     /**
-     * @return ModelClass
+     * @return class-string<static>
      */
     public static function getModel(): string
     {
-        /** @var ModelClass */
+        /** @phpstan-ignore return.type */
         return config()->string('essentials.discounts.quota.model');
     }
 
@@ -56,16 +54,7 @@ class Quota extends Phase
         return ! $this->isLimited();
     }
 
-    public function hasExceededLimit(): bool
-    {
-        if ($this->isUnlimited()) {
-            return false;
-        }
-
-        return $this->limit_used >= $this->limit;
-    }
-
-    final public function hasRemainingLimit(): bool
+    public function isAvailable(): bool
     {
         if ($this->isUnlimited()) {
             return true;
@@ -74,13 +63,22 @@ class Quota extends Phase
         return $this->limit_used < $this->limit;
     }
 
+    final public function isExceeded(): bool
+    {
+        if ($this->isUnlimited()) {
+            return false;
+        }
+
+        return $this->limit_used >= $this->limit;
+    }
+
     #[\Override]
     public function isActive(): bool
     {
-        return $this->hasRemainingLimit() && parent::isActive();
+        return $this->isAvailable() && parent::isActive();
     }
 
-    public function incrementUsage(): static
+    public function use(): static
     {
         if ($this->isInactive()) {
             LogicException::throw('Only active usages can be incremented');
@@ -113,7 +111,7 @@ class Quota extends Phase
      * @param  Builder<static>  $builder
      */
     #[Scope]
-    protected function withRemainingLimit(Builder $builder): void
+    protected function available(Builder $builder): void
     {
         $builder->whereNull($limit = 'limit');
         $builder->whereNull($limitUsed = 'limit_used');
@@ -135,6 +133,6 @@ class Quota extends Phase
     {
         parent::active($builder);
 
-        $builder->withRemainingLimit();
+        $builder->available();
     }
 }
