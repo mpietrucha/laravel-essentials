@@ -16,8 +16,8 @@ return new class extends Migration
             $table->string('name')->nullable();
             $table->text('notes')->nullable();
 
-            $table->unsignedTinyInteger('quantity')->nullable();
-            $table->unsignedTinyInteger('quantity_used')->nullable();
+            $table->unsignedTinyInteger('limit_total')->nullable();
+            $table->unsignedTinyInteger('limit_used')->nullable();
 
             self::timestamps($table);
         });

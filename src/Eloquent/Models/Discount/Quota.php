@@ -13,8 +13,8 @@ use Mpietrucha\Support\Exception\LogicException;
 /**
  * @property null|string $name
  * @property null|string $notes
- * @property null|int $quantity
- * @property null|int $quantity_used
+ * @property null|int $limit_total
+ * @property null|int $limit_used
  *
  * @phpstan-type ModelClass class-string<static>
  */
@@ -29,8 +29,8 @@ class Quota extends Model
     protected $fillable = [
         'name',
         'notes',
-        'quantity',
-        'quantity_used',
+        'limit_total',
+        'limit_used',
     ];
 
     /**
@@ -48,41 +48,41 @@ class Quota extends Model
         return config()->string('essentials.discounts.quota.table');
     }
 
-    public function hasValidCapacity(): bool
+    public function hasValidLimit(): bool
     {
-        if ($this->quantity === null) {
+        if ($this->limit_total === null) {
             return true;
         }
 
-        return $this->quantity_used !== null;
+        return $this->limit_used !== null;
     }
 
-    final public function hasInvalidCapacity(): bool
+    final public function hasInvalidLimit(): bool
     {
-        return ! $this->hasValidCapacity();
+        return ! $this->hasValidLimit();
     }
 
-    public function hasExceededCapacity(): bool
+    public function hasExceededLimit(): bool
     {
-        if ($this->hasInvalidCapacity()) {
+        if ($this->hasInvalidLimit()) {
             return false;
         }
 
-        return $this->quantity_used >= $this->quantity;
+        return $this->limit_used >= $this->limit_total;
     }
 
-    final public function hasRemainingCapacity(): bool
+    final public function hasRemainingLimit(): bool
     {
-        if ($this->hasInvalidCapacity()) {
+        if ($this->hasInvalidLimit()) {
             return false;
         }
 
-        return $this->quantity_used < $this->quantity;
+        return $this->limit_used < $this->limit_total;
     }
 
     public function isActive(): bool
     {
-        if ($this->hasExceededCapacity()) {
+        if ($this->hasExceededLimit()) {
             return false;
         }
 
@@ -100,7 +100,7 @@ class Quota extends Model
             LogicException::throw('Only active usages can be incremented');
         }
 
-        $this->quantity_used++;
+        $this->limit_used++;
 
         if ($this->isInactive()) {
             $this->finish();
@@ -112,14 +112,14 @@ class Quota extends Model
     /**
      * @return Attribute<int|string, never>
      */
-    protected function capacity(): Attribute
+    protected function limit(): Attribute
     {
         return Attribute::get(function (): ?string {
-            if ($this->hasInvalidCapacity()) {
+            if ($this->hasInvalidLimit()) {
                 return null;
             }
 
-            return sprintf('%s/%s', $this->quantity, $this->quantity_used);
+            return sprintf('%s/%s', $this->limit_total, $this->limit_used);
         });
     }
 
@@ -127,16 +127,16 @@ class Quota extends Model
      * @param  Builder<static>  $builder
      */
     #[Scope]
-    protected function withValidCapacity(Builder $builder): void
+    protected function withValidLimit(Builder $builder): void
     {
-        $builder->whereNull($quantity = 'quantity');
-        $builder->whereNull($quantityUsed = 'quantity_used');
+        $builder->whereNull($limitTotal = 'limit_total');
+        $builder->whereNull($limitUsed = 'limit_used');
 
-        $builder->orWhere(static function (Builder $builder) use ($quantity, $quantityUsed): void {
-            $builder->whereNotNull($quantity);
-            $builder->whereNotNull($quantityUsed);
+        $builder->orWhere(static function (Builder $builder) use ($limitTotal, $limitUsed): void {
+            $builder->whereNotNull($limitTotal);
+            $builder->whereNotNull($limitUsed);
 
-            $builder->whereColumn($quantityUsed, '<', $quantity);
+            $builder->whereColumn($limitUsed, '<', $limitTotal);
         });
     }
 
@@ -146,7 +146,7 @@ class Quota extends Model
     #[Scope]
     protected function active(Builder $builder): void
     {
-        $builder->withValidCapacity();
+        $builder->withValidLimit();
         $builder->withActiveTimestamps();
     }
 }
