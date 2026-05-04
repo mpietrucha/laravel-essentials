@@ -45,21 +45,45 @@ class Quota extends Model
         return config()->string('essentials.discounts.quota.table');
     }
 
-    public function isActive(): bool
+    public function hasValidCapacity(): bool
     {
-        if ($this->hasInactiveTimestamps()) {
-            return false;
-        }
-
         if ($this->quantity === null) {
             return true;
         }
 
-        if ($this->quantity_used === null) {
-            return true;
+        return $this->quantity_used !== null;
+    }
+
+    final public function hasInvalidCapacity(): bool
+    {
+        return ! $this->hasValidCapacity();
+    }
+
+    public function hasExceededCapacity(): bool
+    {
+        if ($this->hasInvalidCapacity()) {
+            return false;
+        }
+
+        return $this->quantity_used >= $this->quantity;
+    }
+
+    final public function hasRemainingCapacity(): bool
+    {
+        if ($this->hasInvalidCapacity()) {
+            return false;
         }
 
         return $this->quantity_used < $this->quantity;
+    }
+
+    public function isActive(): bool
+    {
+        if ($this->hasExceededCapacity()) {
+            return false;
+        }
+
+        return $this->hasActiveTimestamps();
     }
 
     final public function isInactive(): bool
@@ -86,10 +110,8 @@ class Quota extends Model
      * @param  Builder<static>  $builder
      */
     #[Scope]
-    protected function active(Builder $builder): void
+    protected function withValidCapacity(Builder $builder): void
     {
-        $builder->withActiveTimestamps();
-
         $builder->whereNull($quantity = 'quantity');
         $builder->whereNull($quantityUsed = 'quantity_used');
 
@@ -99,5 +121,15 @@ class Quota extends Model
 
             $builder->whereColumn($quantityUsed, '<', $quantity);
         });
+    }
+
+    /**
+     * @param  Builder<static>  $builder
+     */
+    #[Scope]
+    protected function active(Builder $builder): void
+    {
+        $builder->withValidCapacity();
+        $builder->withActiveTimestamps();
     }
 }
