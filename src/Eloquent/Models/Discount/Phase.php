@@ -68,7 +68,7 @@ abstract class Phase extends Model
     /**
      * @return Attribute<string, never>
      */
-    protected function state(): Attribute
+    protected function status(): Attribute
     {
         return Attribute::make(fn (): string => match (true) { /** @phpstan-ignore match.unhandled */
             $this->isInvalid() => 'invalid',
