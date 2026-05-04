@@ -12,8 +12,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Arr;
 use Mpietrucha\Laravel\Essentials\Eloquent\Casts\Attribute;
-use Mpietrucha\Laravel\Essentials\Eloquent\Models\Concerns\DeclaresDecoratedAttributes;
-use Mpietrucha\Laravel\Essentials\Eloquent\Models\Discount\Concerns\InteractsWithTimestamps;
+use Mpietrucha\Laravel\Essentials\Eloquent\Models\Discount\Phase;
 use Mpietrucha\Laravel\Essentials\Eloquent\Models\Discount\Quota;
 use Mpietrucha\Laravel\Essentials\Money\MoneyFactory;
 use Throwable;
@@ -25,11 +24,8 @@ use Throwable;
  *
  * @phpstan-type ModelClass class-string<static>
  */
-class Discount extends Model
+class Discount extends Phase
 {
-    use DeclaresDecoratedAttributes;
-    use InteractsWithTimestamps;
-
     /**
      * @var list<string>
      */
@@ -38,6 +34,9 @@ class Discount extends Model
         'discount_percentage',
     ];
 
+    /**
+     * @var list<string>
+     */
     protected $with = [
         'quota',
         'discountable',
@@ -89,32 +88,10 @@ class Discount extends Model
         return Quota::getModel() |> $this->belongsTo(...);
     }
 
+    #[\Override]
     public function isValid(): bool
     {
         return $this->price !== null || $this->discount_percentage !== null;
-    }
-
-    final public function isInvalid(): bool
-    {
-        return ! $this->isValid();
-    }
-
-    public function isActive(): bool
-    {
-        if ($this->isInvalid()) {
-            return false;
-        }
-
-        if ($this->hasInactiveTimestamps()) {
-            return false;
-        }
-
-        return $this->getQuotaRelation()?->isActive() ?? true;
-    }
-
-    final public function isInactive(): bool
-    {
-        return ! $this->isActive();
     }
 
     public function getPrice(?string $priceAttribute = null, ?string $currencyAttribute = null, mixed $currency = null, ?Context $context = null, ?RoundingMode $roundingMode = null): ?Money
@@ -267,10 +244,29 @@ class Discount extends Model
      * @param  Builder<static>  $builder
      */
     #[Scope]
+    #[\Override]
+    protected function finished(Builder $builder): void
+    {
+        $builder->where(static function (Builder $builder): void {
+            parent::finished($builder);
+        });
+
+        $builder->orWhereHas('quota', static function (Builder $builder): void {
+            /** @var Builder<Quota> $builder */
+            $builder->finished();
+        });
+    }
+
+    /**
+     * @param  Builder<static>  $builder
+     */
+    #[Scope]
+    #[\Override]
     protected function active(Builder $builder): void
     {
+        parent::active($builder);
+
         $builder->valid();
-        $builder->withActiveTimestamps();
 
         $builder->where(static function (Builder $builder): void {
             $builder->whereDoesntHave($quota = 'quota');
@@ -279,6 +275,23 @@ class Discount extends Model
                 /** @var Builder<Quota> $builder */
                 $builder->active();
             });
+        });
+    }
+
+    /**
+     * @param  Builder<static>  $builder
+     */
+    #[Scope]
+    #[\Override]
+    protected function scheduled(Builder $builder): void
+    {
+        $builder->where(static function (Builder $builder): void {
+            parent::scheduled($builder);
+        });
+
+        $builder->orWhereHas('quota', static function (Builder $builder): void {
+            /** @var Builder<Quota> $builder */
+            $builder->scheduled();
         });
     }
 

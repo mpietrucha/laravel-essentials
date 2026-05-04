@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('name')->nullable();
             $table->text('notes')->nullable();
 
-            $table->unsignedTinyInteger('limit_total')->nullable();
+            $table->unsignedTinyInteger('limit')->nullable();
             $table->unsignedTinyInteger('limit_used')->nullable();
 
             self::timestamps($table);
