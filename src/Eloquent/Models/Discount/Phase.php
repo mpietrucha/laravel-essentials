@@ -84,7 +84,7 @@ abstract class Phase extends Model
     #[Scope]
     protected function finished(Builder $builder): void
     {
-        $builder->whereNotNull('finished_at');
+        $builder->qualifyColumn('finished_at') |> $builder->whereNotNull(...);
     }
 
     /**
@@ -93,16 +93,16 @@ abstract class Phase extends Model
     #[Scope]
     protected function active(Builder $builder): void
     {
-        $builder->whereNull('finished_at');
+        $builder->qualifyColumn('finished_at') |> $builder->whereNull(...);
 
         $builder->where(static function (Builder $builder): void {
-            $builder->whereNull($activeFrom = 'active_from');
+            $builder->whereNull($activeFrom = $builder->qualifyColumn('active_from'));
 
             $builder->orWhereNowOrPast($activeFrom);
         });
 
         $builder->where(static function (Builder $builder): void {
-            $builder->whereNull($activeTo = 'active_to');
+            $builder->whereNull($activeTo = $builder->qualifyColumn('active_to'));
 
             $builder->orWhereNowOrFuture($activeTo);
         });
@@ -114,10 +114,10 @@ abstract class Phase extends Model
     #[Scope]
     protected function scheduled(Builder $builder): void
     {
-        $builder->whereNull('finished_at');
+        $builder->qualifyColumn('finished_at') |> $builder->whereNull(...);
 
         $builder->where(static function (Builder $builder): void {
-            $builder->whereNotNull($activeFrom = 'active_from');
+            $builder->whereNotNull($activeFrom = $builder->qualifyColumn('active_from'));
 
             $builder->orWhereFuture($activeFrom);
         });

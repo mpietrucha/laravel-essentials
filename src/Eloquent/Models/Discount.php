@@ -230,8 +230,8 @@ class Discount extends Phase
     #[Scope]
     protected function valid(Builder $builder): void
     {
-        $builder->whereNotNull('price');
-        $builder->orWhereNotNull('discount_percentage');
+        $builder->qualifyColumn('price') |> $builder->whereNotNull(...);
+        $builder->qualifyColumn('discount_percentage') |> $builder->orWhereNotNull(...);
     }
 
     /**
