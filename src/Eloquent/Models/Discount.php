@@ -92,6 +92,36 @@ class Discount extends Phase
         return $this->price !== null || $this->discount_percentage !== null;
     }
 
+    #[\Override]
+    public function isFinished(): bool
+    {
+        if (parent::isFinished()) {
+            return true;
+        }
+
+        return $this->getQuotaRelation()?->isFinished() ?? false;
+    }
+
+    #[\Override]
+    public function isActive(): bool
+    {
+        if (parent::isActive() === false) {
+            return false;
+        }
+
+        return $this->getQuotaRelation()?->isActive() ?? true;
+    }
+
+    #[\Override]
+    public function isScheduled(): bool
+    {
+        if (parent::isScheduled()) {
+            return true;
+        }
+
+        return $this->getQuotaRelation()?->isScheduled() ?? false;
+    }
+
     public function getPrice(?string $priceAttribute = null, ?string $currencyAttribute = null, mixed $currency = null, ?Context $context = null, ?RoundingMode $roundingMode = null): ?Money
     {
         $price = Arr::get($this->getAttributes(), 'price');
