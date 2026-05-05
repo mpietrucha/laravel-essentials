@@ -135,4 +135,16 @@ class Quota extends Phase
 
         $builder->available();
     }
+
+    #[\Override]
+    protected static function booted(): void
+    {
+        static::saving(static function (self $model): void {
+            if ($model->limit === null) {
+                return;
+            }
+
+            $model->limit_used ??= 0;
+        });
+    }
 }
