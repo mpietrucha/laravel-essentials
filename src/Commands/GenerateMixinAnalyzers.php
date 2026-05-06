@@ -4,7 +4,6 @@ namespace Mpietrucha\Laravel\Essentials\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Collection;
-use Mpietrucha\Laravel\Essentials\Commands\Concerns\InteractsWithLint;
 use Mpietrucha\Laravel\Essentials\Macro\Mixin;
 use Mpietrucha\Laravel\Essentials\Macro\MixinAnalyzer;
 use Mpietrucha\Support\ClassNamespace;
@@ -18,8 +17,6 @@ use Mpietrucha\Support\Filesystem\Path;
  */
 class GenerateMixinAnalyzers extends Command
 {
-    use InteractsWithLint;
-
     /**
      * @var string
      */
@@ -55,8 +52,6 @@ class GenerateMixinAnalyzers extends Command
 
             return;
         }
-
-        $this->lint($analyzers);
 
         $analyzers->each(function (string $analyzer): void {
             $this->components->task($analyzer);
