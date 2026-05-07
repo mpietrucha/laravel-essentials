@@ -10,7 +10,7 @@ use Mpietrucha\Support\Filesystem\Path;
 
 return [
     'services' => [
-        [
+        '00' => [
             'class' => MacroExtension::class,
             'tags' => ['phpstan.broker.methodsClassReflectionExtension'],
         ],
