@@ -39,7 +39,9 @@ class Macro
         }
 
         return Instance::traits($target)->hasAny([
-            SpatieMacroable::class, FilamentMacroable::class, IlluminateMacroable::class,
+            SpatieMacroable::class,
+            FilamentMacroable::class,
+            IlluminateMacroable::class,
         ]);
     }
 
