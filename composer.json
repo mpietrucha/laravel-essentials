@@ -29,7 +29,6 @@
         "florianv/swap": "^4.5",
         "larastan/larastan": "^3.9",
         "laravel/pint": "^1.2",
-        "nette/di": "^3.2",
         "orchestra/testbench": "^11.0",
         "phpstan/extension-installer": "^1.4",
         "phpstan/phpstan": "^2.1",
