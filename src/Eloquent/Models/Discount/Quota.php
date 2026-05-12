@@ -4,7 +4,9 @@ namespace Mpietrucha\Laravel\Essentials\Eloquent\Models\Discount;
 
 use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Mpietrucha\Laravel\Essentials\Eloquent\Casts\Attribute;
+use Mpietrucha\Laravel\Essentials\Eloquent\Models\Discount;
 use Mpietrucha\Support\Exception\LogicException;
 
 /**
@@ -38,6 +40,14 @@ class Quota extends Phase
     public function getTable(): string
     {
         return config()->string('essentials.discounts.quota.table');
+    }
+
+    /**
+     * @return HasMany<Discount, $this>
+     */
+    public function discounts(): HasMany
+    {
+        return Discount::getModel() |> $this->hasMany(...);
     }
 
     public function isLimited(): bool

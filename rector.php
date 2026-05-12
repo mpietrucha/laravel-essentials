@@ -49,6 +49,7 @@ return RectorConfig::configure()
         ],
         AddGenericReturnTypeToRelationsRector::class => [
             'src/Eloquent/Models/Discount.php',
+            'src/Eloquent/Models/Discount/Quota.php',
         ],
     ])
     ->withRules([
