@@ -103,7 +103,7 @@ class Quota extends Phase
                 return null;
             }
 
-            return sprintf('%s/%s', $this->limit, $this->limit_used);
+            return sprintf('%s/%s', $this->limit_used, $this->limit);
         });
     }
 
