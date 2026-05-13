@@ -68,7 +68,7 @@ class LaravelEssentialsServiceProvider extends PackageServiceProvider
     protected function configureExceptionHandler(): void
     {
         $this->callAfterResolving(ExceptionHandler::class, static function (ExceptionHandler $exceptionHandler): void {
-            $exceptionHandler->reportable(static function (Throwable $throwable): bool {
+            $exceptionHandler->reportable(static function (Throwable $throwable): true {
                 BindExceptionHandler::transform($throwable);
 
                 return true;
