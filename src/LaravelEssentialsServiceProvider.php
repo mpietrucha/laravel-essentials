@@ -2,6 +2,7 @@
 
 namespace Mpietrucha\Laravel\Essentials;
 
+use Illuminate\Contracts\Debug\ExceptionHandler;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Schema\Blueprint;
@@ -18,6 +19,8 @@ use Mpietrucha\Laravel\Essentials\Mixins\EloquentBuilderMixin;
 use Mpietrucha\Laravel\Essentials\PackageTools\Package;
 use Mpietrucha\Laravel\Essentials\PackageTools\PackageServiceProvider;
 use Mpietrucha\Laravel\Essentials\Translation\SpatieTranslationLoaderManager;
+use Mpietrucha\Support\Instance\BindExceptionHandler;
+use Throwable;
 
 class LaravelEssentialsServiceProvider extends PackageServiceProvider
 {
@@ -44,17 +47,14 @@ class LaravelEssentialsServiceProvider extends PackageServiceProvider
 
     public function bootingPackage(): void
     {
-        auth()->provider('cached', static function (Application $application, array $config): CachedEloquentUserProvider {
-            $hashManager = $application->get(HashManager::class);
-
-            $model = Arr::string($config, 'model');
-
-            return new CachedEloquentUserProvider($hashManager, $model);
-        });
+        $this->configureExceptionHandler();
+        $this->extendEloquentUserProvider();
     }
 
     public function registeringPackage(): void
     {
+        BindExceptionHandler::dontRegister();
+
         config([
             'translation-loader.translation_manager' => SpatieTranslationLoaderManager::class,
         ]);
@@ -63,5 +63,33 @@ class LaravelEssentialsServiceProvider extends PackageServiceProvider
     public function packageRegistered(): void
     {
         Discount::enabled() |> $this->package->runsMigrations(...);
+    }
+
+    protected function configureExceptionHandler(): void
+    {
+        $this->callAfterResolving(ExceptionHandler::class, static function (ExceptionHandler $exceptionHandler): void {
+            $exceptionHandler->reportable(static function (Throwable $throwable): bool {
+                BindExceptionHandler::transform($throwable);
+
+                return true;
+            });
+
+            $exceptionHandler->renderable(static function (Throwable $throwable): null {
+                BindExceptionHandler::transform($throwable);
+
+                return null;
+            });
+        });
+    }
+
+    protected function extendEloquentUserProvider(): void
+    {
+        auth()->provider('cached', static function (Application $application, array $config): CachedEloquentUserProvider {
+            $hashManager = $application->get(HashManager::class);
+
+            $model = Arr::string($config, 'model');
+
+            return new CachedEloquentUserProvider($hashManager, $model);
+        });
     }
 }
