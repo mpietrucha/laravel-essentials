@@ -269,11 +269,15 @@ class Discount extends Phase
      */
     #[Scope]
     #[\Override]
-    protected function finished(Builder $builder): void
+    protected function finished(Builder $builder, bool $withQuota = true): void
     {
         $builder->where(static function (Builder $builder): void {
             parent::finished($builder);
         });
+
+        if (! $withQuota) {
+            return;
+        }
 
         $builder->orWhereHas('quota', static function (Builder $builder): void {
             /** @var Builder<Quota> $builder */
@@ -286,11 +290,15 @@ class Discount extends Phase
      */
     #[Scope]
     #[\Override]
-    protected function active(Builder $builder): void
+    protected function active(Builder $builder, bool $withQuota = true): void
     {
         parent::active($builder);
 
         $builder->valid();
+
+        if (! $withQuota) {
+            return;
+        }
 
         $builder->where(static function (Builder $builder): void {
             $builder->whereDoesntHave($quota = 'quota');
@@ -307,11 +315,15 @@ class Discount extends Phase
      */
     #[Scope]
     #[\Override]
-    protected function scheduled(Builder $builder): void
+    protected function scheduled(Builder $builder, bool $withQuota = true): void
     {
         $builder->where(static function (Builder $builder): void {
             parent::scheduled($builder);
         });
+
+        if (! $withQuota) {
+            return;
+        }
 
         $builder->orWhereHas('quota', static function (Builder $builder): void {
             /** @var Builder<Quota> $builder */
