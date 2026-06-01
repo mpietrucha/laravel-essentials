@@ -10,11 +10,14 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Arr;
 use Mpietrucha\Laravel\Essentials\Eloquent\Casts\Attribute;
 use Mpietrucha\Laravel\Essentials\Eloquent\Models\Discount\Phase;
 use Mpietrucha\Laravel\Essentials\Eloquent\Models\Discount\Quota;
 use Mpietrucha\Laravel\Essentials\Money\MoneyFactory;
+use Mpietrucha\Support\Instance;
+use Spatie\Activitylog\Traits\LogsActivity;
 use Throwable;
 
 /**
@@ -340,6 +343,35 @@ class Discount extends Phase
     final protected function getDiscountableRelation(): ?Model
     {
         /** @var null|Model */
-        return $this->loadMissing($discountableRelation = 'discountable')->$discountableRelation;
+        $discountable = $this->loadMissing($discountableRelation = 'discountable')->$discountableRelation;
+
+        if (! $discountable instanceof Model) {
+            return null;
+        }
+
+        if ($this->isActive()) {
+            return $discountable;
+        }
+
+        if (Instance::traits($discountable)->doesntContain(LogsActivity::class)) {
+            return $discountable;
+        }
+
+        /** @phpstan-ignore method.notFound */
+        $activities = $discountable->activities();
+
+        /** @var Relation<Model, Model, Model> $activities */
+        $activity = $activities
+            ->latest()
+            /** @phpstan-ignore argument.type */
+            ->where($discountable->getCreatedAtColumn(), '<=', $this->{$this->getCreatedAtColumn()})
+            ->first();
+
+        if (! $activity instanceof Model) {
+            return null;
+        }
+
+        /** @phpstan-ignore method.notFound, argument.type */
+        return $activity->getExtraProperty('attributes', []) |> $discountable->newFromBuilder(...);
     }
 }

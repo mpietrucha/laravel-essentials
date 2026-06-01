@@ -12,8 +12,10 @@ use Rector\Naming\Rector\ClassMethod\RenameParamToMatchTypeRector;
 use Rector\Php70\Rector\Ternary\TernaryToNullCoalescingRector;
 use Rector\Php74\Rector\Closure\ClosureToArrowFunctionRector;
 use Rector\Php85\Rector\Property\AddOverrideAttributeToOverriddenPropertiesRector;
+use RectorLaravel\Rector\Class_\DescriptionPropertyToDescriptionAttributeRector;
 use RectorLaravel\Rector\Class_\FillablePropertyToFillableAttributeRector;
 use RectorLaravel\Rector\Class_\HiddenPropertyToHiddenAttributeRector;
+use RectorLaravel\Rector\Class_\SignaturePropertyToSignatureAttributeRector;
 use RectorLaravel\Rector\Class_\TablePropertyToTableAttributeRector;
 use RectorLaravel\Rector\ClassMethod\AddGenericReturnTypeToRelationsRector;
 use RectorLaravel\Rector\FuncCall\RemoveRedundantValueCallsRector;
@@ -37,6 +39,8 @@ return RectorConfig::configure()
         TablePropertyToTableAttributeRector::class,
         HiddenPropertyToHiddenAttributeRector::class,
         AddOverrideAttributeToOverriddenPropertiesRector::class,
+        SignaturePropertyToSignatureAttributeRector::class,
+        DescriptionPropertyToDescriptionAttributeRector::class,
         TernaryToNullCoalescingRector::class => [
             'src/Macro.php',
         ],
