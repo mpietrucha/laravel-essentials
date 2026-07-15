@@ -2,8 +2,6 @@
 
 declare(strict_types=1);
 
-use Rector\CodingStyle\Rector\ArrowFunction\StaticArrowFunctionRector;
-use Rector\CodingStyle\Rector\Closure\StaticClosureRector;
 use Rector\Config\RectorConfig;
 use Rector\DeadCode\Rector\ClassMethod\RemoveUselessParamTagRector;
 use Rector\DeadCode\Rector\Expression\RemoveDeadStmtRector;
@@ -17,8 +15,6 @@ use RectorLaravel\Rector\Class_\FillablePropertyToFillableAttributeRector;
 use RectorLaravel\Rector\Class_\HiddenPropertyToHiddenAttributeRector;
 use RectorLaravel\Rector\Class_\SignaturePropertyToSignatureAttributeRector;
 use RectorLaravel\Rector\Class_\TablePropertyToTableAttributeRector;
-use RectorLaravel\Rector\ClassMethod\AddGenericReturnTypeToRelationsRector;
-use RectorLaravel\Rector\FuncCall\RemoveRedundantValueCallsRector;
 use RectorLaravel\Set\LaravelSetList;
 
 return RectorConfig::configure()
@@ -31,6 +27,9 @@ return RectorConfig::configure()
     ])
     ->withSkip([
         'phpstan/cache',
+        'src/Eloquent/Casts/Attribute.php',
+        'src/Eloquent/Models/Discount.php',
+        'src/Eloquent/Models/Discount/Quota.php',
         RemoveDeadStmtRector::class,
         ClosureToArrowFunctionRector::class,
         RemoveNonExistingVarAnnotationRector::class,
@@ -46,19 +45,7 @@ return RectorConfig::configure()
         ],
         RenameParamToMatchTypeRector::class => [
             'database/migrations/create_discounts_table.php',
-            'src/Eloquent/Models/Discount.php',
         ],
-        RemoveRedundantValueCallsRector::class => [
-            'src/Eloquent/Casts/Attribute.php',
-        ],
-        AddGenericReturnTypeToRelationsRector::class => [
-            'src/Eloquent/Models/Discount.php',
-            'src/Eloquent/Models/Discount/Quota.php',
-        ],
-    ])
-    ->withRules([
-        StaticClosureRector::class,
-        StaticArrowFunctionRector::class,
     ])
     ->withSets([
         LaravelSetList::LARAVEL_130,
