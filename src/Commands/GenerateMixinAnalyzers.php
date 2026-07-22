@@ -6,10 +6,12 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Collection;
 use Mpietrucha\Laravel\Essentials\Macro\Mixin;
 use Mpietrucha\Laravel\Essentials\Macro\MixinAnalyzer;
+use Mpietrucha\PHPStan\Cache;
 use Mpietrucha\Support\ClassNamespace;
 use Mpietrucha\Support\Filesystem;
 use Mpietrucha\Support\Filesystem\Extension;
 use Mpietrucha\Support\Filesystem\Path;
+use Mpietrucha\Support\Str;
 
 /**
  * @phpstan-import-type MixinTarget from Mixin
@@ -23,7 +25,8 @@ class GenerateMixinAnalyzers extends Command
     #[\Override]
     protected $signature = 'essentials:mixin-analyzers
                             {--directory=phpstan/cache : The output directory for generated analyzer files}
-                            {--cwd= : The current working directory used for generating analyzers}';
+                            {--cwd= : The current working directory used for generating analyzers}
+                            {--flush : Clear all cached analyzer files before regenerating }';
 
     /**
      * @var string
@@ -31,8 +34,16 @@ class GenerateMixinAnalyzers extends Command
     #[\Override]
     protected $description = 'Generate PHPStan analyzer files for registered mixins';
 
+    protected ?string $directory = null;
+
     public function handle(): void
     {
+        if ($this->option('flush')) {
+            Cache::flush();
+
+            $this->directory() |> Filesystem::cleanDirectory(...);
+        }
+
         $analyzers = Mixin::storage()->map(function (Collection $handlers, string $target): ?string {
             $content = MixinAnalyzer::content($target, $handlers);
 
@@ -53,28 +64,35 @@ class GenerateMixinAnalyzers extends Command
             return;
         }
 
-        $analyzers->each(function (string $analyzer): void {
-            $this->components->task($analyzer);
-        });
+        $analyzers->each(fn (string $analyzer) => $this->components->task($analyzer));
 
         sprintf('%s mixin analyzer(s) generated in [%s].', $analyzers->count(), $this->directory()) |> $this->info(...);
     }
 
     protected function file(string $target): string
     {
-        $name = ClassNamespace::name($target);
+        $directory = $this->directory();
 
-        return Path::build(Extension::set($name, 'php'), $this->directory());
+        $name = Extension::set(
+            Str::remove(ClassNamespace::delimiter(), $target),
+            'php'
+        );
+
+        return Path::build($name, $directory);
     }
 
     protected function directory(): string
     {
+        if ($directory = $this->directory) {
+            return $directory;
+        }
+
         /** @var string $directory */
         $directory = $this->option('directory');
 
         /** @var string $cwd */
         $cwd = $this->option('cwd') ?? Path::directory(__DIR__, 2);
 
-        return Path::build($directory, $cwd);
+        return $this->directory = Path::build($directory, $cwd);
     }
 }

@@ -68,6 +68,6 @@ abstract class MixinAnalyzer
             return sprintf('use %s;', ClassNamespace::canonicalize($handler));
         })->filter();
 
-        return Str::eol() |> $handlers->join(...) |> Str::nullWhenEmpty(...);
+        return Str::space() |> $handlers->join(...) |> Str::nullWhenEmpty(...);
     }
 }

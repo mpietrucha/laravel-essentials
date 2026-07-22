@@ -4,7 +4,8 @@ namespace Mpietrucha\Laravel\Essentials;
 
 use Illuminate\Contracts\Debug\ExceptionHandler;
 use Illuminate\Contracts\Foundation\Application;
-use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
+use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Hashing\HashManager;
 use Illuminate\Support\Arr;
@@ -16,6 +17,7 @@ use Mpietrucha\Laravel\Essentials\Commands\SyncTranslations;
 use Mpietrucha\Laravel\Essentials\Eloquent\Models\Discount;
 use Mpietrucha\Laravel\Essentials\Mixins\BlueprintMixin;
 use Mpietrucha\Laravel\Essentials\Mixins\EloquentBuilderMixin;
+use Mpietrucha\Laravel\Essentials\Mixins\QueryBuilderMixin;
 use Mpietrucha\Laravel\Essentials\PackageTools\Package;
 use Mpietrucha\Laravel\Essentials\PackageTools\PackageServiceProvider;
 use Mpietrucha\Laravel\Essentials\Translation\SpatieTranslationLoaderManager;
@@ -32,7 +34,8 @@ class LaravelEssentialsServiceProvider extends PackageServiceProvider
 
         $package->hasMixins([
             Blueprint::class => BlueprintMixin::class,
-            Builder::class => EloquentBuilderMixin::class,
+            QueryBuilder::class => QueryBuilderMixin::class,
+            EloquentBuilder::class => EloquentBuilderMixin::class,
         ]);
 
         $package->hasConsoleCommands([
