@@ -10,6 +10,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Hashing\HashManager;
 use Illuminate\Support\Arr;
 use Mpietrucha\Laravel\Essentials\Auth\CachedEloquentUserProvider;
+use Mpietrucha\Laravel\Essentials\Commands\ClearMixinCache;
 use Mpietrucha\Laravel\Essentials\Commands\GenerateIdeHelpers;
 use Mpietrucha\Laravel\Essentials\Commands\GenerateMixinAnalyzers;
 use Mpietrucha\Laravel\Essentials\Commands\Lint;
@@ -40,6 +41,7 @@ class LaravelEssentialsServiceProvider extends PackageServiceProvider
 
         $package->hasConsoleCommands([
             Lint::class,
+            ClearMixinCache::class,
             SyncTranslations::class,
             GenerateIdeHelpers::class,
             GenerateMixinAnalyzers::class,

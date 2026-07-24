@@ -3,16 +3,22 @@
 declare(strict_types=1);
 
 use Illuminate\Support\Facades\Artisan;
-use Mpietrucha\PHPStan\IdeHelpers;
+use Mpietrucha\PHPStan\Cache;
+use Mpietrucha\PHPStan\ClearResultCache;
+use Mpietrucha\PHPStan\GenerateIdeHelpers;
+use Mpietrucha\PHPStan\GenerateMixinAnalyzers;
 use Mpietrucha\PHPStan\Laravel;
-use Mpietrucha\PHPStan\MixinAnalyzers;
 
 Laravel::bootstrap();
 
-if (IdeHelpers::due()) {
-    Artisan::call('essentials:ide-helpers');
+if (ClearResultCache::due()) {
+    Cache::flush();
 }
 
-if (MixinAnalyzers::due()) {
-    Artisan::call('essentials:mixin-analyzers');
+if (GenerateIdeHelpers::due()) {
+    Artisan::call('essentials:generate-ide-helpers');
+}
+
+if (GenerateMixinAnalyzers::due()) {
+    Artisan::call('essentials:generate-mixin-analyzers');
 }

@@ -18,7 +18,7 @@ class GenerateColors extends Command
      * @var string
      */
     #[\Override]
-    protected $signature = 'essentials:colors
+    protected $signature = 'essentials:generate-colors
                             {--enum=App\Enums\Color : The Color enum class to generate CSS variables from}
                             {--output=css/colors.css : The resource file to write the generated CSS to}';
 
@@ -48,6 +48,6 @@ class GenerateColors extends Command
 
         $this->lint($output);
 
-        sprintf('Colors generated successfully in [%s]', $output) |> $this->info(...);
+        sprintf('Colors generated successfully in [%s].', $output) |> $this->info(...);
     }
 }

@@ -9,7 +9,7 @@ use Mpietrucha\Support\Filesystem;
 /**
  * @internal
  */
-abstract class IdeHelpers
+abstract class GenerateIdeHelpers
 {
     public static function due(): bool
     {

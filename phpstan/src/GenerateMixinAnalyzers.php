@@ -9,7 +9,7 @@ use Mpietrucha\Laravel\Essentials\Macro\Mixin;
 /**
  * @internal
  */
-abstract class MixinAnalyzers
+abstract class GenerateMixinAnalyzers
 {
     public static function due(): bool
     {

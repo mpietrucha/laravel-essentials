@@ -65,7 +65,7 @@ abstract class Cache
 
     protected static function file(): string
     {
-        return Temporary::file('phpstan-actions-cache.json');
+        return Temporary::file('phpstan-cache.json');
     }
 
     /**

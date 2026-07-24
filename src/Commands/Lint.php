@@ -30,6 +30,6 @@ class Lint extends Command
 
         $this->lint($path);
 
-        $this->info('Files linted successfully');
+        $this->info('Files linted successfully.');
     }
 }

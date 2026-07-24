@@ -19,7 +19,7 @@ class SyncTranslations extends Command
      * @var string
      */
     #[\Override]
-    protected $signature = 'essentials:translations';
+    protected $signature = 'essentials:sync-translations';
 
     /**
      * @var string
@@ -68,12 +68,12 @@ class SyncTranslations extends Command
             ->count();
 
         if ($synced === 0) {
-            $this->info('All translations synced successfully');
+            $this->info('All translations synced successfully.');
 
             return;
         }
 
-        sprintf('%s translation key(s) synced successfully', $synced) |> $this->info(...);
+        sprintf('%s translation key(s) synced successfully.', $synced) |> $this->info(...);
     }
 
     /**

@@ -15,7 +15,7 @@ class GenerateIdeHelpers extends Command
      * @var string
      */
     #[\Override]
-    protected $signature = 'essentials:ide-helpers';
+    protected $signature = 'essentials:generate-ide-helpers';
 
     /**
      * @var string
