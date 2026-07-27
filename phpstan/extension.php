@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 use Mpietrucha\PHPStan\Command\ErrorFormatter\MixinErrorFormatter;
 use Mpietrucha\PHPStan\File\CacheFileFinder;
-use Mpietrucha\PHPStan\Methods\IconExtension;
 use Mpietrucha\PHPStan\Methods\MacroExtension;
 use Mpietrucha\PHPStan\ReturnTypes\FacadeExtension;
 use Mpietrucha\Support\Filesystem\Path;
@@ -13,10 +12,6 @@ return [
     'services' => [
         '00' => [
             'class' => MacroExtension::class,
-            'tags' => ['phpstan.broker.methodsClassReflectionExtension'],
-        ],
-        [
-            'class' => IconExtension::class,
             'tags' => ['phpstan.broker.methodsClassReflectionExtension'],
         ],
         [
