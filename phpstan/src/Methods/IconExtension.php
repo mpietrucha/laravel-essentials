@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Mpietrucha\PHPStan\Methods;
 
-use BladeUI\Icons\Factory;
 use Mpietrucha\Laravel\Essentials\Blade\Icon;
 use Mpietrucha\PHPStan\Reflection\IconReflection;
 use PHPStan\Reflection\ClassReflection;
@@ -18,8 +17,6 @@ final class IconExtension implements MethodsClassReflectionExtension
         if (! $reflection->is(Icon::class)) {
             return false;
         }
-
-        $factory = resolve(Factory::class);
 
         try {
             Icon::make($method)->svg();
