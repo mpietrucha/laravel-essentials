@@ -21,13 +21,8 @@ final class IconExtension implements MethodsClassReflectionExtension
 
         $factory = resolve(Factory::class);
 
-        /** @phpstan-ignore method.notFound */
-        if (invade($factory)->getSetByPrefix($method)) {
-            return true;
-        }
-
         try {
-            $factory->svg($method);
+            Icon::make($method)->svg();
 
             return true;
         } catch (Throwable) {

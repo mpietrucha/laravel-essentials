@@ -1,20 +1,18 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Mpietrucha\Laravel\Essentials\Blade;
 
 use BladeUI\Icons\Svg;
 use Illuminate\Contracts\Support\Htmlable;
+use Illuminate\Support\Str;
 use Mpietrucha\Support\Concerns\Makeable;
-use Mpietrucha\Support\Str;
 use Stringable;
 
 readonly class Icon implements Htmlable, Stringable
 {
     use Makeable;
 
-    public function __construct(protected ?string $name = null)
+    public function __construct(protected string $name)
     {
     }
 
@@ -26,30 +24,14 @@ readonly class Icon implements Htmlable, Stringable
         return static::make($method);
     }
 
-    /**
-     * @param  array<mixed>  $arguments
-     */
-    public function __call(string $method, array $arguments): static
-    {
-        return $this->toString($method) |> static::make(...);
-    }
-
     public function __toString(): string
     {
         return $this->toString();
     }
 
-    public function toString(?string $name = null): string
+    public function toString(): string
     {
-        if ($this->name === null) {
-            return $name ?? Str::none();
-        }
-
-        if ($name === null) {
-            return $this->name ?? Str::none();
-        }
-
-        return sprintf('%s-%s', $this->name, $name);
+        return $this->name |> Str::kebab(...);
     }
 
     public function toHtml(): string
@@ -60,9 +42,9 @@ readonly class Icon implements Htmlable, Stringable
     /**
      * @param  array<mixed>  $attributes
      */
-    public function svg(string $class = '', array $attributes = [], ?string $name = null): Svg
+    public function svg(string $class = '', array $attributes = []): Svg
     {
-        $name = $this->toString($name);
+        $name = $this->toString();
 
         return svg($name, $class, $attributes);
     }
@@ -70,8 +52,8 @@ readonly class Icon implements Htmlable, Stringable
     /**
      * @param  array<mixed>  $attributes
      */
-    public function render(string $class = '', array $attributes = [], ?string $name = null): string
+    public function render(string $class = '', array $attributes = []): string
     {
-        return $this->svg($class, $attributes, $name)->toHtml();
+        return $this->svg($class, $attributes)->toHtml();
     }
 }
