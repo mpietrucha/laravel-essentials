@@ -8,12 +8,24 @@ use Mpietrucha\Laravel\Essentials\Blade\Icon;
 use Mpietrucha\PHPStan\Reflection\IconReflection;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\MethodsClassReflectionExtension;
+use Throwable;
 
 final class IconExtension implements MethodsClassReflectionExtension
 {
     public function hasMethod(ClassReflection $reflection, string $method): bool
     {
-        return $reflection->getName() === Icon::class;
+        if ($reflection->getName() !== Icon::class) {
+            return false;
+        }
+
+        try {
+            /** @phpstan-ignore method.nonObject */
+            Icon::$method()->svg();
+
+            return true;
+        } catch (Throwable) {
+            return false;
+        }
     }
 
     public function getMethod(ClassReflection $reflection, string $method): IconReflection
