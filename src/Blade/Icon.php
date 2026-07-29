@@ -2,13 +2,13 @@
 
 namespace Mpietrucha\Laravel\Essentials\Blade;
 
+use BladeUI\Icons\Factory;
 use BladeUI\Icons\Svg;
-use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Support\Str;
 use Mpietrucha\Support\Concerns\Makeable;
 use Stringable;
 
-readonly class Icon implements Htmlable, Stringable
+readonly class Icon implements Stringable
 {
     use Makeable;
 
@@ -29,14 +29,21 @@ readonly class Icon implements Htmlable, Stringable
         return $this->toString();
     }
 
-    public function toString(): string
+    public static function factory(): Factory
     {
-        return $this->name |> Str::kebab(...);
+        return resolve(Factory::class);
     }
 
-    public function toHtml(): string
+    public function toString(): string
     {
-        return $this->render();
+        $name = $this->name |> Str::kebab(...);
+
+        $factory = static::factory() |> invade(...);
+
+        /** @phpstan-ignore-next-line */
+        $factory->contents(...$factory->splitSetAndName($name));
+
+        return $name;
     }
 
     /**
@@ -46,14 +53,6 @@ readonly class Icon implements Htmlable, Stringable
     {
         $name = $this->toString();
 
-        return svg($name, $class, $attributes);
-    }
-
-    /**
-     * @param  array<mixed>  $attributes
-     */
-    public function render(string $class = '', array $attributes = []): string
-    {
-        return $this->svg($class, $attributes)->toHtml();
+        return static::factory()->svg($name, $class, $attributes);
     }
 }
