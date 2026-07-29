@@ -8,11 +8,13 @@ use Illuminate\Support\Str;
 use Mpietrucha\Support\Concerns\Makeable;
 use Stringable;
 
-readonly class Icon implements Stringable
+class Icon implements Stringable
 {
     use Makeable;
 
-    public function __construct(protected string $name)
+    protected ?Factory $factory = null;
+
+    public function __construct(protected readonly string $name)
     {
     }
 
@@ -29,16 +31,16 @@ readonly class Icon implements Stringable
         return $this->toString();
     }
 
-    public static function factory(): Factory
+    public function factory(): Factory
     {
-        return resolve(Factory::class);
+        return $this->factory ??= resolve(Factory::class);
     }
 
     public function toString(): string
     {
         $name = $this->name |> Str::kebab(...);
 
-        $factory = static::factory() |> invade(...);
+        $factory = $this->factory() |> invade(...);
 
         /** @phpstan-ignore-next-line */
         $factory->contents(...$factory->splitSetAndName($name));
@@ -53,6 +55,6 @@ readonly class Icon implements Stringable
     {
         $name = $this->toString();
 
-        return static::factory()->svg($name, $class, $attributes);
+        return $this->factory()->svg($name, $class, $attributes);
     }
 }
