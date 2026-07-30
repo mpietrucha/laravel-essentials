@@ -6,6 +6,8 @@ namespace Mpietrucha\PHPStan;
 
 use Mpietrucha\Support\Filesystem;
 
+use function Orchestra\Testbench\uses_default_skeleton;
+
 /**
  * @internal
  */
@@ -13,12 +15,16 @@ abstract class GenerateIdeHelpers
 {
     public static function due(): bool
     {
-        $facades = storage_path('app/framework/cache') |> Filesystem::snapshot(...);
-
-        if ($facades === null) {
+        if (uses_default_skeleton()) {
             return false;
         }
 
-        return Cache::dirty($facades);
+        $app = app_path() |> Filesystem::snapshot(...);
+
+        if ($app === null) {
+            return false;
+        }
+
+        return Cache::dirty($app);
     }
 }
