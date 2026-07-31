@@ -12,9 +12,7 @@ class Icon implements Stringable
 {
     use Makeable;
 
-    protected ?Factory $factory = null;
-
-    public function __construct(protected readonly string $name)
+    public function __construct(protected readonly string $name, protected ?Factory $factory = null)
     {
     }
 
@@ -33,7 +31,11 @@ class Icon implements Stringable
 
     public function factory(): Factory
     {
-        return $this->factory ??= resolve(Factory::class);
+        if ($this->factory instanceof Factory) {
+            return $this->factory;
+        }
+
+        return $this->factory = resolve(Factory::class);
     }
 
     public function toString(): string
