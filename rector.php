@@ -15,6 +15,7 @@ use RectorLaravel\Rector\Class_\FillablePropertyToFillableAttributeRector;
 use RectorLaravel\Rector\Class_\HiddenPropertyToHiddenAttributeRector;
 use RectorLaravel\Rector\Class_\SignaturePropertyToSignatureAttributeRector;
 use RectorLaravel\Rector\Class_\TablePropertyToTableAttributeRector;
+use RectorLaravel\Rector\ClassMethod\AddGenericReturnTypeToRelationsRector;
 use RectorLaravel\Set\LaravelSetList;
 
 return RectorConfig::configure()
@@ -28,12 +29,11 @@ return RectorConfig::configure()
     ->withSkip([
         'phpstan/cache',
         'src/Eloquent/Casts/Attribute.php',
-        'src/Eloquent/Models/Discount.php',
-        'src/Eloquent/Models/Discount/Quota.php',
         RemoveDeadStmtRector::class,
         ClosureToArrowFunctionRector::class,
         RemoveNonExistingVarAnnotationRector::class,
         RemoveUselessParamTagRector::class,
+        AddGenericReturnTypeToRelationsRector::class,
         FillablePropertyToFillableAttributeRector::class,
         TablePropertyToTableAttributeRector::class,
         HiddenPropertyToHiddenAttributeRector::class,
