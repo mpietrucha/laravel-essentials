@@ -15,7 +15,7 @@ abstract class GenerateIdeHelpers
 {
     public static function due(): bool
     {
-        if (uses_default_skeleton()) {
+        if (! function_exists('uses_default_skeleton') || uses_default_skeleton()) {
             return false;
         }
 
