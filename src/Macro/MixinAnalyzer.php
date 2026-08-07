@@ -3,8 +3,8 @@
 namespace Mpietrucha\Laravel\Essentials\Macro;
 
 use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 use Mpietrucha\Support\ClassNamespace;
-use Mpietrucha\Support\Str;
 
 /**
  * @phpstan-import-type MixinTarget from Mixin

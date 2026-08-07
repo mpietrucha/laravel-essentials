@@ -5,10 +5,10 @@ namespace Mpietrucha\Laravel\Essentials\Commands;
 use BackedEnum;
 use Illuminate\Console\Command;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 use Mpietrucha\Laravel\Essentials\Commands\Concerns\InteractsWithLint;
 use Mpietrucha\Support\Enum;
 use Mpietrucha\Support\Filesystem;
-use Mpietrucha\Support\Str;
 
 class GenerateColors extends Command
 {

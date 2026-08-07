@@ -4,13 +4,13 @@ namespace Mpietrucha\Laravel\Essentials\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 use Mpietrucha\Laravel\Essentials\Macro\Mixin;
 use Mpietrucha\Laravel\Essentials\Macro\MixinAnalyzer;
 use Mpietrucha\Support\ClassNamespace;
 use Mpietrucha\Support\Filesystem;
 use Mpietrucha\Support\Filesystem\Extension;
 use Mpietrucha\Support\Filesystem\Path;
-use Mpietrucha\Support\Str;
 
 /**
  * @phpstan-import-type MixinTarget from Mixin
