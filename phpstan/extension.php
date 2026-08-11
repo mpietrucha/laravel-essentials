@@ -2,11 +2,13 @@
 
 declare(strict_types=1);
 
+use Illuminate\Support\Number;
 use Mpietrucha\PHPStan\Command\ErrorFormatter\MixinErrorFormatter;
 use Mpietrucha\PHPStan\File\CacheFileFinder;
 use Mpietrucha\PHPStan\Methods\IconExtension;
 use Mpietrucha\PHPStan\Methods\MacroExtension;
 use Mpietrucha\PHPStan\ReturnTypes\FacadeExtension;
+use Mpietrucha\PHPStan\Types\NumericGreaterThanZeroExtension;
 use Mpietrucha\Support\Filesystem\Path;
 
 return [
@@ -22,6 +24,13 @@ return [
         [
             'class' => FacadeExtension::class,
             'tags' => ['phpstan.broker.dynamicStaticMethodReturnTypeExtension'],
+        ],
+        [
+            'class' => NumericGreaterThanZeroExtension::class,
+            'arguments' => [
+                'class' => Number::class,
+            ],
+            'tags' => ['phpstan.typeSpecifier.staticMethodTypeSpecifyingExtension'],
         ],
         'errorFormatter.mixin' => [
             'class' => MixinErrorFormatter::class,
