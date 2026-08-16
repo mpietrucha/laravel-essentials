@@ -181,7 +181,7 @@ trait HasPrice
      */
     protected function convertedDiscountedPrice(mixed $targetCurrency = null, ?string $discountedPriceAttribute = null, ?string $currencyAttribute = null, ?Context $context = null, ?RoundingMode $roundingMode = null): Attribute
     {
-        return Attribute::getMoneyAmount(fn (): ?Money => $this->getconvertedDiscountedPrice(
+        return Attribute::getMoneyAmount(fn (): ?Money => $this->getConvertedDiscountedPrice(
             $targetCurrency,
             $discountedPriceAttribute,
             $currencyAttribute,
