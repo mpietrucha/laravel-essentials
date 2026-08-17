@@ -1,11 +1,12 @@
 <?php
 
-namespace Mpietrucha\Laravel\Essentials\Discounts\Models;
+namespace Mpietrucha\Laravel\Essentials\Money\Models\Discount;
 
 use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Mpietrucha\Laravel\Essentials\Eloquent\Casts\Attribute;
+use Mpietrucha\Laravel\Essentials\Money\Models\Discount;
 use Mpietrucha\Support\Exception\LogicException;
 
 /**
@@ -32,13 +33,13 @@ class Quota extends Phase
     public static function getModel(): string
     {
         /** @phpstan-ignore return.type */
-        return config()->string('essentials.discounts.quota.model');
+        return config()->string('essentials.money.discounts.quota.model');
     }
 
     #[\Override]
     public function getTable(): string
     {
-        return config()->string('essentials.discounts.quota.table');
+        return config()->string('essentials.money.discounts.quota.table');
     }
 
     /**

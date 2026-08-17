@@ -1,15 +1,15 @@
 <?php
 
-namespace Mpietrucha\Laravel\Essentials\Discounts\Models;
+namespace Mpietrucha\Laravel\Essentials\Money\Models\Discount;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Mpietrucha\Laravel\Essentials\Discounts\Models\Concerns\InteractsWithTimestamps;
 use Mpietrucha\Laravel\Essentials\Eloquent\Casts\Attribute;
 use Mpietrucha\Laravel\Essentials\Eloquent\Models\Concerns\DeclaresDecoratedAttributes;
+use Mpietrucha\Laravel\Essentials\Money\Models\Discount\Concerns\InteractsWithTimestamps;
 
 abstract class Phase extends Model
 {

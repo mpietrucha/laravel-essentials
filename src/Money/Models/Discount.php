@@ -1,6 +1,6 @@
 <?php
 
-namespace Mpietrucha\Laravel\Essentials\Discounts\Models;
+namespace Mpietrucha\Laravel\Essentials\Money\Models;
 
 use Brick\Math\RoundingMode;
 use Brick\Money\Context;
@@ -13,6 +13,8 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Arr;
 use Mpietrucha\Laravel\Essentials\Eloquent\Casts\Attribute;
+use Mpietrucha\Laravel\Essentials\Money\Models\Discount\Phase;
+use Mpietrucha\Laravel\Essentials\Money\Models\Discount\Quota;
 use Mpietrucha\Laravel\Essentials\Money\MoneyFactory;
 use Mpietrucha\Support\Instance;
 use Spatie\Activitylog\Traits\LogsActivity;
@@ -43,7 +45,7 @@ class Discount extends Phase
 
     public static function enabled(): bool
     {
-        return config()->boolean('essentials.discounts.enabled');
+        return config()->boolean('essentials.money.discounts.enabled');
     }
 
     final public static function disabled(): bool
@@ -57,7 +59,7 @@ class Discount extends Phase
     public static function getModel(): string
     {
         /** @phpstan-ignore return.type */
-        return config()->string('essentials.discounts.discount.model');
+        return config()->string('essentials.money.discounts.discount.model');
     }
 
     final public static function getMorphName(): string
@@ -68,7 +70,7 @@ class Discount extends Phase
     #[\Override]
     public function getTable(): string
     {
-        return config()->string('essentials.discounts.discount.table');
+        return config()->string('essentials.money.discounts.discount.table');
     }
 
     /**

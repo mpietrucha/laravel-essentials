@@ -17,10 +17,11 @@ use Mpietrucha\Laravel\Essentials\Commands\GenerateIdeHelpers;
 use Mpietrucha\Laravel\Essentials\Commands\GenerateMixinAnalyzers;
 use Mpietrucha\Laravel\Essentials\Commands\Lint;
 use Mpietrucha\Laravel\Essentials\Commands\SyncTranslations;
-use Mpietrucha\Laravel\Essentials\Discounts\Models\Discount;
 use Mpietrucha\Laravel\Essentials\Mixins\BlueprintMixin;
 use Mpietrucha\Laravel\Essentials\Mixins\EloquentBuilderMixin;
 use Mpietrucha\Laravel\Essentials\Mixins\QueryBuilderMixin;
+use Mpietrucha\Laravel\Essentials\Money\HasPriceAutoloader;
+use Mpietrucha\Laravel\Essentials\Money\Models\Discount;
 use Mpietrucha\Laravel\Essentials\PackageTools\Package;
 use Mpietrucha\Laravel\Essentials\PackageTools\PackageServiceProvider;
 use Mpietrucha\Laravel\Essentials\Translation\SpatieTranslationLoaderManager;
@@ -64,6 +65,8 @@ class LaravelEssentialsServiceProvider extends PackageServiceProvider
 
     public function registeringPackage(): void
     {
+        HasPriceAutoloader::register();
+
         BindExceptionHandler::dontRegister();
 
         config([

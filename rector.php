@@ -44,8 +44,8 @@ return RectorConfig::configure()
             'src/Macro.php',
         ],
         RenameParamToMatchTypeRector::class => [
+            'src/Money/Models/Concerns/HasPrice.php',
             'database/migrations/create_discounts_table.php',
-            'src/Discounts/Models/Concerns/HasPrice.php',
         ],
     ])
     ->withSets([

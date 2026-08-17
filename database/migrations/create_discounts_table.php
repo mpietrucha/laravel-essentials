@@ -1,7 +1,7 @@
 <?php
 
-use Facades\Mpietrucha\Laravel\Essentials\Discounts\Models\Discount;
-use Facades\Mpietrucha\Laravel\Essentials\Discounts\Models\Quota;
+use Facades\Mpietrucha\Laravel\Essentials\Money\Models\Discount;
+use Facades\Mpietrucha\Laravel\Essentials\Money\Models\Discount\Quota;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;

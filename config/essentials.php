@@ -2,27 +2,29 @@
 
 declare(strict_types=1);
 
-use Mpietrucha\Laravel\Essentials\Discounts\Models\Discount;
-use Mpietrucha\Laravel\Essentials\Discounts\Models\Quota;
+use Mpietrucha\Laravel\Essentials\Money\Models\Discount;
+use Mpietrucha\Laravel\Essentials\Money\Models\Discount\Quota;
 
 return [
     'locale' => [
         'currency' => env('ESSENTIALS_APP_CURRENCY'),
     ],
 
-    'discounts' => [
-        'enabled' => true,
+    'money' => [
+        'discounts' => [
+            'enabled' => true,
 
-        'quota' => [
-            'table' => 'discount_quotas',
+            'quota' => [
+                'table' => 'discount_quotas',
 
-            'model' => Quota::class,
-        ],
+                'model' => Quota::class,
+            ],
 
-        'discount' => [
-            'table' => 'discounts',
+            'discount' => [
+                'table' => 'discounts',
 
-            'model' => Discount::class,
+                'model' => Discount::class,
+            ],
         ],
     ],
 ];
