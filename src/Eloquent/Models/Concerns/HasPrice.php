@@ -115,7 +115,7 @@ trait HasPrice
         return $this->getConvertedPrice($targetCurrency, $discountedPriceAttribute, $currencyAttribute, $context, $roundingMode);
     }
 
-    public function getReferencePrice(?string $priceAttribute = null, ?string $currencyAttribute = null, ?Context $context = null, ?RoundingMode $roundingMode = null): ?Money
+    public function getReferencePrice(?string $priceAttribute = null, ?string $currencyAttribute = null, ?Money $discountedPrice = null, ?Context $context = null, ?RoundingMode $roundingMode = null): ?Money
     {
         if (Discount::disabled()) {
             return null;
@@ -127,7 +127,7 @@ trait HasPrice
             return null;
         }
 
-        $discountedPrice = $this->getDiscountedPrice($priceAttribute, $currencyAttribute, $context, $roundingMode);
+        $discountedPrice ??= $this->getDiscountedPrice($priceAttribute, $currencyAttribute, $context, $roundingMode);
 
         if ($discountedPrice === null) {
             return null;
@@ -198,6 +198,7 @@ trait HasPrice
         return Attribute::getMoneyAmount(fn (): ?Money => $this->getReferencePrice(
             $priceAttribute,
             $currencyAttribute,
+            null,
             $context,
             $roundingMode,
         ));

@@ -45,6 +45,7 @@ return RectorConfig::configure()
         ],
         RenameParamToMatchTypeRector::class => [
             'database/migrations/create_discounts_table.php',
+            'src/Eloquent/Models/Concerns/HasPrice.php',
         ],
     ])
     ->withSets([
