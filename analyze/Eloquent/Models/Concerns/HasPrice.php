@@ -6,5 +6,5 @@ use Illuminate\Database\Eloquent\Model;
 
 class HasPrice extends Model
 {
-    use Mpietrucha\Laravel\Essentials\Eloquent\Models\Concerns\HasPrice;
+    use Mpietrucha\Laravel\Essentials\Discounts\Models\Concerns\HasPrice;
 }

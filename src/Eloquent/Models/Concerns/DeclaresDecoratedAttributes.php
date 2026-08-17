@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Mpietrucha\Support\Instance;
+use Mpietrucha\Support\Reflection;
 use ReflectionMethod;
 use ReflectionNamedType;
 
@@ -39,24 +40,36 @@ trait DeclaresDecoratedAttributes
             return $set(false);
         }
 
-        $attribute = with(new ReflectionMethod($this, $method), static function (ReflectionMethod $reflectionMethod): ?string {
-            $returnType = $reflectionMethod->getReturnType();
+        return static::isDecoratedAttribute(new ReflectionMethod($this, $method)) |> $set(...);
+    }
 
-            if ($returnType === null) {
-                return null;
-            }
+    /**
+     * @param  object|string  $class
+     * @return array<int, string>
+     */
+    protected static function getAttributeMarkedMutatorMethods($class)
+    {
+        $methods = Reflection::make($class)->getMethods() |> collect(...);
 
-            if (! $returnType instanceof ReflectionNamedType) {
-                return null;
-            }
+        return $methods->filter(static::isDecoratedAttribute(...))
+            ->map
+            ->name
+            ->values()
+            ->all();
+    }
 
-            return $returnType->getName();
-        });
+    protected static function isDecoratedAttribute(ReflectionMethod $reflectionMethod): bool
+    {
+        $returnType = $reflectionMethod->getReturnType();
 
-        if ($attribute === null) {
-            return $set(false);
+        if ($returnType === null) {
+            return false;
         }
 
-        return is_a($attribute, Attribute::class, true) |> $set;
+        if (! $returnType instanceof ReflectionNamedType) {
+            return false;
+        }
+
+        return is_a($returnType->getName(), Attribute::class, true);
     }
 }

@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use Mpietrucha\Laravel\Essentials\Eloquent\Models\Discount;
-use Mpietrucha\Laravel\Essentials\Eloquent\Models\Discount\Quota;
+use Mpietrucha\Laravel\Essentials\Discounts\Models\Discount;
+use Mpietrucha\Laravel\Essentials\Discounts\Models\Quota;
 
 return [
     'locale' => [

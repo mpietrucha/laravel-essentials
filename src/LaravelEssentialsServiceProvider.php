@@ -17,7 +17,7 @@ use Mpietrucha\Laravel\Essentials\Commands\GenerateIdeHelpers;
 use Mpietrucha\Laravel\Essentials\Commands\GenerateMixinAnalyzers;
 use Mpietrucha\Laravel\Essentials\Commands\Lint;
 use Mpietrucha\Laravel\Essentials\Commands\SyncTranslations;
-use Mpietrucha\Laravel\Essentials\Eloquent\Models\Discount;
+use Mpietrucha\Laravel\Essentials\Discounts\Models\Discount;
 use Mpietrucha\Laravel\Essentials\Mixins\BlueprintMixin;
 use Mpietrucha\Laravel\Essentials\Mixins\EloquentBuilderMixin;
 use Mpietrucha\Laravel\Essentials\Mixins\QueryBuilderMixin;

@@ -1,6 +1,6 @@
 <?php
 
-namespace Mpietrucha\Laravel\Essentials\Eloquent\Models;
+namespace Mpietrucha\Laravel\Essentials\Discounts\Models;
 
 use Brick\Math\RoundingMode;
 use Brick\Money\Context;
@@ -13,8 +13,6 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Arr;
 use Mpietrucha\Laravel\Essentials\Eloquent\Casts\Attribute;
-use Mpietrucha\Laravel\Essentials\Eloquent\Models\Discount\Phase;
-use Mpietrucha\Laravel\Essentials\Eloquent\Models\Discount\Quota;
 use Mpietrucha\Laravel\Essentials\Money\MoneyFactory;
 use Mpietrucha\Support\Instance;
 use Spatie\Activitylog\Traits\LogsActivity;

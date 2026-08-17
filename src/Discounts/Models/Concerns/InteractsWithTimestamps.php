@@ -1,6 +1,6 @@
 <?php
 
-namespace Mpietrucha\Laravel\Essentials\Eloquent\Models\Discount\Concerns;
+namespace Mpietrucha\Laravel\Essentials\Discounts\Models\Concerns;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;

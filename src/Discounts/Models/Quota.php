@@ -1,12 +1,11 @@
 <?php
 
-namespace Mpietrucha\Laravel\Essentials\Eloquent\Models\Discount;
+namespace Mpietrucha\Laravel\Essentials\Discounts\Models;
 
 use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Mpietrucha\Laravel\Essentials\Eloquent\Casts\Attribute;
-use Mpietrucha\Laravel\Essentials\Eloquent\Models\Discount;
 use Mpietrucha\Support\Exception\LogicException;
 
 /**

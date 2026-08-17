@@ -1,6 +1,6 @@
 <?php
 
-namespace Mpietrucha\Laravel\Essentials\Eloquent\Models\Concerns;
+namespace Mpietrucha\Laravel\Essentials\Discounts\Models\Concerns;
 
 use Brick\Math\RoundingMode;
 use Brick\Money\Context;
@@ -10,8 +10,9 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
+use Mpietrucha\Laravel\Essentials\Discounts\Models\Discount;
 use Mpietrucha\Laravel\Essentials\Eloquent\Casts\Attribute;
-use Mpietrucha\Laravel\Essentials\Eloquent\Models\Discount;
+use Mpietrucha\Laravel\Essentials\Eloquent\Models\Concerns\DeclaresDecoratedAttributes;
 
 /**
  * @phpstan-require-extends Model
