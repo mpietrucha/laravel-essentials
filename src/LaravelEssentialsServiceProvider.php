@@ -66,9 +66,9 @@ class LaravelEssentialsServiceProvider extends PackageServiceProvider
         $this->extendEloquentUserProvider();
 
         Event::listen('cache:cleared', static function (): void {
-            Temporary::flush();
-
             Artisan::call('essentials:clear-mixin-cache');
+
+            Temporary::flush();
         });
     }
 
