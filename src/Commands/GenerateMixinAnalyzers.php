@@ -4,13 +4,12 @@ namespace Mpietrucha\Laravel\Essentials\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Str;
 use Mpietrucha\Laravel\Essentials\Macro\Mixin;
 use Mpietrucha\Laravel\Essentials\Macro\MixinAnalyzer;
 use Mpietrucha\Support\ClassNamespace;
 use Mpietrucha\Support\Filesystem;
-use Mpietrucha\Support\Filesystem\Extension;
 use Mpietrucha\Support\Filesystem\Path;
+use Mpietrucha\Support\Filesystem\Touch;
 
 /**
  * @phpstan-import-type MixinTarget from Mixin
@@ -72,12 +71,7 @@ class GenerateMixinAnalyzers extends Command
     {
         $directory = $this->directory();
 
-        $name = Extension::set(
-            Str::remove(ClassNamespace::delimiter(), $target),
-            'php'
-        );
-
-        return Path::build($name, $directory);
+        return Path::build(ClassNamespace::toFile($target), $directory) |> Touch::file(...);
     }
 
     protected function directory(): string

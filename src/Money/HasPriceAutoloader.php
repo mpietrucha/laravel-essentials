@@ -62,7 +62,7 @@ class HasPriceAutoloader
 
     protected static function autoload(string $trait): void
     {
-        $file = Temporary::path(ClassNamespace::toPath($trait), 'has-price');
+        $file = Temporary::path(ClassNamespace::toFile($trait), 'has-price');
 
         if (Filesystem::exists($file)) {
             Filesystem::getRequire($file);

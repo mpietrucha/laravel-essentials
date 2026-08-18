@@ -60,7 +60,7 @@ class Mixin
             return static::make($handler);
         }
 
-        $file = Temporary::path(ClassNamespace::toPath($handler), 'mixins');
+        $file = Temporary::path(ClassNamespace::toFile($handler), 'mixins');
 
         if (Filesystem::unexists($file)) {
             Touch::file($file);
