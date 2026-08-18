@@ -82,7 +82,7 @@ class HasPriceAutoloader
 
         Touch::file($file);
 
-        Filesystem::put($file, $content) ?: Filesystem::getRequire($file);
+        Filesystem::put($file, $content) && Filesystem::getRequire($file);
     }
 
     protected static function renderStub(string $trait): ?string
