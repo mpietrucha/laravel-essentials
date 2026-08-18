@@ -37,7 +37,7 @@ trait {{ trait }}
         return $this->getDiscountedPrice($priceAttribute, $currencyAttribute, $context, $roundingMode);
     }
 
-    public function getConvertedDiscountedPrice(mixed $targetCurrency = null, ?string $discountedPriceAttribute = null, ?string $currencyAttribute = null, ?Context $context = null, ?RoundingMode $roundingMode = null): ?Money
+    public function getConvertedDiscounted{{ indicator }}Price(mixed $targetCurrency = null, ?string $discountedPriceAttribute = null, ?string $currencyAttribute = null, ?Context $context = null, ?RoundingMode $roundingMode = null): ?Money
     {
         $discountedPriceAttribute ??= 'discounted_{{ attribute }}_price';
 
@@ -58,7 +58,7 @@ trait {{ trait }}
         return $this->getReferencePrice($priceAttribute, $currencyAttribute, $discountedPrice, $context, $roundingMode);
     }
 
-        /**
+    /**
      * @return Attribute<null|numeric-string, never>
      */
     protected function {{ name }}Price(?string $priceAttribute = null, ?string $currencyAttribute = null, ?Context $context = null, ?RoundingMode $roundingMode = null): Attribute
@@ -71,7 +71,7 @@ trait {{ trait }}
         ));
     }
 
-        /**
+    /**
      * @return Attribute<null|numeric-string, never>
      */
     protected function converted{{ indicator }}Price(mixed $targetCurrency = null, ?string $priceAttribute = null, ?string $currencyAttribute = null, ?Context $context = null, ?RoundingMode $roundingMode = null): Attribute
@@ -85,7 +85,7 @@ trait {{ trait }}
         ));
     }
 
-        /**
+    /**
      * @return Attribute<null|numeric-string, never>
      */
     protected function discounted{{ indicator }}Price(?string $priceAttribute = null, ?string $currencyAttribute = null, ?Context $context = null, ?RoundingMode $roundingMode = null): Attribute
@@ -98,7 +98,7 @@ trait {{ trait }}
         ));
     }
 
-        /**
+    /**
      * @return Attribute<null|numeric-string, never>
      */
     protected function convertedDiscounted{{ indicator }}Price(mixed $targetCurrency = null, ?string $discountedPriceAttribute = null, ?string $currencyAttribute = null, ?Context $context = null, ?RoundingMode $roundingMode = null): Attribute
@@ -112,7 +112,7 @@ trait {{ trait }}
         ));
     }
 
-        /**
+    /**
      * @return Attribute<null|numeric-string, never>
      */
     protected function reference{{ indicator }}Price(?string $priceAttribute = null, ?string $currencyAttribute = null, ?Context $context = null, ?RoundingMode $roundingMode = null): Attribute
