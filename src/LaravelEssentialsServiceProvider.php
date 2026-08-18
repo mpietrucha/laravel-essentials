@@ -9,6 +9,7 @@ use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Hashing\HashManager;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Number;
 use Illuminate\Support\Str;
 use Mpietrucha\Laravel\Essentials\Auth\CachedEloquentUserProvider;
@@ -25,6 +26,7 @@ use Mpietrucha\Laravel\Essentials\Money\Models\Discount;
 use Mpietrucha\Laravel\Essentials\PackageTools\Package;
 use Mpietrucha\Laravel\Essentials\PackageTools\PackageServiceProvider;
 use Mpietrucha\Laravel\Essentials\Translation\SpatieTranslationLoaderManager;
+use Mpietrucha\Support\Filesystem\Temporary;
 use Mpietrucha\Support\Instance\BindExceptionHandler;
 use Mpietrucha\Support\Number\Concerns\InteractsWithNumber;
 use Mpietrucha\Support\Str\Concerns\InteractsWithString;
@@ -61,10 +63,14 @@ class LaravelEssentialsServiceProvider extends PackageServiceProvider
     {
         $this->configureExceptionHandler();
         $this->extendEloquentUserProvider();
+
+        Event::listen('cache:cleared', Temporary::flush(...));
     }
 
     public function registeringPackage(): void
     {
+        storage_path('framework/cache/vendor/mpietrucha/laravel-essentials') |> Temporary::use(...);
+
         HasPriceAutoloader::register();
 
         BindExceptionHandler::dontRegister();
