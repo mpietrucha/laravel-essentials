@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Mpietrucha\Laravel\Essentials\Macro;
 
-use Illuminate\Support\Str;
 use Mpietrucha\Support\ClassNamespace;
+use Mpietrucha\Support\Stubs\StubRenderer;
 
 abstract class MixinExpression
 {
@@ -16,7 +16,7 @@ abstract class MixinExpression
 
     public static function render(string $handler): string
     {
-        return Str::stub(static::stub(), [
+        return StubRenderer::render(static::stub(), [
             'handler' => $handler,
             'class' => ClassNamespace::name($handler),
         ]);

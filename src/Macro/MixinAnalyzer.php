@@ -5,6 +5,7 @@ namespace Mpietrucha\Laravel\Essentials\Macro;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Mpietrucha\Support\ClassNamespace;
+use Mpietrucha\Support\Stubs\StubRenderer;
 
 /**
  * @phpstan-import-type MixinTarget from Mixin
@@ -46,7 +47,7 @@ abstract class MixinAnalyzer
             return null;
         }
 
-        return Str::stub(static::stub(), [
+        return StubRenderer::render(static::stub(), [
             'uses' => $uses,
             'class' => ClassNamespace::name($target),
             'namespace' => static::namespace($target),

@@ -11,6 +11,7 @@ use Mpietrucha\Support\Filesystem\Path;
 use Mpietrucha\Support\Filesystem\Temporary;
 use Mpietrucha\Support\Filesystem\Touch;
 use Mpietrucha\Support\Str;
+use Mpietrucha\Support\Stubs\StubRenderer;
 
 class HasPriceAutoloader
 {
@@ -92,7 +93,7 @@ class HasPriceAutoloader
             return null;
         }
 
-        return Filesystem::stub(static::getStubFile(), [
+        return StubRenderer::file(static::getStubFile(), [
             'trait' => $trait,
             'indicator' => $indicator,
             'name' => Str::camel($indicator),
