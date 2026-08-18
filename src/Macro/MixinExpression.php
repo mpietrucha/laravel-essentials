@@ -4,19 +4,21 @@ declare(strict_types=1);
 
 namespace Mpietrucha\Laravel\Essentials\Macro;
 
+use Illuminate\Support\Str;
 use Mpietrucha\Support\ClassNamespace;
 
 abstract class MixinExpression
 {
     public static function stub(): string
     {
-        return '<?php class %s { use %s; }; return new %s;';
+        return '<?php class {{ class }} { use {{ handler }}; }; return new {{ class }};';
     }
 
-    public static function content(string $handler): string
+    public static function render(string $handler): string
     {
-        $name = ClassNamespace::name($handler);
-
-        return sprintf(static::stub(), $name, $handler, $name);
+        return Str::stub(static::stub(), [
+            'handler' => $handler,
+            'class' => ClassNamespace::name($handler),
+        ]);
     }
 }

@@ -1,0 +1,128 @@
+<?php
+
+namespace {{ namespace }};
+
+use Brick\Math\RoundingMode;
+use Brick\Money\Context;
+use Brick\Money\Money;
+use Mpietrucha\Laravel\Essentials\Money\Models\Concerns\HasPrice;
+
+trait {{ trait }}
+{
+    use HasPrice;
+
+    public static function getDefault{{ indicator }}PriceAttribute(): string
+    {
+        return '{{ attribute }}_price';
+    }
+
+    public function get{{ indicator }}Price(?string $priceAttribute = null, ?string $currencyAttribute = null, ?Context $context = null, ?RoundingMode $roundingMode = null): ?Money
+    {
+        $priceAttribute ??= static::getDefault{{ indicator }}PriceAttribute();
+
+        return $this->getPrice($priceAttribute, $currencyAttribute, $context, $roundingMode);
+    }
+
+    public function getConverted{{ indicator }}Price(mixed $targetCurrency = null, ?string $priceAttribute = null, ?string $currencyAttribute = null, ?Context $context = null, ?RoundingMode $roundingMode = null): ?Money
+    {
+        $priceAttribute ??= static::getDefault{{ indicator }}PriceAttribute();
+
+        return $this->getConvertedPrice($targetCurrency, $priceAttribute, $currencyAttribute, $context, $roundingMode);
+    }
+
+    public function getDiscounted{{ indicator }}Price(?string $priceAttribute = null, ?string $currencyAttribute = null, ?Context $context = null, ?RoundingMode $roundingMode = null): ?Money
+    {
+        $priceAttribute ??= static::getDefault{{ indicator }}PriceAttribute();
+
+        return $this->getDiscountedPrice($priceAttribute, $currencyAttribute, $context, $roundingMode);
+    }
+
+    public function getConvertedDiscountedPrice(mixed $targetCurrency = null, ?string $discountedPriceAttribute = null, ?string $currencyAttribute = null, ?Context $context = null, ?RoundingMode $roundingMode = null): ?Money
+    {
+        $discountedPriceAttribute ??= 'discounted_{{ attribute }}_price';
+
+        return $this->getConvertedDiscountedPrice($targetCurrency, $discountedPriceAttribute, $currencyAttribute, $context, $roundingMode);
+    }
+
+    public function getReference{{ indicator }}Price(?string $priceAttribute = null, ?string $currencyAttribute = null, ?Money $discountedPrice = null, ?Context $context = null, ?RoundingMode $roundingMode = null): ?Money
+    {
+        $priceAttribute ??= static::getDefault{{ indicator }}PriceAttribute();
+
+        $discountedPrice ??= $this->getDiscounted{{ indicator }}Price(
+            $priceAttribute,
+            $currencyAttribute,
+            $context,
+            $roundingMode,
+        );
+
+        return $this->getReferencePrice($priceAttribute, $currencyAttribute, $discountedPrice, $context, $roundingMode);
+    }
+
+        /**
+     * @return Attribute<null|numeric-string, never>
+     */
+    protected function {{ name }}Price(?string $priceAttribute = null, ?string $currencyAttribute = null, ?Context $context = null, ?RoundingMode $roundingMode = null): Attribute
+    {
+        return Attribute::getMoneyAmount(fn (): ?Money => $this->get{{ indicator }}Price(
+            $priceAttribute,
+            $currencyAttribute,
+            $context,
+            $roundingMode,
+        ));
+    }
+
+        /**
+     * @return Attribute<null|numeric-string, never>
+     */
+    protected function converted{{ indicator }}Price(mixed $targetCurrency = null, ?string $priceAttribute = null, ?string $currencyAttribute = null, ?Context $context = null, ?RoundingMode $roundingMode = null): Attribute
+    {
+        return Attribute::getMoneyAmount(fn (): ?Money => $this->getConverted{{ indicator }}Price(
+            $targetCurrency,
+            $priceAttribute,
+            $currencyAttribute,
+            $context,
+            $roundingMode,
+        ));
+    }
+
+        /**
+     * @return Attribute<null|numeric-string, never>
+     */
+    protected function discounted{{ indicator }}Price(?string $priceAttribute = null, ?string $currencyAttribute = null, ?Context $context = null, ?RoundingMode $roundingMode = null): Attribute
+    {
+        return Attribute::getMoneyAmount(fn (): ?Money => $this->getDiscounted{{ indicator }}Price(
+            $priceAttribute,
+            $currencyAttribute,
+            $context,
+            $roundingMode,
+        ));
+    }
+
+        /**
+     * @return Attribute<null|numeric-string, never>
+     */
+    protected function convertedDiscounted{{ indicator }}Price(mixed $targetCurrency = null, ?string $discountedPriceAttribute = null, ?string $currencyAttribute = null, ?Context $context = null, ?RoundingMode $roundingMode = null): Attribute
+    {
+        return Attribute::getMoneyAmount(fn (): ?Money => $this->getConvertedDiscounted{{ indicator }}Price(
+            $targetCurrency,
+            $discountedPriceAttribute,
+            $currencyAttribute,
+            $context,
+            $roundingMode,
+        ));
+    }
+
+        /**
+     * @return Attribute<null|numeric-string, never>
+     */
+    protected function reference{{ indicator }}Price(?string $priceAttribute = null, ?string $currencyAttribute = null, ?Context $context = null, ?RoundingMode $roundingMode = null): Attribute
+    {
+        return Attribute::getMoneyAmount(fn (): ?Money => $this->getReference{{ indicator }}Price(
+            $priceAttribute,
+            $currencyAttribute,
+            null,
+            $context,
+            $roundingMode,
+        ));
+    }
+}

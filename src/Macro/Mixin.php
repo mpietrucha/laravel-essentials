@@ -65,7 +65,7 @@ class Mixin
         if (Filesystem::unexists($file)) {
             Touch::file($file);
 
-            Filesystem::put($file, MixinExpression::content($handler));
+            Filesystem::put($file, MixinExpression::render($handler));
         }
 
         return Filesystem::requireOnce($file) |> static::make(...);

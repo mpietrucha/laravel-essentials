@@ -44,7 +44,7 @@ class GenerateMixinAnalyzers extends Command
         }
 
         $analyzers = Mixin::storage()->map(function (Collection $handlers, string $target): ?string {
-            $content = MixinAnalyzer::content($target, $handlers);
+            $content = MixinAnalyzer::render($target, $handlers);
 
             if ($content === null) {
                 return null;

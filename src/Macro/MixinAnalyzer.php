@@ -14,7 +14,7 @@ abstract class MixinAnalyzer
 {
     public static function stub(): string
     {
-        return '<?php namespace %s; class %s extends %s { %s }';
+        return '<?php namespace {{ namespace }}; class {{ class }} extends {{ target }} { {{ uses }} };';
     }
 
     public static function indicator(): string
@@ -38,7 +38,7 @@ abstract class MixinAnalyzer
      * @param  MixinTarget  $target
      * @param  MixinHandlerCollection  $handlers
      */
-    public static function content(string $target, Collection $handlers): ?string
+    public static function render(string $target, Collection $handlers): ?string
     {
         $uses = static::uses($handlers);
 
@@ -46,13 +46,12 @@ abstract class MixinAnalyzer
             return null;
         }
 
-        $namespace = static::namespace($target);
-
-        $class = ClassNamespace::name($target);
-
-        $target = ClassNamespace::canonicalize($target);
-
-        return sprintf(static::stub(), $namespace, $class, $target, $uses);
+        return Str::stub(static::stub(), [
+            'uses' => $uses,
+            'class' => ClassNamespace::name($target),
+            'namespace' => static::namespace($target),
+            'target' => ClassNamespace::canonicalize($target),
+        ]);
     }
 
     /**
