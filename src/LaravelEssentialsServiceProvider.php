@@ -9,6 +9,7 @@ use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Hashing\HashManager;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Number;
 use Illuminate\Support\Str;
@@ -64,12 +65,16 @@ class LaravelEssentialsServiceProvider extends PackageServiceProvider
         $this->configureExceptionHandler();
         $this->extendEloquentUserProvider();
 
-        Event::listen('cache:cleared', Temporary::flush(...));
+        Event::listen('cache:cleared', static function (): void {
+            Temporary::flush();
+
+            Artisan::call('essentials:clear-mixin-cache');
+        });
     }
 
     public function registeringPackage(): void
     {
-        storage_path('framework/cache/vendor/mpietrucha/laravel-essentials') |> Temporary::use(...);
+        storage_path('framework/cache') |> Temporary::use(...);
 
         HasPriceAutoloader::register();
 
