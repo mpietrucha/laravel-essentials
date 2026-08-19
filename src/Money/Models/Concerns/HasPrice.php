@@ -95,8 +95,7 @@ trait HasPrice
             return null;
         }
 
-        /** @var null|Discount $discount */
-        $discount = $this->loadMissing($discountRelation = 'discount')->$discountRelation;
+        $discount = $this->getDiscountRelation();
 
         if (! $discount instanceof Discount) {
             return $price;
@@ -212,5 +211,11 @@ trait HasPrice
     protected function withDiscount(Builder $builder): void
     {
         $builder->with('discount');
+    }
+
+    protected function getDiscountRelation(): ?Discount
+    {
+        /** @var null|Discount */
+        return $this->loadMissing($discountRelation = 'discount')->$discountRelation;
     }
 }

@@ -5,7 +5,7 @@ namespace {{ namespace }};
 use Brick\Math\RoundingMode;
 use Brick\Money\Context;
 use Brick\Money\Money;
-use Mpietrucha\Laravel\Essentials\Money\Models\Concerns\HasPrice;
+use Mpietrucha\Laravel\Essentials\Eloquent\Casts\Attribute;
 
 trait {{ trait }}
 {
