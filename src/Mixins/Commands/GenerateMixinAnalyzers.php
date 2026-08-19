@@ -80,7 +80,7 @@ class GenerateMixinAnalyzers extends Command
         $directory = $this->option('directory');
 
         /** @var string $cwd */
-        $cwd = $this->option('cwd') ?? Path::directory(__DIR__, 2);
+        $cwd = $this->option('cwd') ?? Path::directory(__DIR__, 3);
 
         return Path::build($directory, $cwd);
     }

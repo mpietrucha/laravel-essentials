@@ -31,7 +31,13 @@ final class CacheFileFinder
 
     public static function cacheDirectory(): string
     {
-        return self::$cacheDirectory ??= Path::build('../../cache', __DIR__);
+        if ($cacheDirectory = self::$cacheDirectory) {
+            return $cacheDirectory;
+        }
+
+        $phpstanDirectory = Path::directory(__DIR__, 2);
+
+        return self::$cacheDirectory ??= Path::join($phpstanDirectory, 'cache');
     }
 
     /**
