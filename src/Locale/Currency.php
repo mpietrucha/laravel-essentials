@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Mpietrucha\Laravel\Essentials\Locale;
 
-use Mpietrucha\Laravel\Essentials\Enums\Contracts\CurrencyInterface;
 use Mpietrucha\Laravel\Essentials\Locale\Concerns\InteractsWithEnum;
+use Mpietrucha\Laravel\Essentials\Locale\Enums\Contracts\CurrencyInterface;
 
 abstract class Currency
 {

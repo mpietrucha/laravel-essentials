@@ -1,12 +1,12 @@
 <?php
 
-namespace Mpietrucha\Laravel\Essentials\Enums\Concerns;
+namespace Mpietrucha\Laravel\Essentials\Locale\Enums\Concerns;
 
 use Brick\Math\RoundingMode;
 use Brick\Money\Context;
 use Brick\Money\Money;
-use Mpietrucha\Laravel\Essentials\Enums\Contracts\CurrencyInterface;
-use Mpietrucha\Laravel\Essentials\Events\CurrencyUpdated;
+use Mpietrucha\Laravel\Essentials\Locale\Enums\Contracts\CurrencyInterface;
+use Mpietrucha\Laravel\Essentials\Locale\Events\CurrencyUpdated;
 use Mpietrucha\Laravel\Essentials\Money\CurrencyConverter;
 use Mpietrucha\Laravel\Essentials\Money\MoneyFactory;
 use Symfony\Component\Intl\Currencies;

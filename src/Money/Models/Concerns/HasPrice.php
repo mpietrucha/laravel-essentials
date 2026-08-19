@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Mpietrucha\Laravel\Essentials\Eloquent\Casts\Attribute;
 use Mpietrucha\Laravel\Essentials\Eloquent\Models\Concerns\DeclaresDecoratedAttributes;
+use Mpietrucha\Laravel\Essentials\Locale\Currency;
 use Mpietrucha\Laravel\Essentials\Money\Models\Discount;
 
 /**
@@ -27,6 +28,20 @@ trait HasPrice
     public static function getDefaultPriceAttribute(): string
     {
         return static::$defaultPriceAttribute;
+    }
+
+    public function normalizePrice(?string $normalizedPriceAttribute = null): static
+    {
+        $normalizedPriceAttribute ??= 'normalized_price';
+
+        $currency = Currency::enum();
+
+        $currency::with(
+            $currency::default(),
+            fn () => $this->$normalizedPriceAttribute = $this->converted_discounted_price ?? $this->discounted_price
+        );
+
+        return $this;
     }
 
     /**
@@ -217,5 +232,10 @@ trait HasPrice
     protected function withDiscount(Builder $builder): void
     {
         $builder->with('discount');
+    }
+
+    protected static function bootHasPrice(): void
+    {
+        static::saving(static fn (self $hasPrice): self => $hasPrice->normalizePrice());
     }
 }

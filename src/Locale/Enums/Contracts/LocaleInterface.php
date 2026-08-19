@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Mpietrucha\Laravel\Essentials\Enums\Contracts;
+namespace Mpietrucha\Laravel\Essentials\Locale\Enums\Contracts;
 
 use BackedEnum;
 use Closure;

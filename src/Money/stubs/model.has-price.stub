@@ -11,6 +11,13 @@ trait {{ trait }}
 {
     use HasPrice;
 
+    public function normalize{{ indicator }}Price(?string $normalizedPriceAttribute = null): static
+    {
+         $normalizedPriceAttribute ??= 'normalized_{{ attribute }}_price';
+
+         return $this->normalizePrice($normalizedPriceAttribute);
+    }
+
     public static function getDefault{{ indicator }}PriceAttribute(): string
     {
         return '{{ attribute }}_price';
@@ -124,5 +131,10 @@ trait {{ trait }}
             $context,
             $roundingMode,
         ));
+    }
+
+    protected static function bootHasPrice(): void
+    {
+        static::saving(static fn (self $has{{indicator}}Price): self => $has{{indicator}}Price->normalize{{ indicator }}Price());
     }
 }

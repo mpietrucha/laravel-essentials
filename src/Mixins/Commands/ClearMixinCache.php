@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Mpietrucha\Laravel\Essentials\Commands;
+namespace Mpietrucha\Laravel\Essentials\Mixins\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Process;

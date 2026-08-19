@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Mpietrucha\Laravel\Essentials\Translation;
+namespace Mpietrucha\Laravel\Essentials\Translations;
 
 use Illuminate\Filesystem\Filesystem;
 use Spatie\TranslationLoader\TranslationLoaderManager;

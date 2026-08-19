@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Mpietrucha\Laravel\Essentials;
 
-use Mpietrucha\Laravel\Essentials\Enums\Contracts\LocaleInterface;
 use Mpietrucha\Laravel\Essentials\Locale\Concerns\InteractsWithEnum;
+use Mpietrucha\Laravel\Essentials\Locale\Enums\Contracts\LocaleInterface;
 
 abstract class Locale
 {

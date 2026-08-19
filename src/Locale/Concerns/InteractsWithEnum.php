@@ -2,7 +2,7 @@
 
 namespace Mpietrucha\Laravel\Essentials\Locale\Concerns;
 
-use Mpietrucha\Laravel\Essentials\Enums\Contracts\LocaleInterface;
+use Mpietrucha\Laravel\Essentials\Locale\Enums\Contracts\LocaleInterface;
 use Mpietrucha\Support\Concerns\UtilizableStrings;
 use Mpietrucha\Support\Enum;
 

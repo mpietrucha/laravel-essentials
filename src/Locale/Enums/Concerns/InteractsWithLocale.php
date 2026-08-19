@@ -1,10 +1,10 @@
 <?php
 
-namespace Mpietrucha\Laravel\Essentials\Enums\Concerns;
+namespace Mpietrucha\Laravel\Essentials\Locale\Enums\Concerns;
 
 use Closure;
-use Mpietrucha\Laravel\Essentials\Enums\Contracts\LocaleInterface;
-use Mpietrucha\Laravel\Essentials\Events\LocaleUpdated;
+use Mpietrucha\Laravel\Essentials\Locale\Enums\Contracts\LocaleInterface;
+use Mpietrucha\Laravel\Essentials\Locale\Events\LocaleUpdated;
 use Mpietrucha\Support\Enums\Concerns\InteractsWithEnum;
 
 /**
