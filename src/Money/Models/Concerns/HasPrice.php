@@ -55,6 +55,12 @@ trait HasPrice
         return $morphMany->valid();
     }
 
+    public function getDiscountRelation(): ?Discount
+    {
+        /** @var null|Discount */
+        return $this->loadMissing($discountRelation = 'discount')->$discountRelation;
+    }
+
     public function getPriceAttributeValue(?string $attribute = null): mixed
     {
         $attribute ??= static::getDefaultPriceAttribute();
@@ -211,11 +217,5 @@ trait HasPrice
     protected function withDiscount(Builder $builder): void
     {
         $builder->with('discount');
-    }
-
-    protected function getDiscountRelation(): ?Discount
-    {
-        /** @var null|Discount */
-        return $this->loadMissing($discountRelation = 'discount')->$discountRelation;
     }
 }
