@@ -56,11 +56,11 @@ class NormalizePrices implements ShouldQueue
             ->get();
 
         /** @phpstan-ignore argument.type */
-        return $files->mapWithKeys(static function (string $file): ?array {
+        return $files->mapWithKeys(static function (string $file): array {
             $modelClass = static::getModelClass($file);
 
             if ($modelClass === null) {
-                return null;
+                return [];
             }
 
             return [$modelClass => static::getPriceNormalizers($modelClass)];
@@ -94,6 +94,10 @@ class NormalizePrices implements ShouldQueue
             ->unique()
             /** @phpstan-ignore argument.type */
             ->push(Str::none());
+
+        if ($indicators->containsOneItem()) {
+            return collect();
+        }
 
         /** @var PriceNormalizerCollection */
         return $indicators->map(static fn (string $indicator): string => sprintf('normalize%sPrice', $indicator));

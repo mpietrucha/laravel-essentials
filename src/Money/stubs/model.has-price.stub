@@ -26,6 +26,13 @@ trait {{ trait }}
         return static::getDefaultPriceCurrencyAttribute();
     }
 
+    public function get{{ indicator }}PriceCurrencyAttributeValue(?string $currencyAttribute = null): mixed
+    {
+        $currencyAttribute ??= static::getDefault{{ indicator }}PriceCurrencyAttribute();
+
+        return $this->getPriceCurrencyAttributeValue($currencyAttribute);
+    }
+
     public function get{{ indicator }}Price(?string $priceAttribute = null, ?string $currencyAttribute = null, ?Context $context = null, ?RoundingMode $roundingMode = null): ?Money
     {
         $priceAttribute ??= static::getDefault{{ indicator }}PriceAttribute();
