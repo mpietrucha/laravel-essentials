@@ -5,6 +5,9 @@ namespace Mpietrucha\Laravel\Essentials\Money\Commands;
 use Illuminate\Console\Command;
 use Mpietrucha\Laravel\Essentials\Money\Jobs\NormalizePrices as NormalizePricesJob;
 
+/**
+ * @phpstan-import-type ModelDirectories from NormalizePricesJob
+ */
 class NormalizePrices extends Command
 {
     /**
@@ -12,7 +15,7 @@ class NormalizePrices extends Command
      */
     #[\Override]
     protected $signature = 'essentials:normalize-prices
-                            {--directory=* : Directories to scan for models}';
+                            {directories* : Directories to scan for models}';
 
     /**
      * @var string
@@ -22,6 +25,11 @@ class NormalizePrices extends Command
 
     public function handle(): void
     {
-        $this->option('directory') |> NormalizePricesJob::dispatchSync(...);
+        /** @var ModelDirectories $modelDirectories */
+        $modelDirectories = $this->argument('directories') ?: null;
+
+        dispatch_sync(new NormalizePricesJob($modelDirectories));
+
+        $this->info('Prices normalized successfully.');
     }
 }
