@@ -15,6 +15,7 @@ use Mpietrucha\Support\Finder;
 use Mpietrucha\Support\Instance;
 
 /**
+ * @phpstan-type ModelDirectories null|array<string>
  * @phpstan-type PriceNormalizerCollection Collection<int, string>
  */
 class NormalizePrices implements ShouldQueue
@@ -22,21 +23,15 @@ class NormalizePrices implements ShouldQueue
     use Queueable;
 
     /**
-     * @var null|list<string>
+     * @param  ModelDirectories  $modelDirectories
      */
-    protected static ?array $modelDirectories = null;
-
-    /**
-     * @param  list<string>  $modelDirectories
-     */
-    public static function findModelsIn(array $modelDirectories): void
+    public function __construct(protected ?array $modelDirectories = null)
     {
-        static::$modelDirectories = $modelDirectories;
     }
 
-    public static function handle(): void
+    public function handle(): void
     {
-        $models = static::getModelsWithPriceNormalizers();
+        $models = $this->modelDirectories |> static::getModelsWithPriceNormalizers(...);
 
         $models->each(static function (Collection $priceNormalizers, string $modelClass): void {
             $models = $modelClass::query()->lazyById();
@@ -46,11 +41,12 @@ class NormalizePrices implements ShouldQueue
     }
 
     /**
+     * @param  ModelDirectories  $modelDirectories
      * @return LazyCollection<class-string<Model>, PriceNormalizerCollection>
      */
-    protected static function getModelsWithPriceNormalizers(): LazyCollection
+    public static function getModelsWithPriceNormalizers(?array $modelDirectories = null): LazyCollection
     {
-        $modelDirectories = static::$modelDirectories ?? app_path('Models');
+        $modelDirectories ??= app_path('Models');
 
         $files = Finder::make()
             ->files()
