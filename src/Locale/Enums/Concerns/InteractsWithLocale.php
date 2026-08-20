@@ -34,14 +34,14 @@ trait InteractsWithLocale
 
     public static function with(mixed $locale, Closure $callback): mixed
     {
-        $original = static::get();
+        $currentLocale = static::get();
 
         try {
             static::set($locale);
 
             return $callback();
         } finally {
-            $original->activate();
+            $currentLocale->apply();
         }
     }
 
@@ -50,7 +50,7 @@ trait InteractsWithLocale
         return $this->value;
     }
 
-    public function activate(): void
+    public function apply(): void
     {
         static::set($this);
     }

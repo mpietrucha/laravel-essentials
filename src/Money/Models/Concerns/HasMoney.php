@@ -17,39 +17,34 @@ use Throwable;
  */
 trait HasMoney
 {
-    protected static string $defaultCurrencyAttribute = 'currency';
+    protected static string $defaultMoneyCurrencyAttribute = 'currency';
 
-    public static function getDefaultCurrencyAttribute(): string
+    public static function getDefaultMoneyCurrencyAttribute(): string
     {
-        return static::$defaultCurrencyAttribute;
+        return static::$defaultMoneyCurrencyAttribute;
     }
 
-    public function getMoneyAttributeValue(string $attribute): mixed
+    public function getMoneyAttributeValue(string $moneyAttribute): mixed
     {
         $attributes = $this->getAttributes();
 
-        return Arr::get($attributes, $attribute, function () use ($attribute) {
-            return data_get($this, $attribute);
-        });
+        return Arr::get($attributes, $moneyAttribute, fn (): mixed => data_get($this, $moneyAttribute));
     }
 
-    public function getCurrencyAttributeValue(?string $attribute = null): mixed
+    public function getMoneyCurrencyAttributeValue(?string $currencyAttribute = null): mixed
     {
-        $attribute ??= static::getDefaultCurrencyAttribute();
+        $currencyAttribute ??= static::getDefaultMoneyCurrencyAttribute();
 
-        return $this->getMoneyAttributeValue($attribute);
+        return $this->getMoneyAttributeValue($currencyAttribute);
     }
 
-    public function castMoneyAttribute(mixed $money, string $attribute): mixed
+    public function castMoneyAttribute(mixed $money, string $moneyAttribute): mixed
     {
         if (! is_scalar($money)) {
             return $money;
         }
 
-        $cast = rescue(
-            fn () => $this->getCastType($attribute),
-            report: false
-        );
+        $cast = rescue(fn () => $this->getCastType($moneyAttribute), report: false);
 
         return match ($cast) {
             'int',
@@ -61,7 +56,7 @@ trait HasMoney
     public function getMoney(string $moneyAttribute, ?string $currencyAttribute = null, ?Context $context = null, ?RoundingMode $roundingMode = null): ?Money
     {
         $money = $this->getMoneyAttributeValue($moneyAttribute);
-        $currency = $this->getCurrencyAttributeValue($currencyAttribute);
+        $currency = $this->getMoneyCurrencyAttributeValue($currencyAttribute);
 
         try {
             return MoneyFactory::from(

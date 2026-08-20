@@ -34,7 +34,7 @@ class Macro
 
     public static function compatible(string $target): bool
     {
-        if (is_a($target, IlluminateEloquentBuilder::class, true)) {
+        if (Instance::is($target, IlluminateEloquentBuilder::class)) {
             return true;
         }
 

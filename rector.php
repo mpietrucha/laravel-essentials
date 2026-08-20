@@ -6,6 +6,7 @@ use Rector\Config\RectorConfig;
 use Rector\DeadCode\Rector\ClassMethod\RemoveUselessParamTagRector;
 use Rector\DeadCode\Rector\Expression\RemoveDeadStmtRector;
 use Rector\DeadCode\Rector\Node\RemoveNonExistingVarAnnotationRector;
+use Rector\Naming\Rector\Assign\RenameVariableToMatchMethodCallReturnTypeRector;
 use Rector\Naming\Rector\ClassMethod\RenameParamToMatchTypeRector;
 use Rector\Php70\Rector\Ternary\TernaryToNullCoalescingRector;
 use Rector\Php74\Rector\Closure\ClosureToArrowFunctionRector;
@@ -46,6 +47,9 @@ return RectorConfig::configure()
         RenameParamToMatchTypeRector::class => [
             'src/Money/Models/Concerns/HasPrice.php',
             'database/migrations/create_discounts_table.php',
+        ],
+        RenameVariableToMatchMethodCallReturnTypeRector::class => [
+            'src/Money/Jobs/NormalizePrices.php',
         ],
     ])
     ->withSets([

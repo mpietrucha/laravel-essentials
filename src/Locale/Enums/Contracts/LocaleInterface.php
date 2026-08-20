@@ -18,5 +18,5 @@ interface LocaleInterface extends BackedEnum, EnumInterface
 
     public function code(): string;
 
-    public function activate(): void;
+    public function apply(): void;
 }

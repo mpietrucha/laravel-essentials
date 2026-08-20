@@ -21,7 +21,7 @@ trait InteractsWithCurrency
     public static function get(): static
     {
         /** @var null|string $currency */
-        $currency = static::config() |> config(...);
+        $currency = static::getConfigKey() |> config(...);
 
         if ($currency === null) {
             return static::default();
@@ -37,7 +37,7 @@ trait InteractsWithCurrency
         $previous = static::get();
 
         config([
-            static::config() => $currency->code(),
+            static::getConfigKey() => $currency->code(),
         ]);
 
         event(new CurrencyUpdated($currency, $previous));
@@ -60,7 +60,7 @@ trait InteractsWithCurrency
         return CurrencyConverter::convert($money, $this, $currency, $context, $roundingMode);
     }
 
-    protected static function config(): string
+    protected static function getConfigKey(): string
     {
         return 'laravel-essentials.locale.currency';
     }

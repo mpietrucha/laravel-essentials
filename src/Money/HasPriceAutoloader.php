@@ -49,6 +49,19 @@ class HasPriceAutoloader
         return static::$traitNamespace = ClassNamespace::parent(HasPrice::class);
     }
 
+    public static function getTraitIndicator(string $trait): ?string
+    {
+        if (Str::doesntStartWith($trait, $start = 'Has')) {
+            return null;
+        }
+
+        if (Str::doesntEndWith($trait, $finish = 'Price')) {
+            return null;
+        }
+
+        return Str::between($trait, $start, $finish) |> Str::studly(...) |> Str::nullWhenEmpty(...);
+    }
+
     public static function register(): void
     {
         if (static::$initialized) {
@@ -100,18 +113,5 @@ class HasPriceAutoloader
             'attribute' => Str::snake($indicator),
             'namespace' => static::getTraitNamespace(),
         ]);
-    }
-
-    protected static function getTraitIndicator(string $trait): ?string
-    {
-        if (Str::doesntStartWith($trait, $start = 'Has')) {
-            return null;
-        }
-
-        if (Str::doesntEndWith($trait, $finish = 'Price')) {
-            return null;
-        }
-
-        return Str::between($trait, $start, $finish) |> Str::studly(...) |> Str::nullWhenEmpty(...);
     }
 }

@@ -70,6 +70,6 @@ trait DeclaresDecoratedAttributes
             return false;
         }
 
-        return is_a($returnType->getName(), Attribute::class, true);
+        return Instance::is($returnType->getName(), Attribute::class);
     }
 }

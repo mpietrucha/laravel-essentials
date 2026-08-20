@@ -2,7 +2,7 @@
 
 namespace Mpietrucha\Laravel\Essentials\Blade;
 
-use BladeUI\Icons\Factory;
+use BladeUI\Icons\Factory as BladeUIFactory;
 use BladeUI\Icons\Svg;
 use Illuminate\Support\Str;
 use Mpietrucha\Support\Concerns\Makeable;
@@ -12,7 +12,7 @@ class Icon implements Stringable
 {
     use Makeable;
 
-    public function __construct(protected readonly string $name, protected ?Factory $factory = null)
+    public function __construct(protected readonly string $name, protected ?BladeUIFactory $adapter = null)
     {
     }
 
@@ -29,23 +29,23 @@ class Icon implements Stringable
         return $this->toString();
     }
 
-    public function factory(): Factory
+    public function adapter(): BladeUIFactory
     {
-        if ($this->factory instanceof Factory) {
-            return $this->factory;
+        if ($this->adapter instanceof BladeUIFactory) {
+            return $this->adapter;
         }
 
-        return $this->factory = resolve(Factory::class);
+        return $this->adapter = resolve(BladeUIFactory::class);
     }
 
     public function toString(): string
     {
         $name = $this->name |> Str::kebab(...);
 
-        $factory = $this->factory() |> invade(...);
+        $bladeUIFactory = $this->adapter() |> invade(...);
 
         /** @phpstan-ignore-next-line */
-        $factory->contents(...$factory->splitSetAndName($name));
+        $bladeUIFactory->contents(...$bladeUIFactory->splitSetAndName($name));
 
         return $name;
     }
@@ -57,6 +57,6 @@ class Icon implements Stringable
     {
         $name = $this->toString();
 
-        return $this->factory()->svg($name, $class, $attributes);
+        return $this->adapter()->svg($name, $class, $attributes);
     }
 }

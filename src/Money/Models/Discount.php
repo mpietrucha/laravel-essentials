@@ -89,47 +89,6 @@ class Discount extends Phase
         return Quota::getModel() |> $this->belongsTo(...);
     }
 
-    public function getQuotaRelation(): ?Quota
-    {
-        /** @var null|Quota */
-        return $this->loadMissing($quotaRelation = 'quota')->$quotaRelation;
-    }
-
-    public function getDiscountableRelation(): ?Model
-    {
-        /** @var null|Model */
-        $discountable = $this->loadMissing($discountableRelation = 'discountable')->$discountableRelation;
-
-        if (! $discountable instanceof Model) {
-            return null;
-        }
-
-        if ($this->isActive()) {
-            return $discountable;
-        }
-
-        if (Instance::traits($discountable)->doesntContain(LogsActivity::class)) {
-            return $discountable;
-        }
-
-        /** @phpstan-ignore method.notFound */
-        $activities = $discountable->activities();
-
-        /** @var Relation<Model, Model, Model> $activities */
-        $activity = $activities
-            ->latest()
-            /** @phpstan-ignore argument.type */
-            ->where($discountable->getCreatedAtColumn(), '<=', $this->{$this->getCreatedAtColumn()})
-            ->first();
-
-        if (! $activity instanceof Model) {
-            return null;
-        }
-
-        /** @phpstan-ignore method.notFound, argument.type */
-        return $activity->getExtraProperty('attributes', []) |> $discountable->newFromBuilder(...);
-    }
-
     #[\Override]
     public function isValid(): bool
     {
@@ -181,7 +140,7 @@ class Discount extends Phase
         }
 
         /** @phpstan-ignore method.notFound */
-        $currency ??= $discountable->getCurrencyAttributeValue($currencyAttribute);
+        $currency ??= $discountable->getMoneyCurrencyAttributeValue($currencyAttribute);
 
         try {
             return MoneyFactory::from(
@@ -373,5 +332,46 @@ class Discount extends Phase
             /** @var Builder<Quota> $builder */
             $builder->scheduled();
         });
+    }
+
+    final protected function getQuotaRelation(): ?Quota
+    {
+        /** @var null|Quota */
+        return $this->loadMissing($quotaRelation = 'quota')->$quotaRelation;
+    }
+
+    final protected function getDiscountableRelation(): ?Model
+    {
+        /** @var null|Model */
+        $discountable = $this->loadMissing($discountableRelation = 'discountable')->$discountableRelation;
+
+        if (! $discountable instanceof Model) {
+            return null;
+        }
+
+        if ($this->isActive()) {
+            return $discountable;
+        }
+
+        if (Instance::traits($discountable)->doesntContain(LogsActivity::class)) {
+            return $discountable;
+        }
+
+        /** @phpstan-ignore method.notFound */
+        $activities = $discountable->activities();
+
+        /** @var Relation<Model, Model, Model> $activities */
+        $activity = $activities
+            ->latest()
+            /** @phpstan-ignore argument.type */
+            ->where($discountable->getCreatedAtColumn(), '<=', $this->{$this->getCreatedAtColumn()})
+            ->first();
+
+        if (! $activity instanceof Model) {
+            return null;
+        }
+
+        /** @phpstan-ignore method.notFound, argument.type */
+        return $activity->getExtraProperty('attributes', []) |> $discountable->newFromBuilder(...);
     }
 }
