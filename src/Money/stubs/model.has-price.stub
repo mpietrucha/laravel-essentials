@@ -76,12 +76,19 @@ trait {{ trait }}
     {
         $discountedPriceAttribute ??= static::getDefaultDiscounted{{ indicator }}PriceAttribute();
 
-        return $this->getNormalizedPrice($discountedPriceAttribute, $priceAttribute, $currencyAttribute, $context, $roundingMode);
+        $priceAttribute ??= static::getDefault{{ indicator }}PriceAttribute();
+        $currencyAttribute ??= static::getDefault{{ indicator }}PriceCurrencyAttribute();
+
+        return $this->getNormalizedPrice(discountedPriceAttribute, $priceAttribute, $currencyAttribute, $context, $roundingMode);
     }
 
     public function normalize{{ indicator }}Price(?string $normalizedPriceAttribute = null, ?string $discountedPriceAttribute = null, ?string $priceAttribute = null, ?string $currencyAttribute = null, ?Context $context = null, ?RoundingMode $roundingMode = null): static
     {
         $normalizedPriceAttribute ??= 'normalized_{{ attribute }}_price';
+        $discountedPriceAttribute ??= static::getDefaultDiscounted{{ indicator }}PriceAttribute();
+
+        $priceAttribute ??= static::getDefault{{ indicator }}PriceAttribute();
+        $currencyAttribute ??= static::getDefault{{ indicator }}PriceCurrencyAttribute();
 
         return $this->normalizePrice($normalizedPriceAttribute, $discountedPriceAttribute, $priceAttribute, $currencyAttribute, $context, $roundingMode);
     }

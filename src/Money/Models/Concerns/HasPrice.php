@@ -155,11 +155,13 @@ trait HasPrice
     {
         $targetCurrency = Currency::enum()::default();
 
-        if (Currency::get() === $targetCurrency) {
+        $convertedDiscountedPrice = $this->getConvertedDiscountedPrice($targetCurrency, $discountedPriceAttribute, $currencyAttribute, $context, $roundingMode);
+
+        if ($convertedDiscountedPrice === null) {
             return $this->getDiscountedPrice($priceAttribute, $currencyAttribute, $context, $roundingMode);
         }
 
-        return $this->getConvertedDiscountedPrice($targetCurrency, $discountedPriceAttribute, $currencyAttribute, $context, $roundingMode);
+        return $convertedDiscountedPrice;
     }
 
     public function normalizePrice(?string $normalizedPriceAttribute = null, ?string $discountedPriceAttribute = null, ?string $priceAttribute = null, ?string $currencyAttribute = null, ?Context $context = null, ?RoundingMode $roundingMode = null): static
