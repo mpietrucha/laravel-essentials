@@ -15,7 +15,7 @@ class NormalizePrices extends Command
      */
     #[\Override]
     protected $signature = 'essentials:normalize-prices
-                            {directories* : Directories to scan for models}';
+                            {directories?* : Directories to scan for models}';
 
     /**
      * @var string
