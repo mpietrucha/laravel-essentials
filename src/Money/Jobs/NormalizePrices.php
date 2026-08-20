@@ -55,7 +55,6 @@ class NormalizePrices implements ShouldQueue
             ->ignoreUnreadableDirs()
             ->get();
 
-        /** @phpstan-ignore argument.type */
         return $files->mapWithKeys(static function (string $file): array {
             $modelClass = static::getModelClass($file);
 
@@ -64,7 +63,7 @@ class NormalizePrices implements ShouldQueue
             }
 
             return [$modelClass => static::getPriceNormalizers($modelClass)];
-        })->filter();
+        })->filter(filled(...));
     }
 
     /**
@@ -86,18 +85,19 @@ class NormalizePrices implements ShouldQueue
      */
     protected static function getPriceNormalizers(string $modelClass): Collection
     {
+        /** @var PriceNormalizerCollection $indicators */
         $indicators = Instance::traits($modelClass)
             ->values()
             ->map(ClassNamespace::name(...))
             ->map(HasPriceAutoloader::getTraitIndicator(...))
             ->filter()
-            ->unique()
-            /** @phpstan-ignore argument.type */
-            ->push(Str::none());
+            ->unique();
 
-        if ($indicators->containsOneItem()) {
-            return collect();
+        if ($indicators->isEmpty()) {
+            return $indicators;
         }
+
+        Str::none() |> $indicators->push(...);
 
         /** @var PriceNormalizerCollection */
         return $indicators->map(static fn (string $indicator): string => sprintf('normalize%sPrice', $indicator));

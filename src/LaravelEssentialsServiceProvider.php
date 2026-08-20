@@ -21,6 +21,7 @@ use Mpietrucha\Laravel\Essentials\Mixins\Commands\ClearMixinCache;
 use Mpietrucha\Laravel\Essentials\Mixins\Commands\GenerateMixinAnalyzers;
 use Mpietrucha\Laravel\Essentials\Mixins\EloquentBuilderMixin;
 use Mpietrucha\Laravel\Essentials\Mixins\QueryBuilderMixin;
+use Mpietrucha\Laravel\Essentials\Money\Commands\NormalizePrices;
 use Mpietrucha\Laravel\Essentials\Money\HasPriceAutoloader;
 use Mpietrucha\Laravel\Essentials\Money\Models\Discount;
 use Mpietrucha\Laravel\Essentials\PackageTools\Package;
@@ -52,6 +53,7 @@ class LaravelEssentialsServiceProvider extends PackageServiceProvider
         $package->hasConsoleCommands([
             Lint::class,
             ClearMixinCache::class,
+            NormalizePrices::class,
             SyncTranslations::class,
             GenerateIdeHelpers::class,
             GenerateMixinAnalyzers::class,
