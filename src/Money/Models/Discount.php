@@ -374,4 +374,17 @@ class Discount extends Phase
         /** @phpstan-ignore method.notFound, argument.type */
         return $activity->getExtraProperty('attributes', []) |> $discountable->newFromBuilder(...);
     }
+
+    protected static function booted(): void
+    {
+        static::saved(function (self $discount): void {
+            $discountable = $discount->discountable;
+
+            if (! $discountable instanceof Model) {
+                return;
+            }
+
+            $discountable->unsetRelation('discount')->save();
+        });
+    }
 }
