@@ -28,7 +28,6 @@ use Mpietrucha\Laravel\Essentials\PackageTools\Package;
 use Mpietrucha\Laravel\Essentials\PackageTools\PackageServiceProvider;
 use Mpietrucha\Laravel\Essentials\Translations\Commands\SyncTranslations;
 use Mpietrucha\Laravel\Essentials\Translations\SpatieTranslationLoaderManager;
-use Mpietrucha\Support\Arr\Concerns\InteractsWithArray;
 use Mpietrucha\Support\Filesystem\Temporary;
 use Mpietrucha\Support\Instance\BindExceptionHandler;
 use Mpietrucha\Support\Number\Concerns\InteractsWithNumber;
@@ -44,7 +43,6 @@ class LaravelEssentialsServiceProvider extends PackageServiceProvider
         $package->hasConfigFile('essentials');
 
         $package->hasMixins([
-            Arr::class => InteractsWithArray::class,
             Str::class => InteractsWithString::class,
             Blueprint::class => BlueprintMixin::class,
             Number::class => InteractsWithNumber::class,
