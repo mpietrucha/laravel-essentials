@@ -50,6 +50,7 @@ return RectorConfig::configure()
         ],
         RenameVariableToMatchMethodCallReturnTypeRector::class => [
             'src/Money/Jobs/NormalizePrices.php',
+            'src/Money/Models/Concerns/HasPrice.php',
         ],
     ])
     ->withSets([

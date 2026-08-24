@@ -5,12 +5,15 @@ namespace Mpietrucha\Laravel\Essentials\Money\Models\Concerns;
 use Brick\Math\RoundingMode;
 use Brick\Money\Context;
 use Brick\Money\Money;
+use Illuminate\Database\Eloquent\Attributes\Scope;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Mpietrucha\Laravel\Essentials\Eloquent\Casts\Attribute;
 use Mpietrucha\Laravel\Essentials\Eloquent\Models\Concerns\DeclaresDecoratedAttributes;
 use Mpietrucha\Laravel\Essentials\Locale\Currency;
+use Mpietrucha\Laravel\Essentials\Money\CurrencyConverter;
 use Mpietrucha\Laravel\Essentials\Money\Models\Discount;
 
 /**
@@ -31,9 +34,19 @@ trait HasPrice
         return 'discounted_price';
     }
 
+    public static function getDefaultNormalizedPriceAttribute(): string
+    {
+        return 'normalized_price';
+    }
+
     public static function getDefaultPriceCurrencyAttribute(): string
     {
         return static::getDefaultMoneyCurrencyAttribute();
+    }
+
+    public static function getDefaultNormalizedPriceTargetCurrency(): mixed
+    {
+        return Currency::enum()::default();
     }
 
     /**
@@ -151,9 +164,9 @@ trait HasPrice
         return $price->isEqualTo($discountedPrice) ? null : $price;
     }
 
-    public function getNormalizedPrice(?string $discountedPriceAttribute = null, ?string $priceAttribute = null, ?string $currencyAttribute = null, ?Context $context = null, ?RoundingMode $roundingMode = null): ?Money
+    public function getNormalizedPrice(?string $discountedPriceAttribute = null, ?string $priceAttribute = null, ?string $currencyAttribute = null, mixed $targetCurrency = null, ?Context $context = null, ?RoundingMode $roundingMode = null): ?Money
     {
-        $targetCurrency = Currency::enum()::default();
+        $targetCurrency ??= static::getDefaultNormalizedPriceTargetCurrency();
 
         $convertedDiscountedPrice = $this->getConvertedDiscountedPrice($targetCurrency, $discountedPriceAttribute, $currencyAttribute, $context, $roundingMode);
 
@@ -164,11 +177,11 @@ trait HasPrice
         return $convertedDiscountedPrice;
     }
 
-    public function normalizePrice(?string $normalizedPriceAttribute = null, ?string $discountedPriceAttribute = null, ?string $priceAttribute = null, ?string $currencyAttribute = null, ?Context $context = null, ?RoundingMode $roundingMode = null): static
+    public function normalizePrice(?string $normalizedPriceAttribute = null, ?string $discountedPriceAttribute = null, ?string $priceAttribute = null, ?string $currencyAttribute = null, mixed $targetCurrency = null, ?Context $context = null, ?RoundingMode $roundingMode = null): static
     {
-        $normalizedPriceAttribute ??= 'normalized_price';
+        $normalizedPriceAttribute ??= static::getDefaultNormalizedPriceAttribute();
 
-        $normalizedPrice = $this->getNormalizedPrice($discountedPriceAttribute, $priceAttribute, $currencyAttribute, $context, $roundingMode);
+        $normalizedPrice = $this->getNormalizedPrice($discountedPriceAttribute, $priceAttribute, $currencyAttribute, $targetCurrency, $context, $roundingMode);
 
         $this->$normalizedPriceAttribute = $normalizedPrice?->getAmount()->toFloat();
 
@@ -213,6 +226,21 @@ trait HasPrice
     protected function referencePrice(): Attribute
     {
         return $this->getReferencePrice(...) |> Attribute::getMoneyAmount(...);
+    }
+
+    /**
+     * @param  Builder<static>  $builder
+     */
+    #[Scope]
+    protected function whereNormalizedPrice(Builder $builder, mixed $price, string $operator = '=', mixed $sourceCurrency = null, mixed $targetCurrency = null, ?string $normalizedPriceAttribute = null, ?Context $context = null, ?RoundingMode $roundingMode = null): void
+    {
+        $targetCurrency ??= static::getDefaultNormalizedPriceTargetCurrency();
+
+        $normalizedPrice = CurrencyConverter::convert($price, $sourceCurrency, $targetCurrency, $context, $roundingMode);
+
+        $normalizedPriceAttribute ??= static::getDefaultNormalizedPriceAttribute();
+
+        $builder->where($normalizedPriceAttribute, $operator, $normalizedPrice->getAmount()->toFloat());
     }
 
     protected static function bootHasPrice(): void

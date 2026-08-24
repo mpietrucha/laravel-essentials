@@ -21,9 +21,19 @@ trait {{ trait }}
         return 'discounted_{{ attribute }}_price';
     }
 
+    public static function getDefaultNormalized{{ indicator }}PriceAttribute(): string
+    {
+        return 'normalized_price';
+    }
+
     public static function getDefault{{ indicator }}PriceCurrencyAttribute(): string
     {
         return static::getDefaultPriceCurrencyAttribute();
+    }
+
+    public static function getDefaultNormalized{{ indicator }}PriceTargetCurrency(): mixed
+    {
+        return static::getDefaultNormalizedPriceTargetCurrency();
     }
 
     public function get{{ indicator }}PriceCurrencyAttributeValue(?string $currencyAttribute = null): mixed
@@ -72,25 +82,29 @@ trait {{ trait }}
         return $this->getReferencePrice($priceAttribute, $currencyAttribute, $context, $roundingMode);
     }
 
-    public function getNormalized{{ indicator }}Price(?string $discountedPriceAttribute = null, ?string $priceAttribute = null, ?string $currencyAttribute = null, ?Context $context = null, ?RoundingMode $roundingMode = null): ?Money
+    public function getNormalized{{ indicator }}Price(?string $discountedPriceAttribute = null, ?string $priceAttribute = null, ?string $currencyAttribute = null, mixed $targetCurrency = null, ?Context $context = null, ?RoundingMode $roundingMode = null): ?Money
     {
         $discountedPriceAttribute ??= static::getDefaultDiscounted{{ indicator }}PriceAttribute();
 
         $priceAttribute ??= static::getDefault{{ indicator }}PriceAttribute();
         $currencyAttribute ??= static::getDefault{{ indicator }}PriceCurrencyAttribute();
 
-        return $this->getNormalizedPrice(discountedPriceAttribute, $priceAttribute, $currencyAttribute, $context, $roundingMode);
+        $targetCurrency ??= static::getDefaultNormalized{{ indicator }}PriceTargetCurrency();
+
+        return $this->getNormalizedPrice(discountedPriceAttribute, $priceAttribute, $currencyAttribute, $targetCurrency, $context, $roundingMode);
     }
 
-    public function normalize{{ indicator }}Price(?string $normalizedPriceAttribute = null, ?string $discountedPriceAttribute = null, ?string $priceAttribute = null, ?string $currencyAttribute = null, ?Context $context = null, ?RoundingMode $roundingMode = null): static
+    public function normalize{{ indicator }}Price(?string $normalizedPriceAttribute = null, ?string $discountedPriceAttribute = null, ?string $priceAttribute = null, ?string $currencyAttribute = null, mixed $targetCurrency = null, ?Context $context = null, ?RoundingMode $roundingMode = null): static
     {
-        $normalizedPriceAttribute ??= 'normalized_{{ attribute }}_price';
+        $normalizedPriceAttribute ??= static::getDefaultNormalized{{ indicator }}PriceAttribute();
         $discountedPriceAttribute ??= static::getDefaultDiscounted{{ indicator }}PriceAttribute();
 
         $priceAttribute ??= static::getDefault{{ indicator }}PriceAttribute();
         $currencyAttribute ??= static::getDefault{{ indicator }}PriceCurrencyAttribute();
 
-        return $this->normalizePrice($normalizedPriceAttribute, $discountedPriceAttribute, $priceAttribute, $currencyAttribute, $context, $roundingMode);
+        $targetCurrency ??= static::getDefaultNormalized{{ indicator }}PriceTargetCurrency();
+
+        return $this->normalizePrice($normalizedPriceAttribute, $discountedPriceAttribute, $priceAttribute, $currencyAttribute, $targetCurrency, $context, $roundingMode);
     }
 
     /**
@@ -131,6 +145,18 @@ trait {{ trait }}
     protected function reference{{ indicator }}Price(): Attribute
     {
         return $this->getReference{{ indicator }}Price(...) |> Attribute::getMoneyAmount(...);
+    }
+
+    /**
+     * @param  Builder<static>  $builder
+     */
+    #[Scope]
+    protected function whereNormalized{{ indicator }}Price(Builder $builder, mixed $price, string $operator = '=', mixed $sourceCurrency = null, mixed $targetCurrency = null, ?string $normalizedPriceAttribute = null, ?Context $context = null, ?RoundingMode $roundingMode = null): void
+    {
+        $targetCurrency ??= static::getDefaultNormalized{{ indicator }}PriceTargetCurrency();
+        $normalizedPriceAttribute ??= static::getDefaultNormalized{{ indicator }}PriceAttribute();
+
+        $this->whereNormalizedPrice($builder, $price, $operator, $sourceCurrency, $targetCurrency, $normalizedPriceAttribute, $context, $roundingMode);
     }
 
     protected static function bootHas{{ indicator }}Price(): void
