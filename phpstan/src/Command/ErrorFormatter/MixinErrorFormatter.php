@@ -22,11 +22,11 @@ final readonly class MixinErrorFormatter implements ErrorFormatter
     {
     }
 
-    public function formatErrors(AnalysisResult $result, Output $output): int
+    public function formatErrors(AnalysisResult $analysisResult, Output $output): int
     {
-        $result = $this->rewrite($result);
+        $analysisResult = $this->rewrite($analysisResult);
 
-        return $this->tableErrorFormatter->formatErrors($result, $output);
+        return $this->tableErrorFormatter->formatErrors($analysisResult, $output);
     }
 
     private function rewrite(AnalysisResult $analysisResult): AnalysisResult

@@ -12,9 +12,9 @@ use Throwable;
 
 final class IconExtension implements MethodsClassReflectionExtension
 {
-    public function hasMethod(ClassReflection $reflection, string $method): bool
+    public function hasMethod(ClassReflection $classReflection, string $method): bool
     {
-        if (! $reflection->is(Icon::class)) {
+        if (! $classReflection->is(Icon::class)) {
             return false;
         }
 
@@ -27,8 +27,8 @@ final class IconExtension implements MethodsClassReflectionExtension
         }
     }
 
-    public function getMethod(ClassReflection $reflection, string $method): IconReflection
+    public function getMethod(ClassReflection $classReflection, string $method): IconReflection
     {
-        return new IconReflection($reflection, $method);
+        return new IconReflection($classReflection, $method);
     }
 }

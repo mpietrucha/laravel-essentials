@@ -8,6 +8,7 @@ use PHPStan\Reflection\ClassMemberReflection;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\FunctionVariant;
 use PHPStan\Reflection\MethodReflection;
+use PHPStan\Reflection\ParametersAcceptor;
 use PHPStan\TrinaryLogic;
 use PHPStan\Type\ClosureType;
 use PHPStan\Type\Generic\TemplateTypeMap;
@@ -15,11 +16,32 @@ use PHPStan\Type\Type;
 
 /**
  * @internal
+ *
+ * @phpstan-type Variants list<ParametersAcceptor>
  */
 final readonly class MacroReflection implements MethodReflection
 {
-    public function __construct(private ClassReflection $classReflection, private string $name, private ClosureType $closure)
+    /**
+     * @param  Variants  $variants
+     */
+    public function __construct(private ClassReflection $classReflection, private string $name, private array $variants)
     {
+    }
+
+    /**
+     * @return Variants
+     */
+    public static function buildVariantsFromClosureType(ClosureType $closureType): array
+    {
+        return [
+            new FunctionVariant(
+                TemplateTypeMap::createEmpty(),
+                null,
+                $closureType->getParameters(),
+                $closureType->isVariadic(),
+                $closureType->getReturnType()
+            ),
+        ];
     }
 
     public function getDeclaringClass(): ClassReflection
@@ -72,20 +94,9 @@ final readonly class MacroReflection implements MethodReflection
         return $this;
     }
 
-    /**
-     * @return list<FunctionVariant>
-     */
     public function getVariants(): array
     {
-        return [
-            new FunctionVariant(
-                TemplateTypeMap::createEmpty(),
-                null,
-                $this->closure->getParameters(),
-                $this->closure->isVariadic(),
-                $this->closure->getReturnType()
-            ),
-        ];
+        return $this->variants;
     }
 
     public function getDeprecatedDescription(): ?string

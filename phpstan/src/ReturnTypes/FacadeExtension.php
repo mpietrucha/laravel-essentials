@@ -22,14 +22,14 @@ final class FacadeExtension implements DynamicStaticMethodReturnTypeExtension
         return Facade::class;
     }
 
-    public function isStaticMethodSupported(MethodReflection $method): bool
+    public function isStaticMethodSupported(MethodReflection $methodReflection): bool
     {
-        return $method->getName() === 'for';
+        return $methodReflection->getName() === 'for';
     }
 
-    public function getTypeFromStaticMethodCall(MethodReflection $method, StaticCall $call, Scope $scope): Type
+    public function getTypeFromStaticMethodCall(MethodReflection $methodReflection, StaticCall $staticCall, Scope $scope): Type
     {
-        $value = data_get($call->getArgs(), '{first}.value');
+        $value = data_get($staticCall->getArgs(), '{first}.value');
 
         if (! $value instanceof Expr) {
             return new StringType;
