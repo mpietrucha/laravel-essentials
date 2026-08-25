@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use Mpietrucha\Laravel\Essentials\Locale\Currency;
 use Mpietrucha\Laravel\Essentials\Money\CurrencyConverter;
+use Mpietrucha\Laravel\Essentials\Money\MoneyAttribute;
 use Mpietrucha\Laravel\Essentials\Money\MoneyFactory;
 use Throwable;
 
@@ -17,11 +18,9 @@ use Throwable;
  */
 trait HasMoney
 {
-    protected static string $defaultMoneyCurrencyAttribute = 'currency';
-
     public static function getDefaultMoneyCurrencyAttribute(): string
     {
-        return static::$defaultMoneyCurrencyAttribute;
+        return MoneyAttribute::getCurrency();
     }
 
     public function getMoneyAttributeValue(string $moneyAttribute): mixed

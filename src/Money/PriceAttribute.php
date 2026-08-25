@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Mpietrucha\Laravel\Essentials\Money;
 
-abstract class PriceAttribute
+abstract class PriceAttribute extends MoneyAttribute
 {
     public static function getPrice(?string $indicator = null): string
     {
