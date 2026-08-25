@@ -15,6 +15,7 @@ use Mpietrucha\Laravel\Essentials\Eloquent\Models\Concerns\DeclaresDecoratedAttr
 use Mpietrucha\Laravel\Essentials\Locale\Currency;
 use Mpietrucha\Laravel\Essentials\Money\CurrencyConverter;
 use Mpietrucha\Laravel\Essentials\Money\Models\Discount;
+use Mpietrucha\Laravel\Essentials\Money\PriceAttribute;
 
 /**
  * @phpstan-require-extends Model
@@ -26,17 +27,17 @@ trait HasPrice
 
     public static function getDefaultPriceAttribute(): string
     {
-        return 'price';
+        return PriceAttribute::getPrice();
     }
 
     public static function getDefaultDiscountedPriceAttribute(): string
     {
-        return 'discounted_price';
+        return PriceAttribute::getDiscountedPrice();
     }
 
     public static function getDefaultNormalizedPriceAttribute(): string
     {
-        return 'normalized_price';
+        return PriceAttribute::getNormalizedPrice();
     }
 
     public static function getDefaultPriceCurrencyAttribute(): string
