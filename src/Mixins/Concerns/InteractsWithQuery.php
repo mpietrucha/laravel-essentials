@@ -20,7 +20,7 @@ trait InteractsWithQuery
 
     public function buildQualifiedColumn(string $column, ?string $table = null): string
     {
-        if (Str::contains($column, '.')) {
+        if (Str::contains($column, Str::dot())) {
             return $column;
         }
 
