@@ -29,7 +29,9 @@ abstract class PriceAttribute extends MoneyAttribute
 
     public static function getConvertedDiscountedPrice(?string $indicator = null): string
     {
-        return static::getDiscountedPrice($indicator) |> static::getConvertedPrice(...);
+        $price = static::getPrice($indicator);
+
+        return sprintf('converted_discounted_%s', $price);
     }
 
     public static function getReferencePrice(?string $indicator = null): string
