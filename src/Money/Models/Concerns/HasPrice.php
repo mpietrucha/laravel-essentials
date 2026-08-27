@@ -233,7 +233,7 @@ trait HasPrice
      * @param  Builder<static>  $builder
      */
     #[Scope]
-    protected function whereNormalizedPrice(Builder $builder, mixed $price, string $operator = '=', mixed $sourceCurrency = null, mixed $targetCurrency = null, ?string $normalizedPriceAttribute = null, ?Context $context = null, ?RoundingMode $roundingMode = null): void
+    protected function whereNormalizedPrice(Builder $builder, mixed $price, ?string $operator = null, mixed $sourceCurrency = null, mixed $targetCurrency = null, ?string $normalizedPriceAttribute = null, ?Context $context = null, ?RoundingMode $roundingMode = null): void
     {
         $targetCurrency ??= static::getDefaultNormalizedPriceTargetCurrency();
 

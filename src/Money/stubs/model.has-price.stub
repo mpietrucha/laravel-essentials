@@ -152,7 +152,7 @@ trait {{ trait }}
      * @param  Builder<static>  $builder
      */
     #[Scope]
-    protected function whereNormalized{{ indicator }}Price(Builder $builder, mixed $price, string $operator = '=', mixed $sourceCurrency = null, mixed $targetCurrency = null, ?string $normalizedPriceAttribute = null, ?Context $context = null, ?RoundingMode $roundingMode = null): void
+    protected function whereNormalized{{ indicator }}Price(Builder $builder, mixed $price, ?string $operator = null, mixed $sourceCurrency = null, mixed $targetCurrency = null, ?string $normalizedPriceAttribute = null, ?Context $context = null, ?RoundingMode $roundingMode = null): void
     {
         $targetCurrency ??= static::getDefaultNormalized{{ indicator }}PriceTargetCurrency();
         $normalizedPriceAttribute ??= static::getDefaultNormalized{{ indicator }}PriceAttribute();
