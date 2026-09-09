@@ -9,6 +9,11 @@ use Mpietrucha\Support\Exception\InvalidArgumentException;
 
 abstract class MoneyFactory
 {
+    public static function getDefaultRoundingMode(): RoundingMode
+    {
+        return RoundingMode::HalfUp;
+    }
+
     public static function from(mixed $money, mixed $currency = null, ?Context $context = null, ?RoundingMode $roundingMode = null): Money
     {
         $currency = CurrencyConverter::currency($currency, $money);
@@ -18,7 +23,7 @@ abstract class MoneyFactory
             return $money;
         }
 
-        $roundingMode ??= RoundingMode::Unnecessary;
+        $roundingMode ??= static::getDefaultRoundingMode();
 
         return match (true) {
             is_string($money),

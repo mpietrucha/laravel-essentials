@@ -53,7 +53,7 @@ abstract class CurrencyConverter
 
     public static function convert(mixed $money, mixed $targetCurrency = null, mixed $sourceCurrency = null, ?Context $context = null, ?RoundingMode $roundingMode = null): Money
     {
-        $roundingMode ??= RoundingMode::HalfUp;
+        $roundingMode ??= MoneyFactory::getDefaultRoundingMode();
 
         $money = MoneyFactory::from($money, $sourceCurrency, $context, $roundingMode);
 

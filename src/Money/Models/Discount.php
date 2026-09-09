@@ -186,6 +186,8 @@ class Discount extends Phase
             return null;
         }
 
+        $roundingMode ??= MoneyFactory::getDefaultRoundingMode();
+
         try {
             $price = MoneyFactory::from($price, $currency, $context, $roundingMode);
         } catch (Throwable) {
@@ -195,7 +197,7 @@ class Discount extends Phase
         $multiplier = $this->discount_multiplier;
 
         if ($multiplier < 1) {
-            return $price->multipliedBy($multiplier, $roundingMode ?? RoundingMode::HalfUp);
+            return $price->multipliedBy($multiplier, $roundingMode);
         }
 
         return $this->getPrice($priceAttribute, null, $price->getCurrency(), $context, $roundingMode);
