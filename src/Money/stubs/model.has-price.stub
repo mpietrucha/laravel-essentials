@@ -8,10 +8,13 @@ use Brick\Money\Money;
 use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Mpietrucha\Laravel\Essentials\Eloquent\Casts\Attribute;
 use Mpietrucha\Laravel\Essentials\Eloquent\Models\Concerns\DeclaresDecoratedAttributes;
 use Mpietrucha\Laravel\Essentials\Locale\Currency;
 use Mpietrucha\Laravel\Essentials\Money\CurrencyConverter;
+use Mpietrucha\Laravel\Essentials\Money\Models\Discount;
 use Mpietrucha\Laravel\Essentials\Money\PriceAttribute;
 
 /**
@@ -45,6 +48,32 @@ trait {{ trait }}
     public static function getDefaultNormalized{{ indicator }}PriceTargetCurrency(): mixed
     {
         return Currency::enum()::default();
+    }
+
+    /**
+     * @return MorphOne<Discount, $this>
+     */
+    public function discount(): MorphOne
+    {
+        $morphOne = $this->morphOne(Discount::getModel(), $discountable = Discount::getMorphName());
+
+        $morphOne->without($discountable);
+        $morphOne->chaperone($discountable);
+
+        return $morphOne->active();
+    }
+
+    /**
+     * @return MorphMany<Discount, $this>
+     */
+    public function discounts(): MorphMany
+    {
+        $morphMany = $this->morphMany(Discount::getModel(), $discountable = Discount::getMorphName());
+
+        $morphMany->without($discountable);
+        $morphMany->chaperone($discountable);
+
+        return $morphMany->valid();
     }
 
     public function get{{ indicator }}PriceAttributeValue(?string $priceAttribute = null): mixed
