@@ -46,6 +46,7 @@ final readonly class MixinErrorFormatter implements ErrorFormatter
             $analysisResult->isResultCacheSaved(),
             $analysisResult->getPeakMemoryUsageBytes(),
             $analysisResult->isResultCacheUsed(),
+            /** @phpstan-ignore argument.type */
             $analysisResult->getChangedProjectExtensionFilesOutsideOfAnalysedPaths()
         );
     }
