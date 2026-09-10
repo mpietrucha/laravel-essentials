@@ -8,12 +8,9 @@ use Brick\Money\Money;
 use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\MorphMany;
-use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Mpietrucha\Laravel\Essentials\Eloquent\Casts\Attribute;
-use Mpietrucha\Laravel\Essentials\Eloquent\Models\Concerns\DeclaresDecoratedAttributes;
-use Mpietrucha\Laravel\Essentials\Locale\Currency;
 use Mpietrucha\Laravel\Essentials\Money\CurrencyConverter;
+use Mpietrucha\Laravel\Essentials\Money\Models\Concerns\HasPrice;
 use Mpietrucha\Laravel\Essentials\Money\Models\Discount;
 use Mpietrucha\Laravel\Essentials\Money\PriceAttribute;
 
@@ -22,8 +19,7 @@ use Mpietrucha\Laravel\Essentials\Money\PriceAttribute;
  */
 trait {{ trait }}
 {
-    use DeclaresDecoratedAttributes;
-    use HasMoney;
+    use HasPrice;
 
     public static function getDefault{{ indicator }}PriceAttribute(): string
     {
@@ -42,57 +38,33 @@ trait {{ trait }}
 
     public static function getDefault{{ indicator }}PriceCurrencyAttribute(): string
     {
-        return static::getDefaultMoneyCurrencyAttribute();
+        return static::getDefaultPriceCurrencyAttribute();
     }
 
     public static function getDefaultNormalized{{ indicator }}PriceTargetCurrency(): mixed
     {
-        return Currency::enum()::default();
-    }
-
-    /**
-     * @return MorphOne<Discount, $this>
-     */
-    public function discount(): MorphOne
-    {
-        $morphOne = $this->morphOne(Discount::getModel(), $discountable = Discount::getMorphName());
-
-        $morphOne->without($discountable);
-        $morphOne->chaperone($discountable);
-
-        return $morphOne->active();
-    }
-
-    /**
-     * @return MorphMany<Discount, $this>
-     */
-    public function discounts(): MorphMany
-    {
-        $morphMany = $this->morphMany(Discount::getModel(), $discountable = Discount::getMorphName());
-
-        $morphMany->without($discountable);
-        $morphMany->chaperone($discountable);
-
-        return $morphMany->valid();
+        return static::getDefaultNormalizedPriceTargetCurrency();
     }
 
     public function get{{ indicator }}PriceAttributeValue(?string $priceAttribute = null): mixed
     {
-        return $this->getMoneyAttributeValue($priceAttribute ?? static::getDefault{{ indicator }}PriceAttribute());
+        $priceAttribute ??= static::getDefault{{ indicator }}PriceAttribute();
+
+        return $this->getPriceAttributeValue($priceAttribute);
     }
 
     public function get{{ indicator }}PriceCurrencyAttributeValue(?string $currencyAttribute = null): mixed
     {
         $currencyAttribute ??= static::getDefault{{ indicator }}PriceCurrencyAttribute();
 
-        return $this->getMoneyAttributeValue($currencyAttribute);
+        return $this->getPriceCurrencyAttributeValue($currencyAttribute);
     }
 
     public function cast{{ indicator }}PriceAttribute(mixed $price, ?string $priceAttribute = null): mixed
     {
         $priceAttribute ??= static::getDefault{{ indicator }}PriceAttribute();
 
-        return $this->castMoneyAttribute($price, $priceAttribute);
+        return $this->castPriceAttribute($price, $priceAttribute);
     }
 
     public function get{{ indicator }}Price(?string $priceAttribute = null, ?string $currencyAttribute = null, ?Context $context = null, ?RoundingMode $roundingMode = null): ?Money
@@ -100,7 +72,7 @@ trait {{ trait }}
         $priceAttribute ??= static::getDefault{{ indicator }}PriceAttribute();
         $currencyAttribute ??= static::getDefault{{ indicator }}PriceCurrencyAttribute();
 
-        return $this->getMoney($priceAttribute, $currencyAttribute, $context, $roundingMode);
+        return $this->getPrice($priceAttribute, $currencyAttribute, $context, $roundingMode);
     }
 
     public function getConverted{{ indicator }}Price(mixed $targetCurrency = null, ?string $priceAttribute = null, ?string $currencyAttribute = null, ?Context $context = null, ?RoundingMode $roundingMode = null): ?Money
@@ -108,7 +80,7 @@ trait {{ trait }}
         $priceAttribute ??= static::getDefault{{ indicator }}PriceAttribute();
         $currencyAttribute ??= static::getDefault{{ indicator }}PriceCurrencyAttribute();
 
-        return $this->getConvertedMoney($priceAttribute, $currencyAttribute, $targetCurrency, $context, $roundingMode);
+        return $this->getConvertedPrice($targetCurrency, $priceAttribute, $currencyAttribute, $context, $roundingMode);
     }
 
     public function getDiscounted{{ indicator }}Price(?string $priceAttribute = null, ?string $currencyAttribute = null, ?Context $context = null, ?RoundingMode $roundingMode = null): ?Money
