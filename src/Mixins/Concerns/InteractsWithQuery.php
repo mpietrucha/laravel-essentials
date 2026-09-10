@@ -37,10 +37,6 @@ trait InteractsWithQuery
 
         $table = Str::afterLast((string) $table, 'as') |> Str::trim(...) |> Str::nullWhenEmpty(...);
 
-        if ($table === null) {
-            return $column;
-        }
-
-        return sprintf('%s.%s', $table, $column);
+        return Str::qualify($column, $table);
     }
 }

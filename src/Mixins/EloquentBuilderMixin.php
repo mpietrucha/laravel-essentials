@@ -17,7 +17,7 @@ trait EloquentBuilderMixin
 
     public function whereRelationship(string $column, mixed $value, ?string $relationshipColumn = null, ?string $operator = null): static
     {
-        $relationship = $relationshipColumn ? Str::relationshipName($relationshipColumn) : Str::relationshipName($column);
+        $relationship = $relationshipColumn ? Str::relationship($relationshipColumn) : Str::relationship($column);
 
         if ($relationship === null) {
             return $this->where($column, $operator, $value);
