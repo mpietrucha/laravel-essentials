@@ -35,8 +35,9 @@ trait InteractsWithQuery
             $table = $this->getGrammar() |> $table->getValue(...);
         }
 
-        $table = Str::afterLast((string) $table, 'as') |> Str::trim(...) |> Str::nullWhenEmpty(...);
-
-        return Str::qualify($column, $table);
+        return Str::qualify(
+            $column,
+            Str::afterLast((string) $table, 'as') |> Str::trim(...) |> Str::nullWhenEmpty(...)
+        );
     }
 }
