@@ -30,6 +30,11 @@ trait HasPrice
         return PriceAttribute::getPrice();
     }
 
+    public static function getDefaultConvertedPriceAttribute(): string
+    {
+        return PriceAttribute::getConvertedPrice();
+    }
+
     public static function getDefaultDiscountedPriceAttribute(): string
     {
         return PriceAttribute::getDiscountedPrice();
@@ -251,5 +256,25 @@ trait HasPrice
         static::saving(static function (self $hasPrice): void {
             $hasPrice->normalizePrice();
         });
+
+        static::afterBootHasPrice();
+    }
+
+    protected static function afterBootHasPrice(): void
+    {
+    }
+
+    protected function initializeHasPrice(): void
+    {
+        $this->mergeAppends([
+            static::getDefaultPriceAttribute(),
+            static::getDefaultConvertedPriceAttribute(),
+        ]);
+
+        $this->afterInitializeHasPrice();
+    }
+
+    protected function afterInitializeHasPrice(): void
+    {
     }
 }

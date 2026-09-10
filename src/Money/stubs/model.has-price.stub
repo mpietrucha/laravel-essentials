@@ -26,6 +26,11 @@ trait {{ trait }}
         return PriceAttribute::getPrice('{{ attribute }}');
     }
 
+    public static function getDefaultConverted{{ indicator }}PriceAttribute(): string
+    {
+        return PriceAttribute::getConvertedPrice('{{ attribute }}');
+    }
+
     public static function getDefaultDiscounted{{ indicator }}PriceAttribute(): string
     {
         return PriceAttribute::getDiscountedPrice('{{ attribute }}');
@@ -221,5 +226,25 @@ trait {{ trait }}
         static::saving(static function (self $hasPrice): void {
             $hasPrice->normalize{{ indicator }}Price();
         });
+
+        static::afterBootHas{{ indicator }}Price();
+    }
+
+    protected static function afterBootHas{{ indicator }}Price(): void
+    {
+    }
+
+    protected function initializeHas{{ indicator }}Price(): void
+    {
+        $this->mergeAppends([
+            static::getDefault{{ indicator }}PriceAttribute(),
+            static::getDefaultConverted{{ indicator }}PriceAttribute(),
+        ]);
+
+        $this->afterInitializeHas{{ indicator }}Price();
+    }
+
+    protected function afterInitializeHas{{ indicator }}Price(): void
+    {
     }
 }
