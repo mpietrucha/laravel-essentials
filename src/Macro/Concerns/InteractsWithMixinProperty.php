@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Mpietrucha\Laravel\Essentials\Macro\Concerns;
 
 use Mpietrucha\Laravel\Essentials\Macro\MixinProperty;
+use Mpietrucha\Laravel\Essentials\Qualifier;
 
 trait InteractsWithMixinProperty
 {
@@ -26,10 +27,6 @@ trait InteractsWithMixinProperty
     {
         $identifier = static::class;
 
-        if ($property === null) {
-            return $identifier;
-        }
-
-        return sprintf('%s.%s', $identifier, $property) |> md5(...);
+        return Qualifier::hash($identifier, $property);
     }
 }

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Mpietrucha\Laravel\Essentials\Macro;
 
 use Illuminate\Support\Arr;
+use Mpietrucha\Laravel\Essentials\Qualifier;
 
 abstract class MixinProperty
 {
@@ -36,6 +37,6 @@ abstract class MixinProperty
     {
         $identifier = spl_object_hash($source);
 
-        return sprintf('%s.%s', $identifier, $property) |> md5(...);
+        return Qualifier::hash($identifier, $property);
     }
 }

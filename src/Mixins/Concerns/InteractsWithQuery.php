@@ -6,6 +6,7 @@ use Illuminate\Contracts\Database\Query\Expression;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Support\Str;
+use Mpietrucha\Laravel\Essentials\Eloquent\Qualifiers\ColumnQualifier;
 
 trait InteractsWithQuery
 {
@@ -35,7 +36,7 @@ trait InteractsWithQuery
             $table = $this->getGrammar() |> $table->getValue(...);
         }
 
-        return Str::qualify(
+        return ColumnQualifier::build(
             $column,
             Str::afterLast((string) $table, 'as') |> Str::trim(...) |> Str::nullWhenEmpty(...)
         );

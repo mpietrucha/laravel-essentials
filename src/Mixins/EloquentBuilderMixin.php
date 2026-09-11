@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Mpietrucha\Laravel\Essentials\Mixins;
 
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Str;
+use Mpietrucha\Laravel\Essentials\Eloquent\Qualifiers\AttributeQualifier;
 use Mpietrucha\Laravel\Essentials\Mixins\Concerns\InteractsWithQuery;
 
 /**
@@ -15,9 +15,9 @@ trait EloquentBuilderMixin
 {
     use InteractsWithQuery;
 
-    public function whereRelationship(string $column, mixed $value, ?string $relationshipColumn = null, ?string $operator = null): static
+    public function whereRelationship(string $column, mixed $value, ?string $relationship = null, ?string $operator = null): static
     {
-        $relationship = $relationshipColumn ? Str::relationship($relationshipColumn) : Str::relationship($column);
+        $relationship = AttributeQualifier::relationship($relationship ?? $column);
 
         if ($relationship === null) {
             return $this->where($column, $operator, $value);
