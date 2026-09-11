@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Mpietrucha\Laravel\Essentials\Translations;
+namespace Mpietrucha\Laravel\Essentials\Translations\Qualifiers;
 
 use Mpietrucha\Laravel\Essentials\Qualifier;
 
