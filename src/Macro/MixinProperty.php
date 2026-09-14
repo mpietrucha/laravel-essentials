@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Mpietrucha\Laravel\Essentials\Macro;
 
-use Illuminate\Support\Arr;
 use Mpietrucha\Laravel\Essentials\Qualifier;
+use Mpietrucha\Support\Arr;
 
 abstract class MixinProperty
 {

@@ -4,10 +4,10 @@ namespace Mpietrucha\Laravel\Essentials\Eloquent\Models\Concerns;
 
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Arr;
-use Illuminate\Support\Str;
+use Mpietrucha\Support\Arr;
 use Mpietrucha\Support\Instance;
 use Mpietrucha\Support\Reflection;
+use Mpietrucha\Support\Str;
 use ReflectionMethod;
 use ReflectionNamedType;
 

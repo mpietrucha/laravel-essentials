@@ -5,8 +5,8 @@ namespace Mpietrucha\Laravel\Essentials\Mixins\Concerns;
 use Illuminate\Contracts\Database\Query\Expression;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
-use Illuminate\Support\Str;
 use Mpietrucha\Laravel\Essentials\Eloquent\Qualifiers\ColumnQualifier;
+use Mpietrucha\Support\Str;
 
 trait InteractsWithQuery
 {

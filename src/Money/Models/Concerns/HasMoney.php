@@ -6,11 +6,11 @@ use Brick\Math\RoundingMode;
 use Brick\Money\Context;
 use Brick\Money\Money;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Arr;
 use Mpietrucha\Laravel\Essentials\Locale\Currency;
 use Mpietrucha\Laravel\Essentials\Money\CurrencyConverter;
 use Mpietrucha\Laravel\Essentials\Money\MoneyAttribute;
 use Mpietrucha\Laravel\Essentials\Money\MoneyFactory;
+use Mpietrucha\Support\Arr;
 use Throwable;
 
 /**

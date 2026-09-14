@@ -7,12 +7,12 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Support\Collection;
 use Illuminate\Support\LazyCollection;
-use Illuminate\Support\Str;
 use Mpietrucha\Laravel\Essentials\Money\HasPriceAutoloader;
 use Mpietrucha\Support\ClassNamespace;
 use Mpietrucha\Support\Filesystem;
 use Mpietrucha\Support\Finder;
 use Mpietrucha\Support\Instance;
+use Mpietrucha\Support\Str;
 
 /**
  * @phpstan-type ModelDirectories null|array<string>

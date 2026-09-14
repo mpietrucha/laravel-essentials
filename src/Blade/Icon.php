@@ -4,8 +4,8 @@ namespace Mpietrucha\Laravel\Essentials\Blade;
 
 use BladeUI\Icons\Factory as BladeUIFactory;
 use BladeUI\Icons\Svg;
-use Illuminate\Support\Str;
 use Mpietrucha\Support\Concerns\Makeable;
+use Mpietrucha\Support\Str;
 use Stringable;
 
 class Icon implements Stringable

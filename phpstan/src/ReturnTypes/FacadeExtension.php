@@ -2,8 +2,8 @@
 
 namespace Mpietrucha\PHPStan\ReturnTypes;
 
-use Illuminate\Support\Arr;
 use Mpietrucha\Laravel\Essentials\Facade;
+use Mpietrucha\Support\Arr;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\StaticCall;
 use PHPStan\Analyser\Scope;

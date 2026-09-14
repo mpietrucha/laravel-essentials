@@ -2,8 +2,8 @@
 
 namespace Mpietrucha\Laravel\Essentials\Macro\Concerns;
 
-use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
+use Mpietrucha\Support\Arr;
 use Mpietrucha\Support\Context;
 
 /**

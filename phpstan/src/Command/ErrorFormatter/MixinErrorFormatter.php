@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Mpietrucha\PHPStan\Command\ErrorFormatter;
 
-use Illuminate\Support\Arr;
-use Illuminate\Support\Str;
 use Mpietrucha\Laravel\Essentials\Macro\MixinAnalyzer;
+use Mpietrucha\Support\Arr;
+use Mpietrucha\Support\Str;
 use PHPStan\Analyser\Error;
 use PHPStan\Command\AnalysisResult;
 use PHPStan\Command\ErrorFormatter\ErrorFormatter;

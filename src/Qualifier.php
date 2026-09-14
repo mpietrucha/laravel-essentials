@@ -2,7 +2,7 @@
 
 namespace Mpietrucha\Laravel\Essentials;
 
-use Illuminate\Support\Str;
+use Mpietrucha\Support\Str;
 
 abstract class Qualifier
 {
