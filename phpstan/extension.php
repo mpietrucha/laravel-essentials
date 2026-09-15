@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use Illuminate\Support\Number;
 use Mpietrucha\PHPStan\Command\ErrorFormatter\MixinErrorFormatter;
 use Mpietrucha\PHPStan\File\PHPStanCacheFileFinder;
 use Mpietrucha\PHPStan\Methods\IconExtension;
@@ -9,7 +10,6 @@ use Mpietrucha\PHPStan\Methods\MacroExtension;
 use Mpietrucha\PHPStan\ReturnTypes\FacadeExtension;
 use Mpietrucha\PHPStan\Types\NumericGreaterThanZeroExtension;
 use Mpietrucha\Support\Filesystem\Path;
-use Mpietrucha\Support\Number;
 
 return [
     'services' => [
