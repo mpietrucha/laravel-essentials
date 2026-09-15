@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 use Mpietrucha\PHPStan\Command\ErrorFormatter\MixinErrorFormatter;
-use Mpietrucha\PHPStan\File\CacheFileFinder;
+use Mpietrucha\PHPStan\File\PHPStanCacheFileFinder;
 use Mpietrucha\PHPStan\Methods\IconExtension;
 use Mpietrucha\PHPStan\Methods\MacroExtension;
 use Mpietrucha\PHPStan\ReturnTypes\FacadeExtension;
@@ -37,7 +37,7 @@ return [
             'arguments' => ['@errorFormatter.table'],
         ],
         'fileFinderAnalyse' => [
-            'class' => CacheFileFinder::class,
+            'class' => PHPStanCacheFileFinder::class,
             'arguments' => [
                 'fileExcluder' => '@fileExcluderAnalyse',
                 'fileExtensions' => '%fileExtensions%',
@@ -50,11 +50,11 @@ return [
         'ignoreErrors' => [
             [
                 'identifier' => 'missingType.generics',
-                'path' => CacheFileFinder::cacheDirectory(),
+                'path' => PHPStanCacheFileFinder::getCacheDirectory(),
             ],
         ],
         'scanDirectories' => [
-            CacheFileFinder::cacheDirectory(),
+            PHPStanCacheFileFinder::getCacheDirectory(),
         ],
         'bootstrapFiles' => [
             Path::build('bootstrap.php', __DIR__),

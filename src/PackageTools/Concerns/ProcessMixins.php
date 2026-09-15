@@ -2,6 +2,7 @@
 
 namespace Mpietrucha\Laravel\Essentials\PackageTools\Concerns;
 
+use Illuminate\Support\Collection;
 use Mpietrucha\Laravel\Essentials\Macro\Mixin;
 use Mpietrucha\Laravel\Essentials\PackageTools\Package\Concerns\HasMixins;
 use Mpietrucha\Laravel\Essentials\PackageTools\PackageServiceProvider;
@@ -18,7 +19,7 @@ trait ProcessMixins
      */
     protected function bootPackageMixins(?array $mixins = null): static
     {
-        collect(
+        Collection::make(
             $mixins ?? $this->package->mixins ?? []
         )->each(static fn (object|string $handler, string $target) => Mixin::use($target, $handler));
 

@@ -73,7 +73,14 @@ abstract class Cache
      */
     protected static function storage(): Collection
     {
-        return static::$storage ??= static::file() |> Filesystem::json(...) |> collect(...);
+        if (static::$storage instanceof Collection) {
+            return static::$storage;
+        }
+
+        /** @var array<string, string> $storage */
+        $storage = static::file() |> Filesystem::json(...);
+
+        return static::$storage = Collection::make($storage);
     }
 
     protected static function hydrate(): ?string

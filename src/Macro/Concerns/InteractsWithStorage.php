@@ -23,7 +23,7 @@ trait InteractsWithStorage
      */
     public static function storage(): Collection
     {
-        return static::$storage ??= collect();
+        return static::$storage ??= Collection::empty();
     }
 
     /**
@@ -40,7 +40,7 @@ trait InteractsWithStorage
         /** @var array{TValue, TKey} $arguments */
         $arguments = [$value, $key] |> Arr::whereNotNull(...);
 
-        $bucket = collect(...);
+        $bucket = Collection::make(...);
 
         static::storage()->getOrPut($group, $bucket)->prepend(...$arguments);
     }

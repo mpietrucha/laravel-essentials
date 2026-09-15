@@ -101,7 +101,7 @@ class Mixin
      */
     protected function macros(): Collection
     {
-        $methods = $this->reflection()->getMethods() |> collect(...);
+        $methods = $this->reflection()->getMethods() |> Collection::make(...);
 
         $mixin = $this->get();
 

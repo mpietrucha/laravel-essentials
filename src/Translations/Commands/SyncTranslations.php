@@ -82,7 +82,7 @@ class SyncTranslations extends Command
     protected function sync(string $group, string $languageCode, array $translations): void
     {
         /** @var Collection<string, string> $translations */
-        $translations = collect($translations)
+        $translations = Collection::make($translations)
             ->dot()
             /** @phpstan-ignore argument.type */
             ->ensure('string');
@@ -118,6 +118,6 @@ class SyncTranslations extends Command
      */
     protected function languageLines(): Collection
     {
-        return $this->languageLines ??= collect();
+        return $this->languageLines ??= Collection::empty();
     }
 }

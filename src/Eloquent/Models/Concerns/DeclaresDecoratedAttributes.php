@@ -4,6 +4,7 @@ namespace Mpietrucha\Laravel\Essentials\Eloquent\Models\Concerns;
 
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 use Mpietrucha\Support\Arr;
 use Mpietrucha\Support\Instance;
 use Mpietrucha\Support\Reflection;
@@ -49,7 +50,7 @@ trait DeclaresDecoratedAttributes
      */
     protected static function getAttributeMarkedMutatorMethods($class)
     {
-        $methods = Reflection::make($class)->getMethods() |> collect(...);
+        $methods = Reflection::make($class)->getMethods() |> Collection::make(...);
 
         return $methods->filter(static::isDecoratedAttribute(...))
             ->map
