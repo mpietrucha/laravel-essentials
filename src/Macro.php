@@ -53,7 +53,7 @@ class Macro
      */
     public static function use(string $target, string $name, Closure $handler, null|object|string $mixin = null): void
     {
-        if (static::incompatible($target)) {
+        if (self::incompatible($target)) {
             InvalidArgumentException::throw('Macro destination does not use any of the supported Macroable implementations');
         }
 
