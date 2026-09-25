@@ -53,11 +53,11 @@ class Macro
      */
     public static function use(string $target, string $name, Closure $handler, null|object|string $mixin = null): void
     {
-        if (self::incompatible($target)) {
+        if (static::incompatible($target)) {
             InvalidArgumentException::throw('Macro destination does not use any of the supported Macroable implementations');
         }
 
-        $macro = function (mixed ...$arguments) use ($handler, $mixin) {
+        $macro = function (mixed ...$arguments) use ($handler, $mixin): mixed {
             $context = isset($this) ? $this : null; /** @phpstan-ignore variable.undefined, isset.variable */
             $scope = static::class;
 
