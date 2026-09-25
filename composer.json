@@ -34,10 +34,10 @@
         "phpstan/extension-installer": "^1.4",
         "phpstan/phpstan": "^2.1",
         "rector/rector": "^2.3",
-        "rector/type-perfect": "^2.1",
         "spatie/laravel-activitylog": "^4.10",
         "spatie/macroable": "^2.1",
-        "symfony/var-dumper": "^8.0"
+        "symfony/var-dumper": "^8.0",
+        "tomasvotruba/type-coverage": "^2.4"
     },
     "minimum-stability": "dev",
     "prefer-stable": true,
