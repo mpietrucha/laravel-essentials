@@ -32,6 +32,12 @@ trait InteractsWithLocale
         return $locale;
     }
 
+    /**
+     * @template TReturn
+     *
+     * @param  Closure(): TReturn  $callback
+     * @return TReturn
+     */
     public static function with(mixed $locale, Closure $callback): mixed
     {
         $currentLocale = static::get();
