@@ -11,6 +11,7 @@ use Mpietrucha\Support\Reflection;
 use Mpietrucha\Support\Str;
 use ReflectionMethod;
 use ReflectionNamedType;
+use ReflectionType;
 
 /**
  * @phpstan-require-extends Model
@@ -63,7 +64,7 @@ trait DeclaresDecoratedAttributes
     {
         $returnType = $reflectionMethod->getReturnType();
 
-        if ($returnType === null) {
+        if (! $returnType instanceof ReflectionType) {
             return false;
         }
 

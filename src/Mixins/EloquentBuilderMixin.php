@@ -15,7 +15,7 @@ trait EloquentBuilderMixin
 {
     use InteractsWithQuery;
 
-    public function whereRelationship(string $column, mixed $value, ?string $relationship = null, ?string $operator = null): static
+    public function whereRelationship(string $column, mixed $value, ?string $relationship = null, string $operator = '='): static
     {
         $relationship = AttributeQualifier::relationship($relationship ?? $column);
 

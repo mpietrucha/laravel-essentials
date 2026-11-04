@@ -68,7 +68,8 @@ final readonly class MixinErrorFormatter implements ErrorFormatter
             $error->getNodeType(),
             $error->getIdentifier(),
             $error->getMetadata(),
-            $error->getFixedErrorDiff()
+            $error->getFixedErrorDiffs(),
+            $error->getTraitContexts()
         );
     }
 }

@@ -37,12 +37,4 @@ class Attribute extends IlluminateAttribute
             return $money->getAmount()->toString();
         });
     }
-
-    /**
-     * @return TGet
-     */
-    public function value(): mixed
-    {
-        return $this->get |> value(...);
-    }
 }
