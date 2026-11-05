@@ -70,7 +70,7 @@ class LaravelEssentialsServiceProvider extends PackageServiceProvider
     {
         $this->configureExceptionHandler();
 
-        $this->extendValidator();
+        $this->registerValidatorRules();
         $this->extendCacheClearedCommand();
         $this->extendEloquentUserProvider();
     }
@@ -110,15 +110,9 @@ class LaravelEssentialsServiceProvider extends PackageServiceProvider
         });
     }
 
-    protected function extendEloquentUserProvider(): void
+    protected function registerValidatorRules(): void
     {
-        auth()->provider('cached', static function (Application $application, array $config): CachedEloquentUserProvider {
-            $hashManager = $application->get(HashManager::class);
-
-            $model = Arr::string($config, 'model');
-
-            return new CachedEloquentUserProvider($hashManager, $model);
-        });
+        Domain::register();
     }
 
     protected function extendCacheClearedCommand(): void
@@ -130,8 +124,14 @@ class LaravelEssentialsServiceProvider extends PackageServiceProvider
         });
     }
 
-    protected function extendValidator(): void
+    protected function extendEloquentUserProvider(): void
     {
-        Domain::extend();
+        auth()->provider('cached', static function (Application $application, array $config): CachedEloquentUserProvider {
+            $hashManager = $application->get(HashManager::class);
+
+            $model = Arr::string($config, 'model');
+
+            return new CachedEloquentUserProvider($hashManager, $model);
+        });
     }
 }
