@@ -70,9 +70,13 @@ class LaravelEssentialsServiceProvider extends PackageServiceProvider
     {
         $this->configureExceptionHandler();
 
-        $this->registerValidatorRules();
         $this->extendCacheClearedCommand();
         $this->extendEloquentUserProvider();
+    }
+
+    public function packageBooted(): void
+    {
+        $this->registerValidatorRules();
     }
 
     public function registeringPackage(): void
