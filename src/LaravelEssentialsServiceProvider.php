@@ -26,6 +26,7 @@ use Mpietrucha\Laravel\Essentials\Money\HasPriceAutoloader;
 use Mpietrucha\Laravel\Essentials\Money\Models\Discount;
 use Mpietrucha\Laravel\Essentials\PackageTools\Package;
 use Mpietrucha\Laravel\Essentials\PackageTools\PackageServiceProvider;
+use Mpietrucha\Laravel\Essentials\Rules\Domain;
 use Mpietrucha\Laravel\Essentials\Translations\Commands\SyncTranslations;
 use Mpietrucha\Laravel\Essentials\Translations\SpatieTranslationLoaderManager;
 use Mpietrucha\Support\Arr\Concerns\InteractsWithArray;
@@ -41,6 +42,7 @@ class LaravelEssentialsServiceProvider extends PackageServiceProvider
     {
         $package->name('laravel-essentials');
 
+        $package->hasTranslations();
         $package->hasConfigFile('essentials');
 
         $package->hasMixins([
@@ -67,13 +69,10 @@ class LaravelEssentialsServiceProvider extends PackageServiceProvider
     public function bootingPackage(): void
     {
         $this->configureExceptionHandler();
+
+        $this->extendValidator();
+        $this->extendCacheClearedCommand();
         $this->extendEloquentUserProvider();
-
-        Event::listen('cache:cleared', static function (): void {
-            Artisan::call('essentials:clear-mixin-cache');
-
-            Temporary::flush();
-        });
     }
 
     public function registeringPackage(): void
@@ -120,5 +119,19 @@ class LaravelEssentialsServiceProvider extends PackageServiceProvider
 
             return new CachedEloquentUserProvider($hashManager, $model);
         });
+    }
+
+    protected function extendCacheClearedCommand(): void
+    {
+        Event::listen('cache:cleared', static function (): void {
+            Artisan::call('essentials:clear-mixin-cache');
+
+            Temporary::flush();
+        });
+    }
+
+    protected function extendValidator(): void
+    {
+        Domain::extend();
     }
 }
