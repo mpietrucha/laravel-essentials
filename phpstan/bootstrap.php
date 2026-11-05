@@ -8,8 +8,11 @@ use Mpietrucha\PHPStan\ClearResultCache;
 use Mpietrucha\PHPStan\GenerateIdeHelpers;
 use Mpietrucha\PHPStan\GenerateMixinAnalyzers;
 use Mpietrucha\PHPStan\Laravel;
+use Mpietrucha\PHPStan\Lock;
 
 Laravel::bootstrap();
+
+$lock = Lock::acquire();
 
 if (ClearResultCache::due()) {
     Cache::flush();
@@ -22,3 +25,5 @@ if (GenerateIdeHelpers::due()) {
 if (GenerateMixinAnalyzers::due()) {
     Artisan::call('essentials:generate-mixin-analyzers');
 }
+
+$lock->release();
