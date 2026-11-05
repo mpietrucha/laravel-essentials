@@ -1,12 +1,12 @@
 <?php
 
-namespace Mpietrucha\Laravel\Essentials\Rules;
+namespace Mpietrucha\Laravel\Essentials\Validation\Rules;
 
 use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Support\Uri;
 use League\Uri\Exceptions\SyntaxError;
-use Mpietrucha\Laravel\Essentials\Rules\Concerns\ExtendsValidator;
+use Mpietrucha\Laravel\Essentials\Validation\Rules\Concerns\ExtendsValidator;
 use Mpietrucha\Support\Concerns\Makeable;
 use Mpietrucha\Support\Str;
 

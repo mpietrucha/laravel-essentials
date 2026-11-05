@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Mpietrucha\Laravel\Essentials\Rules\Concerns;
+namespace Mpietrucha\Laravel\Essentials\Validation\Rules\Concerns;
 
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Support\Facades\Validator;
@@ -27,14 +27,13 @@ trait ExtendsValidator
     {
         $name = static::name();
 
-        return KeyQualifier::build($name, 'validator') |> __(...);
+        return KeyQualifier::build($name, 'validation') |> __(...);
     }
 
     public static function extend(): void
     {
         $name = static::name();
-        $validator = static::compatible(...);
 
-        Validator::extend($name, $validator);
+        Validator::extend($name, static fn (string $attribute, mixed $value): bool => static::compatible($value));
     }
 }
