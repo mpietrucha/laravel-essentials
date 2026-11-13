@@ -2,6 +2,7 @@
 
 namespace Mpietrucha\Laravel\Essentials;
 
+use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Contracts\Debug\ExceptionHandler;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
@@ -23,6 +24,7 @@ use Mpietrucha\Laravel\Essentials\Mixins\EloquentBuilderMixin;
 use Mpietrucha\Laravel\Essentials\Mixins\QueryBuilderMixin;
 use Mpietrucha\Laravel\Essentials\Money\Commands\NormalizePrices;
 use Mpietrucha\Laravel\Essentials\Money\HasPriceAutoloader;
+use Mpietrucha\Laravel\Essentials\Money\Jobs\NormalizePrices as NormalizePricesJob;
 use Mpietrucha\Laravel\Essentials\Money\Models\Discount;
 use Mpietrucha\Laravel\Essentials\PackageTools\Package;
 use Mpietrucha\Laravel\Essentials\PackageTools\PackageServiceProvider;
@@ -70,6 +72,8 @@ class LaravelEssentialsServiceProvider extends PackageServiceProvider
     {
         $this->configureExceptionHandler();
 
+        $this->scheduleNormalizePrices();
+
         $this->extendCacheClearedCommand();
         $this->extendEloquentUserProvider();
     }
@@ -95,6 +99,17 @@ class LaravelEssentialsServiceProvider extends PackageServiceProvider
     public function packageRegistered(): void
     {
         Discount::enabled() |> $this->package->runsMigrations(...);
+    }
+
+    protected function scheduleNormalizePrices(): void
+    {
+        if (! config('essentials.money.normalize_prices.schedule')) {
+            return;
+        }
+
+        $this->callAfterResolving(Schedule::class, static function (Schedule $schedule): void {
+            $schedule->job(new NormalizePricesJob)->daily();
+        });
     }
 
     protected function configureExceptionHandler(): void

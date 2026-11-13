@@ -224,6 +224,10 @@ trait {{ trait }}
     protected static function bootHas{{ indicator }}Price(): void
     {
         static::saving(static function (self $hasPrice): void {
+            if (! $hasPrice::shouldNormalizePricesOnSaving()) {
+                return;
+            }
+
             $hasPrice->normalize{{ indicator }}Price();
         });
 

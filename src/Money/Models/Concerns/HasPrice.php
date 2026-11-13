@@ -25,6 +25,23 @@ trait HasPrice
     use DeclaresDecoratedAttributes;
     use HasMoney;
 
+    protected static bool $shouldNormalizePricesOnSaving = true;
+
+    public static function disableNormalizePricesOnSaving(): void
+    {
+        static::$shouldNormalizePricesOnSaving = false;
+    }
+
+    public static function enableNormalizePricesOnSaving(): void
+    {
+        static::$shouldNormalizePricesOnSaving = true;
+    }
+
+    public static function shouldNormalizePricesOnSaving(): bool
+    {
+        return static::$shouldNormalizePricesOnSaving;
+    }
+
     public static function getDefaultPriceAttribute(): string
     {
         return PriceAttribute::getPrice();
@@ -254,6 +271,10 @@ trait HasPrice
     protected static function bootHasPrice(): void
     {
         static::saving(static function (self $hasPrice): void {
+            if (! $hasPrice::shouldNormalizePricesOnSaving()) {
+                return;
+            }
+
             $hasPrice->normalizePrice();
         });
 

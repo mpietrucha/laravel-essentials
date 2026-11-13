@@ -26,5 +26,8 @@ return [
                 'model' => Discount::class,
             ],
         ],
+        'normalize_prices' => [
+            'schedule' => env('ESSENTIALS_NORMALIZE_PRICES_SCHEDULE', true),
+        ],
     ],
 ];
