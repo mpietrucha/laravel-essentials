@@ -111,11 +111,13 @@ class NormalizePrices implements ShouldQueue
         /** @phpstan-ignore staticMethod.notFound */
         $model::disableNormalizePricesOnSaving();
 
-        $priceNormalizers->each(static fn (string $priceNormalizer) => $model->$priceNormalizer());
+        try {
+            $priceNormalizers->each(static fn (string $priceNormalizer) => $model->$priceNormalizer());
 
-        $model->save();
-
-        /** @phpstan-ignore staticMethod.notFound */
-        $model::enableNormalizePricesOnSaving();
+            $model->save();
+        } finally {
+            /** @phpstan-ignore staticMethod.notFound */
+            $model::enableNormalizePricesOnSaving();
+        }
     }
 }
