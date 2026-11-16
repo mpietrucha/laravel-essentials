@@ -7,7 +7,7 @@ namespace Mpietrucha\Laravel\Essentials\Saloon\DataTransferObjects;
 use Mpietrucha\Laravel\Essentials\Saloon\Concerns\DataTransferObjects\Buildable;
 use Mpietrucha\Support\Concerns\Makeable;
 
-class DataTransferObject
+abstract readonly class DataTransferObject
 {
     use Buildable;
     use Makeable;

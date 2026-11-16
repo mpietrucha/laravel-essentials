@@ -16,7 +16,7 @@ trait Buildable
     /**
      * @param  array<mixed>  $data
      */
-    public function fromArray(array $data): static
+    public static function fromArray(array $data): static
     {
         return fluent($data) |> static::fromFluent(...);
     }
@@ -24,7 +24,7 @@ trait Buildable
     /**
      * @param  Fluent<array-key, mixed>  $data
      */
-    public function fromFluent(Fluent $data): static
+    public static function fromFluent(Fluent $data): static
     {
         BadMethodCallException::throw('Body of a `fromFluent` method must be specified');
     }
