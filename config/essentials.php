@@ -16,18 +16,17 @@ return [
 
             'quota' => [
                 'table' => 'discount_quotas',
-
                 'model' => Quota::class,
             ],
 
             'discount' => [
                 'table' => 'discounts',
-
                 'model' => Discount::class,
             ],
         ],
         'normalize_prices' => [
             'schedule' => env('ESSENTIALS_NORMALIZE_PRICES_SCHEDULE', true),
+            'activity' => env('ESSENTIALS_NORMALIZE_PRICES_ACTIVITY', false),
         ],
     ],
 ];

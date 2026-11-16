@@ -13,6 +13,7 @@ use Mpietrucha\Support\Filesystem;
 use Mpietrucha\Support\Finder;
 use Mpietrucha\Support\Instance;
 use Mpietrucha\Support\Str;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 /**
  * @phpstan-type ModelDirectories null|array<string>
@@ -108,6 +109,13 @@ class NormalizePrices implements ShouldQueue
      */
     protected static function normalizePrices(Model $model, Collection $priceNormalizers): void
     {
+        $activity = config('essentials.money.normalize_prices.schedule');
+
+        if (! $activity && Instance::traits($model)->contains(LogsActivity::class)) {
+            /** @phpstan-ignore method.notFound */
+            $model->disableLogging();
+        }
+
         /** @phpstan-ignore staticMethod.notFound */
         $model::disableNormalizePricesOnSaving();
 
