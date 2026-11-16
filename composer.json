@@ -34,6 +34,7 @@
         "phpstan/extension-installer": "^1.4",
         "phpstan/phpstan": "^2.1",
         "rector/rector": "^2.3",
+        "saloonphp/saloon": "^4.5",
         "spatie/laravel-activitylog": "^4.10",
         "spatie/macroable": "^2.1",
         "symfony/var-dumper": "^8.0",
