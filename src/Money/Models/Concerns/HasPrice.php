@@ -261,7 +261,7 @@ trait HasPrice
     {
         $targetCurrency ??= static::getDefaultNormalizedPriceTargetCurrency();
 
-        $normalizedPrice = CurrencyConverter::convert($price, $sourceCurrency, $targetCurrency, $context, $roundingMode);
+        $normalizedPrice = CurrencyConverter::convert($price, $targetCurrency, $sourceCurrency, $context, $roundingMode);
 
         $normalizedPriceAttribute ??= static::getDefaultNormalizedPriceAttribute();
 

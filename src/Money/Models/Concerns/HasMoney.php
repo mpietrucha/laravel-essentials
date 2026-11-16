@@ -43,7 +43,7 @@ trait HasMoney
             return $money;
         }
 
-        $cast = rescue(fn () => $this->getCastType($moneyAttribute), report: false);
+        $cast = $this->hasCast($moneyAttribute) ? $this->getCastType($moneyAttribute) : null;
 
         return match ($cast) {
             'int',

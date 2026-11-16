@@ -214,7 +214,7 @@ trait {{ trait }}
     {
         $targetCurrency ??= static::getDefaultNormalized{{ indicator }}PriceTargetCurrency();
 
-        $normalizedPrice = CurrencyConverter::convert($price, $sourceCurrency, $targetCurrency, $context, $roundingMode);
+        $normalizedPrice = CurrencyConverter::convert($price, $targetCurrency, $sourceCurrency, $context, $roundingMode);
 
         $normalizedPriceAttribute ??= static::getDefaultNormalized{{ indicator }}PriceAttribute();
 
