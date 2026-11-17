@@ -12,11 +12,12 @@ use Mpietrucha\PHPStan\Lock;
 
 Laravel::bootstrap();
 
-$lock = Lock::acquire();
-
 if (ClearResultCache::due()) {
+    Lock::flush();
     Cache::flush();
 }
+
+$lock = Lock::acquire();
 
 if (GenerateIdeHelpers::due()) {
     Artisan::call('essentials:generate-ide-helpers');
