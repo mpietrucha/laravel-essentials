@@ -40,10 +40,15 @@ final class FluentOfExtension implements TypeNodeResolverAwareExtension, TypeNod
             return null;
         }
 
-        $shape = $this->typeNodeResolver->resolve($genericType, $nameScope)->getConstantArrays() |> Arr::first(...);
+        $dataType = $this->typeNodeResolver->resolve($genericType, $nameScope);
+
+        $shape = $dataType->getConstantArrays() |> Arr::first(...);
 
         if ($shape === null) {
-            return null;
+            $keyType = $dataType->getIterableKeyType();
+            $valueType = $dataType->getIterableValueType();
+
+            return $this->resolveGenericFluentObjectType($keyType, $valueType);
         }
 
         $keyTypes = $shape->getKeyTypes();
@@ -68,7 +73,7 @@ final class FluentOfExtension implements TypeNodeResolverAwareExtension, TypeNod
 
         return TypeCombinator::intersect(
             new ObjectShapeType($properties, $optionalProperties),
-            new GenericObjectType(Fluent::class, [new StringType, $explicitMixedType]),
+            $this->resolveGenericFluentObjectType(new StringType, $explicitMixedType)
         );
     }
 
@@ -84,5 +89,12 @@ final class FluentOfExtension implements TypeNodeResolverAwareExtension, TypeNod
         $typeNodeType = $typeNode->type;
 
         return $typeNodeType instanceof IdentifierTypeNode && $typeNodeType->name === 'fluent-of';
+    }
+
+    private function resolveGenericFluentObjectType(Type $keyType, Type $valueType): GenericObjectType
+    {
+        $types = [$keyType, $valueType];
+
+        return new GenericObjectType(Fluent::class, $types);
     }
 }

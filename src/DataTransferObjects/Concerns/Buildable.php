@@ -1,20 +1,22 @@
 <?php
 
-namespace Mpietrucha\Laravel\Essentials\Saloon\Concerns\DataTransferObjects;
+namespace Mpietrucha\Laravel\Essentials\DataTransferObjects\Concerns;
 
 use Illuminate\Support\Fluent;
-use Mpietrucha\Laravel\Essentials\Saloon\DataTransferObjects\DataTransferObject;
+use Mpietrucha\Laravel\Essentials\DataTransferObject;
 use Mpietrucha\Support\Exception\BadMethodCallException;
 use Mpietrucha\Support\Exception\RuntimeException;
 use Throwable;
 
 /**
  * @phpstan-require-extends DataTransferObject
+ *
+ * @template TInputData of array<string, mixed>
  */
 trait Buildable
 {
     /**
-     * @param  array<string, mixed>  $data
+     * @param  TInputData  $data
      */
     public static function fromArray(array $data): static
     {
@@ -22,7 +24,7 @@ trait Buildable
     }
 
     /**
-     * @param  Fluent<string, mixed>  $data
+     * @param  fluent-of<TInputData>  $data
      */
     public static function fromFluent(Fluent $data): static
     {
