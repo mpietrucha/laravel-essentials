@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Support\Collection;
 use Illuminate\Support\LazyCollection;
+use Mpietrucha\Laravel\Essentials\Jobs\Concerns\Schedulable;
 use Mpietrucha\Laravel\Essentials\Money\HasPriceAutoloader;
 use Mpietrucha\Support\ClassNamespace;
 use Mpietrucha\Support\Concerns\Makeable;
@@ -24,6 +25,7 @@ class NormalizePrices implements ShouldQueue
 {
     use Makeable;
     use Queueable;
+    use Schedulable;
 
     /**
      * @param  ModelDirectories  $modelDirectories
