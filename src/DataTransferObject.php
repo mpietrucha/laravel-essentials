@@ -6,10 +6,10 @@ namespace Mpietrucha\Laravel\Essentials;
 
 use Illuminate\Contracts\Support\Arrayable;
 use JsonSerializable;
-use Mpietrucha\Laravel\Essentials\DataTransferObjects\Concerns\Buildable;
-use Mpietrucha\Laravel\Essentials\DataTransferObjects\Concerns\CanBeConvertedToArray;
-use Mpietrucha\Laravel\Essentials\DataTransferObjects\Concerns\HasCamelCaseProperties;
-use Mpietrucha\Laravel\Essentials\DataTransferObjects\Concerns\Serializable;
+use Mpietrucha\Laravel\Essentials\DataTransferObject\Concerns\Buildable;
+use Mpietrucha\Laravel\Essentials\DataTransferObject\Concerns\CanBeConvertedToArray;
+use Mpietrucha\Laravel\Essentials\DataTransferObject\Concerns\HasCamelCaseProperties;
+use Mpietrucha\Laravel\Essentials\DataTransferObject\Concerns\Serializable;
 use Mpietrucha\Support\Concerns\Makeable;
 
 /**

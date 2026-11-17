@@ -1,6 +1,6 @@
 <?php
 
-namespace Mpietrucha\Laravel\Essentials\DataTransferObjects\Concerns;
+namespace Mpietrucha\Laravel\Essentials\DataTransferObject\Concerns;
 
 use Mpietrucha\Laravel\Essentials\DataTransferObject;
 

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Mpietrucha\Laravel\Essentials\DataTransferObjects\Concerns;
+namespace Mpietrucha\Laravel\Essentials\DataTransferObject\Concerns;
 
 use Mpietrucha\Laravel\Essentials\DataTransferObject;
 use Mpietrucha\Support\Str;

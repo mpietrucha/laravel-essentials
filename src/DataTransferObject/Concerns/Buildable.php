@@ -1,6 +1,6 @@
 <?php
 
-namespace Mpietrucha\Laravel\Essentials\DataTransferObjects\Concerns;
+namespace Mpietrucha\Laravel\Essentials\DataTransferObject\Concerns;
 
 use Illuminate\Support\Fluent;
 use Mpietrucha\Laravel\Essentials\DataTransferObject;
