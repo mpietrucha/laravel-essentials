@@ -10,13 +10,11 @@ use Throwable;
 
 /**
  * @phpstan-require-extends DataTransferObject
- *
- * @template TInputData of array<string, mixed>
  */
 trait Buildable
 {
     /**
-     * @param  TInputData  $data
+     * @param  array<string, mixed>  $data
      */
     public static function fromArray(array $data): static
     {
@@ -24,7 +22,7 @@ trait Buildable
     }
 
     /**
-     * @param  fluent-of<TInputData>  $data
+     * @param  Fluent<string, mixed>  $data
      */
     public static function fromFluent(Fluent $data): static
     {
