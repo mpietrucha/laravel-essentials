@@ -6,11 +6,13 @@ use Mpietrucha\Laravel\Essentials\DataTransferObject;
 
 /**
  * @phpstan-require-extends DataTransferObject
+ *
+ * @phpstan-import-type ConvertedToArray from CanBeConvertedToArray
  */
 trait Serializable
 {
     /**
-     * @return array<string, mixed>
+     * @return ConvertedToArray
      */
     public function jsonSerialize(): array
     {

@@ -12,17 +12,27 @@ use ReflectionProperty;
 
 /**
  * @phpstan-require-extends DataTransferObject
+ *
+ * @phpstan-type ConvertedToArray array<string, mixed>
  */
 trait CanBeConvertedToArray
 {
     /**
-     * @return array<string, mixed>
+     * @return ConvertedToArray
      */
     public function toArray(): array
     {
+        return $this->convertToArray(...) |> once(...);
+    }
+
+    /**
+     * @return ConvertedToArray
+     */
+    protected function convertToArray(): array
+    {
         $properties = Reflection::make($this)->getProperties(ReflectionProperty::IS_PUBLIC);
 
-        /** @var array<string, mixed> */
+        /** @var ConvertedToArray */
         return Collection::make($properties)->mapWithKeys(fn (ReflectionProperty $property): array => [
             $property->getName() |> Str::snake(...) => $property->getValue($this),
         ])->all();
