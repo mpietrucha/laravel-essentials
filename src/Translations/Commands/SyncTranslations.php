@@ -118,6 +118,10 @@ class SyncTranslations extends Command
      */
     protected function languageLines(): Collection
     {
-        return $this->languageLines ??= Collection::empty();
+        if ($this->languageLines instanceof Collection) {
+            return $this->languageLines;
+        }
+
+        return $this->languageLines = Collection::empty();
     }
 }
