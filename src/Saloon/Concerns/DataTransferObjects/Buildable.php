@@ -14,7 +14,7 @@ use Throwable;
 trait Buildable
 {
     /**
-     * @param  array<mixed>  $data
+     * @param  array<string, mixed>  $data
      */
     public static function fromArray(array $data): static
     {
@@ -22,7 +22,7 @@ trait Buildable
     }
 
     /**
-     * @param  Fluent<array-key, mixed>  $data
+     * @param  Fluent<string, mixed>  $data
      */
     public static function fromFluent(Fluent $data): static
     {

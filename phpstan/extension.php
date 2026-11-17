@@ -8,6 +8,7 @@ use Mpietrucha\PHPStan\File\PHPStanCacheFileFinder;
 use Mpietrucha\PHPStan\Methods\IconExtension;
 use Mpietrucha\PHPStan\Methods\MacroExtension;
 use Mpietrucha\PHPStan\ReturnTypes\FacadeExtension;
+use Mpietrucha\PHPStan\Types\FluentOfExtension;
 use Mpietrucha\PHPStan\Types\NumericGreaterThanZeroExtension;
 use Mpietrucha\Support\Filesystem\Path;
 
@@ -24,6 +25,10 @@ return [
         [
             'class' => FacadeExtension::class,
             'tags' => ['phpstan.broker.dynamicStaticMethodReturnTypeExtension'],
+        ],
+        [
+            'class' => FluentOfExtension::class,
+            'tags' => ['phpstan.phpDoc.typeNodeResolverExtension'],
         ],
         [
             'class' => NumericGreaterThanZeroExtension::class,
