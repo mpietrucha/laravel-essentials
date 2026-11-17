@@ -36,10 +36,10 @@ class NormalizePrices implements ShouldQueue
     {
         $models = $this->modelDirectories |> static::getModelsWithPriceNormalizers(...);
 
-        $models->each(static function (Collection $priceNormalizers, string $modelClass): void {
+        $models->each(function (Collection $priceNormalizers, string $modelClass): void {
             $models = $modelClass::query()->lazyById();
 
-            $models->each(static fn (Model $model) => static::normalizePrices($model, $priceNormalizers));
+            $models->each(fn (Model $model) => $this->normalizePrices($model, $priceNormalizers));
         });
     }
 
@@ -65,6 +65,31 @@ class NormalizePrices implements ShouldQueue
 
             return [$modelClass => static::getPriceNormalizers($modelClass)];
         })->filter(filled(...));
+    }
+
+    /**
+     * @param  PriceNormalizerCollection  $priceNormalizers
+     */
+    protected function normalizePrices(Model $model, Collection $priceNormalizers): void
+    {
+        $activity = config('essentials.money.normalize_prices.activity');
+
+        if (! $activity && Instance::traits($model)->contains(LogsActivity::class)) {
+            /** @phpstan-ignore method.notFound */
+            $model->disableLogging();
+        }
+
+        /** @phpstan-ignore staticMethod.notFound */
+        $model::disableNormalizePricesOnSaving();
+
+        try {
+            $priceNormalizers->each(static fn (string $priceNormalizer) => $model->$priceNormalizer());
+
+            $model->save();
+        } finally {
+            /** @phpstan-ignore staticMethod.notFound */
+            $model::enableNormalizePricesOnSaving();
+        }
     }
 
     /**
@@ -102,30 +127,5 @@ class NormalizePrices implements ShouldQueue
 
         /** @var PriceNormalizerCollection */
         return $indicators->map(static fn (string $indicator): string => sprintf('normalize%sPrice', $indicator));
-    }
-
-    /**
-     * @param  PriceNormalizerCollection  $priceNormalizers
-     */
-    protected static function normalizePrices(Model $model, Collection $priceNormalizers): void
-    {
-        $activity = config('essentials.money.normalize_prices.schedule');
-
-        if (! $activity && Instance::traits($model)->contains(LogsActivity::class)) {
-            /** @phpstan-ignore method.notFound */
-            $model->disableLogging();
-        }
-
-        /** @phpstan-ignore staticMethod.notFound */
-        $model::disableNormalizePricesOnSaving();
-
-        try {
-            $priceNormalizers->each(static fn (string $priceNormalizer) => $model->$priceNormalizer());
-
-            $model->save();
-        } finally {
-            /** @phpstan-ignore staticMethod.notFound */
-            $model::enableNormalizePricesOnSaving();
-        }
     }
 }
