@@ -56,6 +56,7 @@ return [
             [
                 'identifier' => 'missingType.generics',
                 'path' => PHPStanCacheFileFinder::getCacheDirectory(),
+                'reportUnmatched' => false,
             ],
         ],
         'scanDirectories' => [
