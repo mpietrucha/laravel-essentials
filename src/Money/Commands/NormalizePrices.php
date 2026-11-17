@@ -28,7 +28,7 @@ class NormalizePrices extends Command
         /** @var ModelDirectories $modelDirectories */
         $modelDirectories = $this->argument('directories') ?: null;
 
-        dispatch_sync(new NormalizePricesJob($modelDirectories));
+        NormalizePricesJob::make($modelDirectories) |> dispatch_sync(...);
 
         $this->info('Prices normalized successfully.');
     }

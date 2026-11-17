@@ -25,7 +25,7 @@ class SyncTranslations extends Command
      * @var string
      */
     #[\Override]
-    protected $description = 'Sync file translations into database';
+    protected $description = 'Synchronize file translations into database';
 
     /**
      * @var LanguageLineCollection|null

@@ -9,6 +9,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\LazyCollection;
 use Mpietrucha\Laravel\Essentials\Money\HasPriceAutoloader;
 use Mpietrucha\Support\ClassNamespace;
+use Mpietrucha\Support\Concerns\Makeable;
 use Mpietrucha\Support\Filesystem;
 use Mpietrucha\Support\Finder;
 use Mpietrucha\Support\Instance;
@@ -21,6 +22,7 @@ use Spatie\Activitylog\Traits\LogsActivity;
  */
 class NormalizePrices implements ShouldQueue
 {
+    use Makeable;
     use Queueable;
 
     /**
