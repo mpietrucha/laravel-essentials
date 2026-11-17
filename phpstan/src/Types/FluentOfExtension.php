@@ -55,8 +55,10 @@ final class FluentOfExtension implements TypeNodeResolverAwareExtension, TypeNod
             return $constantString?->getValue();
         })->filter();
 
+        $explicitMixedType = new MixedType(true);
+
         $properties = $names->mapWithKeys(static fn (string $name, int $index): array => [
-            $name => Arr::get($valueTypes, $index) ?? new MixedType,
+            $name => Arr::get($valueTypes, $index, $explicitMixedType),
         ])->all();
 
         /** @var list<string> $optionalProperties */
@@ -66,7 +68,7 @@ final class FluentOfExtension implements TypeNodeResolverAwareExtension, TypeNod
 
         return TypeCombinator::intersect(
             new ObjectShapeType($properties, $optionalProperties),
-            new GenericObjectType(Fluent::class, [new StringType, new MixedType]),
+            new GenericObjectType(Fluent::class, [new StringType, $explicitMixedType]),
         );
     }
 
