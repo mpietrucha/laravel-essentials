@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Mpietrucha\Laravel\Essentials\Mixins\Commands;
+namespace Mpietrucha\Laravel\Essentials\Mixins\Console\Commands;
 
-use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Process;
+use Mpietrucha\Laravel\Essentials\Console\Command;
 
 class ClearMixinCache extends Command
 {
@@ -25,7 +25,7 @@ class ClearMixinCache extends Command
     {
         Process::run(['vendor/bin/phpstan', 'clear-result-cache']);
 
-        $this->callSilently('essentials:generate-mixin-analyzers', ['--flush' => true]);
+        $this->callSilently(GenerateMixinAnalyzers::class, ['--flush' => true]);
 
         $this->info('Mixin cache files cleared successfully.');
     }

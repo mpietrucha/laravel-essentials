@@ -49,12 +49,10 @@ class NormalizePrices implements ShouldQueue
      */
     public static function getModelsWithPriceNormalizers(?array $modelDirectories = null): LazyCollection
     {
-        $modelDirectories ??= app_path('Models');
-
         $files = Finder::make()
             ->files()
             ->name('*.php')
-            ->in($modelDirectories)
+            ->in($modelDirectories ?? app_path('Models'))
             ->ignoreUnreadableDirs()
             ->get();
 

@@ -1,15 +1,18 @@
 <?php
 
-namespace Mpietrucha\Laravel\Essentials\Commands;
+namespace Mpietrucha\Laravel\Essentials\Console\Commands;
 
 use BackedEnum;
-use Illuminate\Console\Command;
 use Illuminate\Support\Collection;
-use Mpietrucha\Laravel\Essentials\Commands\Concerns\InteractsWithLint;
+use Mpietrucha\Laravel\Essentials\Console\Command;
+use Mpietrucha\Laravel\Essentials\Console\Commands\Concerns\InteractsWithLint;
 use Mpietrucha\Support\Enum;
 use Mpietrucha\Support\Filesystem;
 use Mpietrucha\Support\Str;
 
+/**
+ * @phpstan-type BackedEnumCollection Collection<int, BackedEnum>
+ */
 class GenerateColors extends Command
 {
     use InteractsWithLint;
@@ -30,16 +33,13 @@ class GenerateColors extends Command
 
     public function handle(): void
     {
-        $css = Enum::backed(
-            /** @var string */
-            $this->option('enum')
-        )::collection()->map(static function (BackedEnum $backedEnum): string {
+        $css = $this->getEnumCollection()->map(static function (BackedEnum $backedEnum): string {
             $name = $backedEnum->name |> Str::kebab(...);
 
             $value = $backedEnum->value;
 
             return sprintf('--color-%s: %s', $name, $value);
-        })->pipe(static fn (Collection $colors): string => sprintf('@theme { %s }', Str::eol() |> $colors->join(...)));
+        })->pipe($this->join(...));
 
         /** @phpstan-ignore argument.type */
         $output = $this->option('output') |> resource_path(...);
@@ -49,5 +49,27 @@ class GenerateColors extends Command
         $this->lint($output);
 
         sprintf('Colors generated successfully in [%s].', $output) |> $this->info(...);
+    }
+
+    /**
+     * @param  Collection<int, non-falsy-string>  $colors
+     */
+    protected function join(Collection $colors): string
+    {
+        $line = Str::eol();
+
+        return sprintf('@theme { %s }', $colors->join($line));
+    }
+
+    /**
+     * @return BackedEnumCollection
+     */
+    protected function getEnumCollection(): Collection
+    {
+        /** @var string $enum */
+        $enum = $this->option('enum');
+
+        /** @var BackedEnumCollection */
+        return Enum::backed($enum)::collection();
     }
 }

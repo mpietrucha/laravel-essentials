@@ -2,10 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Mpietrucha\Laravel\Essentials\Commands;
+namespace Mpietrucha\Laravel\Essentials\Console\Commands;
 
-use Illuminate\Console\Command;
-use Mpietrucha\Laravel\Essentials\Commands\Concerns\InteractsWithLint;
+use Barryvdh\LaravelIdeHelper\Console\GeneratorCommand;
+use Barryvdh\LaravelIdeHelper\Console\ModelsCommand;
+use Mpietrucha\Laravel\Essentials\Console\Command;
+use Mpietrucha\Laravel\Essentials\Console\Commands\Concerns\InteractsWithLint;
 
 class GenerateIdeHelpers extends Command
 {
@@ -25,8 +27,8 @@ class GenerateIdeHelpers extends Command
 
     public function handle(): void
     {
-        $this->callSilently('ide-helper:generate');
-        $this->callSilently('ide-helper:models', ['--write-mixin' => true]);
+        $this->callSilently(GeneratorCommand::class);
+        $this->callSilently(ModelsCommand::class, ['--write-mixin' => true]);
 
         app_path('Models') |> $this->lint(...);
 

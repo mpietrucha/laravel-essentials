@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Mpietrucha\Laravel\Essentials\Commands\Concerns;
+namespace Mpietrucha\Laravel\Essentials\Console\Commands\Concerns;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Collection;
@@ -18,9 +18,9 @@ trait InteractsWithLint
      */
     protected function lint(iterable|string $files): void
     {
-        $files = Collection::wrap($files);
+        $files = Collection::wrap($files)->all();
 
-        Process::run(['composer', 'lint', ...$files]);
-        Process::run(['npm', 'run', 'lint', ...$files]);
+        ['composer', 'lint'] + $files |> Process::run(...);
+        ['npm', 'run', 'lint'] + $files |> Process::run(...);
     }
 }

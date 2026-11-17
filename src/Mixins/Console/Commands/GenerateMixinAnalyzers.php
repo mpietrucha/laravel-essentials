@@ -1,9 +1,9 @@
 <?php
 
-namespace Mpietrucha\Laravel\Essentials\Mixins\Commands;
+namespace Mpietrucha\Laravel\Essentials\Mixins\Console\Commands;
 
-use Illuminate\Console\Command;
 use Illuminate\Support\Collection;
+use Mpietrucha\Laravel\Essentials\Console\Command;
 use Mpietrucha\Laravel\Essentials\Macro\Mixin;
 use Mpietrucha\Laravel\Essentials\Macro\MixinAnalyzer;
 use Mpietrucha\Support\ClassNamespace;
@@ -34,8 +34,10 @@ class GenerateMixinAnalyzers extends Command
 
     public function handle(): void
     {
+        $outputDirectory = $this->getOutputDirectory();
+
         if ($this->option('flush')) {
-            $this->directory() |> Filesystem::cleanDirectory(...);
+            Filesystem::cleanDirectory($outputDirectory);
 
             $this->info('Mixin analyzers flushed successfully.');
 
@@ -49,9 +51,7 @@ class GenerateMixinAnalyzers extends Command
                 return null;
             }
 
-            $file = $this->file($target);
-
-            Filesystem::put($file, $content);
+            Filesystem::put($file = $this->getOutputFile($target), $content);
 
             return $file;
         })->filter();
@@ -64,23 +64,23 @@ class GenerateMixinAnalyzers extends Command
 
         $analyzers->each(fn (string $analyzer) => $this->components->task($analyzer));
 
-        sprintf('%s mixin analyzer(s) generated in [%s].', $analyzers->count(), $this->directory()) |> $this->info(...);
+        sprintf('%s mixin analyzer(s) generated in [%s].', $analyzers->count(), $outputDirectory) |> $this->info(...);
     }
 
-    protected function file(string $target): string
+    protected function getOutputFile(string $target): string
     {
-        $directory = $this->directory();
+        $outputDirectory = $this->getOutputDirectory();
 
-        return Path::build(ClassNamespace::toFile($target), $directory) |> Touch::file(...);
+        return Path::build(ClassNamespace::toFile($target), $outputDirectory) |> Touch::file(...);
     }
 
-    protected function directory(): string
+    protected function getOutputDirectory(): string
     {
         /** @var string $directory */
         $directory = $this->option('directory');
 
         /** @var string $cwd */
-        $cwd = $this->option('cwd') ?? Path::directory(__DIR__, 3);
+        $cwd = $this->option('cwd') ?? Path::directory(__DIR__, 4);
 
         return Path::build($directory, $cwd);
     }

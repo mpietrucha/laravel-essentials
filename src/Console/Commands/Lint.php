@@ -1,9 +1,9 @@
 <?php
 
-namespace Mpietrucha\Laravel\Essentials\Commands;
+namespace Mpietrucha\Laravel\Essentials\Console\Commands;
 
-use Illuminate\Console\Command;
-use Mpietrucha\Laravel\Essentials\Commands\Concerns\InteractsWithLint;
+use Mpietrucha\Laravel\Essentials\Console\Command;
+use Mpietrucha\Laravel\Essentials\Console\Commands\Concerns\InteractsWithLint;
 use Mpietrucha\Support\Filesystem\Cwd;
 
 class Lint extends Command

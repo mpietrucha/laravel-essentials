@@ -1,8 +1,10 @@
 <?php
 
-namespace Mpietrucha\Laravel\Essentials\Money\Commands;
+declare(strict_types=1);
 
-use Illuminate\Console\Command;
+namespace Mpietrucha\Laravel\Essentials\Money\Console\Commands;
+
+use Mpietrucha\Laravel\Essentials\Console\Command;
 use Mpietrucha\Laravel\Essentials\Money\Jobs\NormalizePrices as NormalizePricesJob;
 
 /**
