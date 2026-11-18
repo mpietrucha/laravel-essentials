@@ -27,7 +27,7 @@ abstract class MoneyFactory
 
         return match (true) {
             is_string($money),
-            is_float($money) => Money::of($money, $currency, $context, $roundingMode),
+            is_float($money) => Money::of((string) $money, $currency, $context, $roundingMode),
             is_int($money) => Money::ofMinor($money, $currency, $context, $roundingMode),
             default => InvalidArgumentException::throw('Unexpected money of type `%s`', get_debug_type($money))
         };
