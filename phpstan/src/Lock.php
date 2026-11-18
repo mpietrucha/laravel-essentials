@@ -2,7 +2,7 @@
 
 namespace Mpietrucha\PHPStan;
 
-use Illuminate\Contracts\Cache\Lock as LockAdapter;
+use Illuminate\Contracts\Cache\Lock as LockInterface;
 use Illuminate\Contracts\Cache\LockProvider;
 use Illuminate\Support\Facades\Cache;
 use Mpietrucha\Support\Filesystem\Temporary;
@@ -12,32 +12,30 @@ use Mpietrucha\Support\Filesystem\Temporary;
  */
 abstract class Lock
 {
-    public static function make(int $seconds = 0): LockAdapter
+    public static function flush(): void
+    {
+        static::build()->forceRelease();
+    }
+
+    public static function acquire(int $seconds = 30): LockInterface
+    {
+        $lock = static::build($seconds);
+
+        $lock->block($seconds);
+
+        return $lock;
+    }
+
+    protected static function build(int $seconds = 0): LockInterface
     {
         $cache = Cache::build([
             'driver' => 'file',
             'path' => Temporary::path('phpstan-locks'),
         ]);
 
-        /** @var LockProvider $provider */
-        $provider = $cache->getStore();
+        /** @var LockProvider $lockProvider */
+        $lockProvider = $cache->getStore();
 
-        return $provider->lock(base_path(), $seconds);
-    }
-
-    public static function flush(): void
-    {
-        $lock = static::make();
-
-        $lock->forceRelease();
-    }
-
-    public static function acquire(int $seconds = 300): LockAdapter
-    {
-        $lock = static::make($seconds);
-
-        $lock->block($seconds);
-
-        return $lock;
+        return $lockProvider->lock(base_path(), $seconds);
     }
 }

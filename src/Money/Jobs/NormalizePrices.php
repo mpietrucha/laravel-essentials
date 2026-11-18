@@ -2,15 +2,12 @@
 
 namespace Mpietrucha\Laravel\Essentials\Money\Jobs;
 
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Support\Collection;
 use Illuminate\Support\LazyCollection;
-use Mpietrucha\Laravel\Essentials\Jobs\Concerns\Schedulable;
+use Mpietrucha\Laravel\Essentials\Job;
 use Mpietrucha\Laravel\Essentials\Money\HasPriceAutoloader;
 use Mpietrucha\Support\ClassNamespace;
-use Mpietrucha\Support\Concerns\Makeable;
 use Mpietrucha\Support\Filesystem;
 use Mpietrucha\Support\Finder;
 use Mpietrucha\Support\Instance;
@@ -21,12 +18,8 @@ use Spatie\Activitylog\Traits\LogsActivity;
  * @phpstan-type ModelDirectories null|array<string>
  * @phpstan-type PriceNormalizerCollection Collection<int, string>
  */
-class NormalizePrices implements ShouldQueue
+class NormalizePrices extends Job
 {
-    use Makeable;
-    use Queueable;
-    use Schedulable;
-
     /**
      * @param  ModelDirectories  $modelDirectories
      */

@@ -51,7 +51,9 @@ class SyncTranslations extends Command
             return;
         }
 
-        sprintf('%s translation key(s) synced successfully.', $syncedLanguageKeys->count()) |> $this->info(...);
+        sprintf(
+            '%s translation key(s) synced successfully.', $syncedLanguageKeys->count()
+        ) |> $this->info(...);
     }
 
     protected function syncLanguage(LocaleInterface $locale): void

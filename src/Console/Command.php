@@ -6,8 +6,10 @@ namespace Mpietrucha\Laravel\Essentials\Console;
 
 use Illuminate\Console\Command as IlluminateCommand;
 use Mpietrucha\Laravel\Essentials\Console\Commands\Concerns\Schedulable;
+use Mpietrucha\Support\Concerns\Makeable;
 
 abstract class Command extends IlluminateCommand
 {
+    use Makeable;
     use Schedulable;
 }

@@ -32,12 +32,12 @@ class GenerateMixinAnalyzers extends Command
     #[\Override]
     protected $description = 'Generate PHPStan analyzer files for registered mixins';
 
+    protected ?string $outputDirectory = null;
+
     public function handle(): void
     {
-        $outputDirectory = $this->getOutputDirectory();
-
         if ($this->option('flush')) {
-            Filesystem::cleanDirectory($outputDirectory);
+            $this->getOutputDirectory() |> Filesystem::cleanDirectory(...);
 
             $this->info('Mixin analyzers flushed successfully.');
 
@@ -64,7 +64,9 @@ class GenerateMixinAnalyzers extends Command
 
         $analyzers->each(fn (string $analyzer) => $this->components->task($analyzer));
 
-        sprintf('%s mixin analyzer(s) generated in [%s].', $analyzers->count(), $outputDirectory) |> $this->info(...);
+        sprintf(
+            '%s mixin analyzer(s) generated in [%s].', $analyzers->count(), $this->getOutputDirectory()
+        ) |> $this->info(...);
     }
 
     protected function getOutputFile(string $target): string
@@ -76,12 +78,16 @@ class GenerateMixinAnalyzers extends Command
 
     protected function getOutputDirectory(): string
     {
+        if ($this->outputDirectory) {
+            return $this->outputDirectory;
+        }
+
         /** @var string $directory */
         $directory = $this->option('directory');
 
         /** @var string $cwd */
         $cwd = $this->option('cwd') ?? Path::directory(__DIR__, 4);
 
-        return Path::build($directory, $cwd);
+        return $this->outputDirectory = Path::build($directory, $cwd);
     }
 }

@@ -5,14 +5,19 @@ namespace Mpietrucha\Laravel\Essentials\Console\Commands\Concerns;
 use Illuminate\Console\Command;
 use Illuminate\Console\Scheduling\Event;
 use Illuminate\Support\Facades\Schedule;
+use Mpietrucha\Support\Concerns\Makeable;
 
 /**
  * @phpstan-require-extends Command
  */
 trait Schedulable
 {
-    public static function schedule(): Event
+    use Makeable;
+
+    public static function schedule(mixed ...$arguments): Event
     {
-        return Schedule::command(static::class);
+        $command = static::make(...$arguments);
+
+        return Schedule::command($command);
     }
 }
