@@ -193,22 +193,28 @@ trait HasPrice
     {
         $targetCurrency ??= static::getDefaultNormalizedPriceTargetCurrency();
 
-        $convertedDiscountedPrice = $this->getConvertedDiscountedPrice($targetCurrency, $discountedPriceAttribute, $currencyAttribute, $context, $roundingMode);
-
-        if ($convertedDiscountedPrice === null) {
-            return $this->getDiscountedPrice($priceAttribute, $currencyAttribute, $context, $roundingMode);
-        }
-
-        return $convertedDiscountedPrice;
+        return $this->getConvertedDiscountedPrice($targetCurrency, $discountedPriceAttribute, $currencyAttribute, $context, $roundingMode);
     }
 
     public function normalizePrice(?string $normalizedPriceAttribute = null, ?string $discountedPriceAttribute = null, ?string $priceAttribute = null, ?string $currencyAttribute = null, mixed $targetCurrency = null, ?Context $context = null, ?RoundingMode $roundingMode = null): static
     {
+        $price = $this->getPrice($priceAttribute, $currencyAttribute, $context, $roundingMode);
+
         $normalizedPriceAttribute ??= static::getDefaultNormalizedPriceAttribute();
+
+        if ($price === null) {
+            $this->$normalizedPriceAttribute = null;
+
+            return $this;
+        }
 
         $normalizedPrice = $this->getNormalizedPrice($discountedPriceAttribute, $priceAttribute, $currencyAttribute, $targetCurrency, $context, $roundingMode);
 
-        $this->$normalizedPriceAttribute = $normalizedPrice?->getAmount()->toFloat();
+        if ($normalizedPrice === null) {
+            return $this;
+        }
+
+        $this->$normalizedPriceAttribute = $normalizedPrice->getAmount()->toFloat();
 
         return $this;
     }

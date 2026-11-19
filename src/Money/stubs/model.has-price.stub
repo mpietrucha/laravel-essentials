@@ -146,22 +146,28 @@ trait {{ trait }}
     {
         $targetCurrency ??= static::getDefaultNormalized{{ indicator }}PriceTargetCurrency();
 
-        $convertedDiscountedPrice = $this->getConvertedDiscounted{{ indicator }}Price($targetCurrency, $discountedPriceAttribute, $currencyAttribute, $context, $roundingMode);
-
-        if ($convertedDiscountedPrice === null) {
-            return $this->getDiscounted{{ indicator }}Price($priceAttribute, $currencyAttribute, $context, $roundingMode);
-        }
-
-        return $convertedDiscountedPrice;
+        return $this->getConvertedDiscounted{{ indicator }}Price($targetCurrency, $discountedPriceAttribute, $currencyAttribute, $context, $roundingMode);
     }
 
     public function normalize{{ indicator }}Price(?string $normalizedPriceAttribute = null, ?string $discountedPriceAttribute = null, ?string $priceAttribute = null, ?string $currencyAttribute = null, mixed $targetCurrency = null, ?Context $context = null, ?RoundingMode $roundingMode = null): static
     {
+        $price = $this->get{{ indicator }}Price($priceAttribute, $currencyAttribute, $context, $roundingMode);
+
         $normalizedPriceAttribute ??= static::getDefaultNormalized{{ indicator }}PriceAttribute();
+
+        if ($price === null) {
+            $this->$normalizedPriceAttribute = null;
+
+            return $this;
+        }
 
         $normalizedPrice = $this->getNormalized{{ indicator }}Price($discountedPriceAttribute, $priceAttribute, $currencyAttribute, $targetCurrency, $context, $roundingMode);
 
-        $this->$normalizedPriceAttribute = $normalizedPrice?->getAmount()->toFloat();
+        if ($normalizedPrice === null) {
+            return $this;
+        }
+
+        $this->$normalizedPriceAttribute = $normalizedPrice->getAmount()->toFloat();
 
         return $this;
     }

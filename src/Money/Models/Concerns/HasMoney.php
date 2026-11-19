@@ -80,17 +80,9 @@ trait HasMoney
         $targetCurrency ??= Currency::get();
 
         try {
-            $convertedMoney = CurrencyConverter::convert($money, $targetCurrency);
+            return CurrencyConverter::convert($money, $targetCurrency);
         } catch (Throwable) {
             return null;
         }
-
-        $sourceCurrency = $money->getCurrency();
-
-        if ($convertedMoney->getCurrency()->is($sourceCurrency)) {
-            return null;
-        }
-
-        return $convertedMoney;
     }
 }
