@@ -13,9 +13,10 @@ use Exchanger\Contract\HistoricalExchangeRateQuery;
 use Exchanger\Exception\UnsupportedCurrencyPairException;
 use Exchanger\Service\HttpService;
 use Exchanger\Service\SupportsHistoricalQueries;
+use Illuminate\Support\Uri;
 use Mpietrucha\Laravel\Essentials\Money\CurrencyConverter\Concerns\CanBeRegistered;
 use Mpietrucha\Laravel\Essentials\Money\CurrencyConverter\Concerns\HasIlluminateClientResponse;
-use Mpietrucha\Laravel\Essentials\Qualifier;
+use Mpietrucha\Support\Arr;
 
 final class FrankfurterExchangerService extends HttpService
 {
@@ -37,11 +38,7 @@ final class FrankfurterExchangerService extends HttpService
     {
         $currencyPair = $exchangeQuery->getCurrencyPair();
 
-        $url = sprintf(
-            'https://api.frankfurter.dev/v1/latest?base=%s&symbols=%s',
-            $currencyPair->getBaseCurrency(),
-            $currencyPair->getQuoteCurrency(),
-        );
+        $url = $this->buildRequestUrl($currencyPair);
 
         return $this->createExchangeRate($url, $currencyPair);
     }
@@ -50,11 +47,9 @@ final class FrankfurterExchangerService extends HttpService
     {
         $currencyPair = $exchangeQuery->getCurrencyPair();
 
-        $url = sprintf(
-            'https://api.frankfurter.dev/v1/%s?base=%s&symbols=%s',
-            $exchangeQuery->getDate()->format('Y-m-d'),
-            $currencyPair->getBaseCurrency(),
-            $currencyPair->getQuoteCurrency(),
+        $url = $this->buildRequestUrl(
+            $currencyPair,
+            $exchangeQuery->getDate()->format('Y-m-d')
         );
 
         return $this->createExchangeRate($url, $currencyPair);
@@ -64,11 +59,11 @@ final class FrankfurterExchangerService extends HttpService
     {
         $response = $this->getIlluminateClientResponse($url)->throw();
 
-        $date = $response->json('date');
+        $date = $response->json('{first}.date');
 
-        $rate = Qualifier::build($currencyPair->getQuoteCurrency(), 'rates') |> $response->json(...);
+        $rate = $response->json('{first}.rate');
 
-        if (! is_numeric($rate) || ! is_string($date)) {
+        if (! is_string($date) || ! is_numeric($rate)) {
             throw new UnsupportedCurrencyPairException($currencyPair, $this);
         }
 
@@ -77,5 +72,21 @@ final class FrankfurterExchangerService extends HttpService
             (float) $rate,
             new DateTimeImmutable($date, new DateTimeZone('UTC')),
         );
+    }
+
+    private function buildRequestUrl(CurrencyPair $currencyPair, ?string $date = null): string
+    {
+        $options = $this->options;
+
+        $url = Arr::string($options, 'base_url', 'https://api.frankfurter.dev') |> Uri::of(...);
+
+        $url = $url->withPath('v2/rates');
+
+        return (string) $url->withQuery([
+            'base' => $currencyPair->getBaseCurrency(),
+            'quotes' => $currencyPair->getQuoteCurrency(),
+            'date' => $date,
+            'providers' => Arr::get($options, 'providers'),
+        ]);
     }
 }

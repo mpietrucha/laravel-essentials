@@ -18,12 +18,12 @@ final readonly class SwapExchangeRateProvider implements ExchangeRateProvider
     {
     }
 
-    public function getExchangeRate(string $sourceCurrencyCode, string $targetCurrencyCode): float
+    public function getExchangeRate(string $sourceCurrencyCode, string $targetCurrencyCode): string
     {
         $currencyPair = sprintf('%s/%s', $sourceCurrencyCode, $targetCurrencyCode);
 
         try {
-            return $this->swap->latest($currencyPair)->getValue();
+            return (string) $this->swap->latest($currencyPair)->getValue();
         } catch (Throwable) {
             throw CurrencyConversionException::exchangeRateNotAvailable($sourceCurrencyCode, $targetCurrencyCode);
         }
