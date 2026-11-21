@@ -13,7 +13,7 @@ use Swap\Service\Registry;
  */
 trait CanBeRegistered
 {
-    public function register(): void
+    public static function register(): void
     {
         $serviceClass = get_called_class();
 

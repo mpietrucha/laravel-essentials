@@ -91,7 +91,7 @@ class LaravelEssentialsServiceProvider extends PackageServiceProvider
 
         BindExceptionHandler::dontRegister();
 
-        // FrankfurterExchangerService::register();
+        FrankfurterExchangerService::register();
 
         config([
             'translation-loader.translation_manager' => SpatieTranslationLoaderManager::class,

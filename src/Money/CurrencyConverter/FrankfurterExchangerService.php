@@ -68,7 +68,7 @@ final class FrankfurterExchangerService extends HttpService
 
         $rate = Qualifier::build($currencyPair->getQuoteCurrency(), 'rates') |> $response->json(...);
 
-        if (! is_string($rate) || ! is_string($date)) {
+        if (! is_numeric($rate) || ! is_string($date)) {
             throw new UnsupportedCurrencyPairException($currencyPair, $this);
         }
 
