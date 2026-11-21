@@ -30,7 +30,7 @@ final class FrankfurterExchangerService extends HttpService
 
     public function getName(): string
     {
-        return 'frankfuter';
+        return 'frankfurter';
     }
 
     protected function getLatestExchangeRate(ExchangeRateQuery $exchangeQuery): ExchangeRate
