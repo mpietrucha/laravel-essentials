@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Mpietrucha\Laravel\Essentials\Money;
 
 use Brick\Math\RoundingMode;
@@ -16,12 +18,11 @@ abstract class MoneyFactory
 
     public static function from(mixed $money, mixed $currency = null, ?Context $context = null, ?RoundingMode $roundingMode = null): Money
     {
-        $currency = CurrencyConverter::currency($currency, $money);
-
-        if ($currency === null) {
-            /** @var Money $money */
+        if ($money instanceof Money) {
             return $money;
         }
+
+        $currency = CurrencyFactory::from($currency);
 
         $roundingMode ??= static::getDefaultRoundingMode();
 

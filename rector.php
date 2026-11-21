@@ -6,8 +6,11 @@ use Rector\Config\RectorConfig;
 use Rector\DeadCode\Rector\ClassMethod\RemoveUselessParamTagRector;
 use Rector\DeadCode\Rector\Expression\RemoveDeadStmtRector;
 use Rector\DeadCode\Rector\Node\RemoveNonExistingVarAnnotationRector;
+use Rector\Php55\Rector\FuncCall\GetCalledClassToSelfClassRector;
+use Rector\Php55\Rector\FuncCall\GetCalledClassToStaticClassRector;
 use Rector\Php70\Rector\Ternary\TernaryToNullCoalescingRector;
 use Rector\Php74\Rector\Closure\ClosureToArrowFunctionRector;
+use Rector\Php80\Rector\FuncCall\ClassOnObjectRector;
 use Rector\Php85\Rector\Property\AddOverrideAttributeToOverriddenPropertiesRector;
 use RectorLaravel\Rector\Class_\DescriptionPropertyToDescriptionAttributeRector;
 use RectorLaravel\Rector\Class_\FillablePropertyToFillableAttributeRector;
@@ -15,6 +18,7 @@ use RectorLaravel\Rector\Class_\HiddenPropertyToHiddenAttributeRector;
 use RectorLaravel\Rector\Class_\SignaturePropertyToSignatureAttributeRector;
 use RectorLaravel\Rector\Class_\TablePropertyToTableAttributeRector;
 use RectorLaravel\Rector\ClassMethod\AddGenericReturnTypeToRelationsRector;
+use RectorLaravel\Rector\If_\ThrowIfRector;
 use RectorLaravel\Set\LaravelSetList;
 
 return RectorConfig::configure()
@@ -36,11 +40,17 @@ return RectorConfig::configure()
         FillablePropertyToFillableAttributeRector::class,
         TablePropertyToTableAttributeRector::class,
         HiddenPropertyToHiddenAttributeRector::class,
+        GetCalledClassToStaticClassRector::class,
+        GetCalledClassToSelfClassRector::class,
+        ClassOnObjectRector::class,
         AddOverrideAttributeToOverriddenPropertiesRector::class,
         SignaturePropertyToSignatureAttributeRector::class,
         DescriptionPropertyToDescriptionAttributeRector::class,
         TernaryToNullCoalescingRector::class => [
             'src/Macro.php',
+        ],
+        ThrowIfRector::class => [
+            'src/Money/CurrencyConverter/FrankfurterExchangerService.php',
         ],
     ])
     ->withSets([

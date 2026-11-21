@@ -4,51 +4,35 @@ namespace Mpietrucha\Laravel\Essentials\Money;
 
 use Brick\Math\RoundingMode;
 use Brick\Money\Context;
-use Brick\Money\Currency as BrickCurrency;
 use Brick\Money\CurrencyConverter as BrickCurrencyConverter;
+use Brick\Money\ExchangeRateProvider;
 use Brick\Money\Money;
-use Illuminate\Contracts\Container\BindingResolutionException;
-use Mpietrucha\Laravel\Essentials\Locale\Currency;
-use Mpietrucha\Laravel\Essentials\Locale\Enums\Contracts\CurrencyInterface;
-use Mpietrucha\Support\Exception\InvalidArgumentException;
-use Mpietrucha\Support\Exception\RuntimeException;
-use Swap\Swap;
+use Mpietrucha\Laravel\Essentials\Money\CurrencyConverter\SwapExchangeRateProvider;
 
 abstract class CurrencyConverter
 {
-    protected static ?BrickCurrencyConverter $adapter = null;
+    protected static ?ExchangeRateProvider $exchangeRateProvider = null;
 
-    public static function adapter(): BrickCurrencyConverter
+    protected static ?BrickCurrencyConverter $brickCurrencyConverter = null;
+
+    public static function getExchangeRateProvider(): ExchangeRateProvider
     {
-        if (static::$adapter instanceof BrickCurrencyConverter) {
-            return static::$adapter;
+        if (static::$exchangeRateProvider instanceof ExchangeRateProvider) {
+            return static::$exchangeRateProvider;
         }
 
-        try {
-            $swapExchangeRateProvider = resolve(SwapExchangeRateProvider::class);
-        } catch (BindingResolutionException) {
-            RuntimeException::throw('`%s` must be bound in the service container', Swap::class);
-        }
-
-        return static::$adapter = new BrickCurrencyConverter($swapExchangeRateProvider);
+        return static::$exchangeRateProvider = resolve(SwapExchangeRateProvider::class);
     }
 
-    /**
-     * @return ($money is null ? string : null|string)
-     */
-    public static function currency(mixed $currency = null, mixed $money = null): ?string
+    public static function getBrickCurrencyConverter(): BrickCurrencyConverter
     {
-        if ($money instanceof Money) {
-            return null;
+        if (static::$brickCurrencyConverter instanceof BrickCurrencyConverter) {
+            return static::$brickCurrencyConverter;
         }
 
-        return match (true) {
-            $currency instanceof BrickCurrency => $currency->getCurrencyCode(),
-            $currency instanceof CurrencyInterface => $currency->code(),
-            is_string($currency) => $currency,
-            is_null($currency) => Currency::get()->code(),
-            default => InvalidArgumentException::throw('Unexpected currency of type `%s`', get_debug_type($currency))
-        };
+        $exchangeRateProvider = static::getExchangeRateProvider();
+
+        return static::$brickCurrencyConverter = new BrickCurrencyConverter($exchangeRateProvider);
     }
 
     public static function convert(mixed $money, mixed $targetCurrency = null, mixed $sourceCurrency = null, ?Context $context = null, ?RoundingMode $roundingMode = null): Money
@@ -57,8 +41,8 @@ abstract class CurrencyConverter
 
         $money = MoneyFactory::from($money, $sourceCurrency, $context, $roundingMode);
 
-        $targetCurrency = static::currency($targetCurrency);
+        $targetCurrency = CurrencyFactory::from($targetCurrency);
 
-        return static::adapter()->convert($money, $targetCurrency, $context, $roundingMode);
+        return static::getBrickCurrencyConverter()->convert($money, $targetCurrency, $context, $roundingMode);
     }
 }

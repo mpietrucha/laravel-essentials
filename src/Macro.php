@@ -59,7 +59,7 @@ class Macro
 
         $macro = function (mixed ...$arguments) use ($handler, $mixin): mixed {
             $context = isset($this) ? $this : null; /** @phpstan-ignore variable.undefined, isset.variable */
-            $scope = static::class;
+            $scope = get_called_class();
 
             $handler = Instance::bind($handler, $context, $scope, $mixin);
 

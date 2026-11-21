@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Mpietrucha\Laravel\Essentials\Money;
+namespace Mpietrucha\Laravel\Essentials\Money\CurrencyConverter;
 
 use Brick\Money\Exception\CurrencyConversionException;
 use Brick\Money\ExchangeRateProvider;

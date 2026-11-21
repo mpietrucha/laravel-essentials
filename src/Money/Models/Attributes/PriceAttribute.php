@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Mpietrucha\Laravel\Essentials\Money;
+namespace Mpietrucha\Laravel\Essentials\Money\Models\Attributes;
 
 abstract class PriceAttribute extends MoneyAttribute
 {

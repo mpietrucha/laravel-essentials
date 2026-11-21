@@ -8,7 +8,7 @@ use Brick\Money\Money;
 use Illuminate\Database\Eloquent\Model;
 use Mpietrucha\Laravel\Essentials\Locale\Currency;
 use Mpietrucha\Laravel\Essentials\Money\CurrencyConverter;
-use Mpietrucha\Laravel\Essentials\Money\MoneyAttribute;
+use Mpietrucha\Laravel\Essentials\Money\Models\Attributes\MoneyAttribute;
 use Mpietrucha\Laravel\Essentials\Money\MoneyFactory;
 use Mpietrucha\Support\Arr;
 use Throwable;

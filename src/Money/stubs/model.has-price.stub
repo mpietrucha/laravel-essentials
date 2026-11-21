@@ -12,7 +12,7 @@ use Mpietrucha\Laravel\Essentials\Eloquent\Casts\Attribute;
 use Mpietrucha\Laravel\Essentials\Money\CurrencyConverter;
 use Mpietrucha\Laravel\Essentials\Money\Models\Concerns\HasPrice;
 use Mpietrucha\Laravel\Essentials\Money\Models\Discount;
-use Mpietrucha\Laravel\Essentials\Money\PriceAttribute;
+use Mpietrucha\Laravel\Essentials\Money\Models\Attributes\PriceAttribute;
 
 /**
  * @phpstan-require-extends Model

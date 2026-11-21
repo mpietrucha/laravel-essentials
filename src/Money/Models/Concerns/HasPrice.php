@@ -14,8 +14,8 @@ use Mpietrucha\Laravel\Essentials\Eloquent\Casts\Attribute;
 use Mpietrucha\Laravel\Essentials\Eloquent\Models\Concerns\DeclaresDecoratedAttributes;
 use Mpietrucha\Laravel\Essentials\Locale\Currency;
 use Mpietrucha\Laravel\Essentials\Money\CurrencyConverter;
+use Mpietrucha\Laravel\Essentials\Money\Models\Attributes\PriceAttribute;
 use Mpietrucha\Laravel\Essentials\Money\Models\Discount;
-use Mpietrucha\Laravel\Essentials\Money\PriceAttribute;
 
 /**
  * @phpstan-require-extends Model

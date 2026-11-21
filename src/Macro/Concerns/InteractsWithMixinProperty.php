@@ -25,7 +25,7 @@ trait InteractsWithMixinProperty
 
     protected static function getMixinPropertyIdentifier(?string $property = null): string
     {
-        $identifier = static::class;
+        $identifier = get_called_class();
 
         return Qualifier::hash($identifier, $property);
     }

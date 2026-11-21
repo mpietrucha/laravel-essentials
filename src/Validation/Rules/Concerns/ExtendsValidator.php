@@ -23,7 +23,7 @@ trait ExtendsValidator
 
     public static function name(): string
     {
-        return ClassNamespace::name(static::class) |> Str::snake(...);
+        return get_called_class() |> ClassNamespace::name(...) |> Str::snake(...);
     }
 
     public static function message(): string
