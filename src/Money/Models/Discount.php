@@ -18,7 +18,6 @@ use Mpietrucha\Laravel\Essentials\Money\MoneyFactory;
 use Mpietrucha\Support\Arr;
 use Mpietrucha\Support\Instance;
 use Spatie\Activitylog\Traits\LogsActivity;
-use Throwable;
 
 /**
  * @property null|string $price
@@ -142,17 +141,13 @@ class Discount extends Phase
         /** @phpstan-ignore method.notFound */
         $currency ??= $discountable->getMoneyCurrencyAttributeValue($currencyAttribute);
 
-        try {
-            return MoneyFactory::from(
-                /** @phpstan-ignore method.notFound */
-                $discountable->castPriceAttribute($price, $priceAttribute),
-                $currency,
-                $context,
-                $roundingMode,
-            );
-        } catch (Throwable) {
-            return null;
-        }
+        return MoneyFactory::tryFrom(
+            /** @phpstan-ignore method.notFound */
+            $discountable->castPriceAttribute($price, $priceAttribute),
+            $currency,
+            $context,
+            $roundingMode,
+        );
     }
 
     public function getOriginalPrice(?string $priceAttribute = null, ?string $currencyAttribute = null, ?Context $context = null, ?RoundingMode $roundingMode = null): ?Money
@@ -182,15 +177,19 @@ class Discount extends Phase
 
     public function calculate(mixed $price, mixed $currency = null, ?string $priceAttribute = null, ?Context $context = null, ?RoundingMode $roundingMode = null): ?Money
     {
-        if (self::disabled() || $price === null) {
+        if (self::disabled()) {
+            return null;
+        }
+
+        if ($price === null) {
             return null;
         }
 
         $roundingMode ??= MoneyFactory::getDefaultRoundingMode();
 
-        try {
-            $price = MoneyFactory::from($price, $currency, $context, $roundingMode);
-        } catch (Throwable) {
+        $price = MoneyFactory::tryFrom($price, $currency, $context, $roundingMode);
+
+        if (! $price instanceof Money) {
             return null;
         }
 

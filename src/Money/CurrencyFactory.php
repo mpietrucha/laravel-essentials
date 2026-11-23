@@ -9,6 +9,7 @@ use Brick\Money\Money;
 use Mpietrucha\Laravel\Essentials\Locale\Currency;
 use Mpietrucha\Laravel\Essentials\Locale\Enums\Contracts\CurrencyInterface;
 use Mpietrucha\Support\Exception\InvalidArgumentException;
+use Throwable;
 
 abstract class CurrencyFactory
 {
@@ -25,5 +26,14 @@ abstract class CurrencyFactory
             is_null($currency) => Currency::get()->code(),
             default => InvalidArgumentException::throw('Unexpected currency of type `%s`', get_debug_type($currency))
         };
+    }
+
+    public static function tryFrom(mixed $currency = null): ?string
+    {
+        try {
+            return static::from($currency);
+        } catch (Throwable) {
+            return null;
+        }
     }
 }

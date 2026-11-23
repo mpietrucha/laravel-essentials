@@ -14,5 +14,9 @@ interface CurrencyInterface extends LocaleInterface
 
     public function money(mixed $money, ?Context $context = null, ?RoundingMode $roundingMode = null): Money;
 
+    public function tryMoney(mixed $money, ?Context $context = null, ?RoundingMode $roundingMode = null): ?Money;
+
     public function convert(mixed $money, mixed $currency, ?Context $context = null, ?RoundingMode $roundingMode = null): Money;
+
+    public function tryConvert(mixed $money, mixed $currency, ?Context $context = null, ?RoundingMode $roundingMode = null): ?Money;
 }

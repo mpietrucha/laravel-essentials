@@ -55,9 +55,19 @@ trait InteractsWithCurrency
         return MoneyFactory::from($money, $this, $context, $roundingMode);
     }
 
+    public function tryMoney(mixed $money, ?Context $context = null, ?RoundingMode $roundingMode = null): ?Money
+    {
+        return MoneyFactory::tryFrom($money, $this, $context, $roundingMode);
+    }
+
     public function convert(mixed $money, mixed $currency, ?Context $context = null, ?RoundingMode $roundingMode = null): Money
     {
         return CurrencyConverter::convert($money, $this, $currency, $context, $roundingMode);
+    }
+
+    public function tryConvert(mixed $money, mixed $currency, ?Context $context = null, ?RoundingMode $roundingMode = null): ?Money
+    {
+        return CurrencyConverter::tryConvert($money, $this, $currency, $context, $roundingMode);
     }
 
     protected static function getConfigKey(): string

@@ -11,7 +11,6 @@ use Mpietrucha\Laravel\Essentials\Money\CurrencyConverter;
 use Mpietrucha\Laravel\Essentials\Money\Models\Attributes\MoneyAttribute;
 use Mpietrucha\Laravel\Essentials\Money\MoneyFactory;
 use Mpietrucha\Support\Arr;
-use Throwable;
 
 /**
  * @phpstan-require-extends Model
@@ -57,16 +56,12 @@ trait HasMoney
         $money = $this->getMoneyAttributeValue($moneyAttribute);
         $currency = $this->getMoneyCurrencyAttributeValue($currencyAttribute);
 
-        try {
-            return MoneyFactory::from(
-                $this->castMoneyAttribute($money, $moneyAttribute),
-                $currency,
-                $context,
-                $roundingMode,
-            );
-        } catch (Throwable) {
-            return null;
-        }
+        return MoneyFactory::tryFrom(
+            $this->castMoneyAttribute($money, $moneyAttribute),
+            $currency,
+            $context,
+            $roundingMode,
+        );
     }
 
     public function getConvertedMoney(string $moneyAttribute, ?string $currencyAttribute = null, mixed $targetCurrency = null, ?Context $context = null, ?RoundingMode $roundingMode = null): ?Money
@@ -77,12 +72,6 @@ trait HasMoney
             return null;
         }
 
-        $targetCurrency ??= Currency::get();
-
-        try {
-            return CurrencyConverter::convert($money, $targetCurrency);
-        } catch (Throwable) {
-            return null;
-        }
+        return CurrencyConverter::tryConvert($money, $targetCurrency ?? Currency::get());
     }
 }

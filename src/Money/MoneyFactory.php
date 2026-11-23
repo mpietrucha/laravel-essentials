@@ -8,6 +8,7 @@ use Brick\Math\RoundingMode;
 use Brick\Money\Context;
 use Brick\Money\Money;
 use Mpietrucha\Support\Exception\InvalidArgumentException;
+use Throwable;
 
 abstract class MoneyFactory
 {
@@ -32,5 +33,14 @@ abstract class MoneyFactory
             is_int($money) => Money::ofMinor($money, $currency, $context, $roundingMode),
             default => InvalidArgumentException::throw('Unexpected money of type `%s`', get_debug_type($money))
         };
+    }
+
+    public static function tryFrom(mixed $money, mixed $currency = null, ?Context $context = null, ?RoundingMode $roundingMode = null): ?Money
+    {
+        try {
+            return static::from($money, $currency, $context, $roundingMode);
+        } catch (Throwable) {
+            return null;
+        }
     }
 }
