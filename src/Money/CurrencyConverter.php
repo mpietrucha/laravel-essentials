@@ -50,7 +50,13 @@ abstract class CurrencyConverter
     public static function tryConvert(mixed $money, mixed $targetCurrency = null, mixed $sourceCurrency = null, ?Context $context = null, ?RoundingMode $roundingMode = null): ?Money
     {
         try {
-            return static::convert($money, $targetCurrency, $sourceCurrency, $context, $roundingMode);
+            return static::convert(
+                $money,
+                $targetCurrency,
+                $sourceCurrency,
+                $context,
+                $roundingMode
+            );
         } catch (Throwable) {
             return null;
         }
