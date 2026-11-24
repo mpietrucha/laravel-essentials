@@ -8,6 +8,7 @@ use Brick\Money\CurrencyConverter as BrickCurrencyConverter;
 use Brick\Money\ExchangeRateProvider;
 use Brick\Money\Money;
 use Mpietrucha\Laravel\Essentials\Money\CurrencyConverter\SwapExchangeRateProvider;
+use Mpietrucha\Support\Exception\RuntimeException;
 use Throwable;
 
 abstract class CurrencyConverter
@@ -44,7 +45,20 @@ abstract class CurrencyConverter
 
         $targetCurrency = CurrencyFactory::from($targetCurrency);
 
-        return static::getBrickCurrencyConverter()->convert($money, $targetCurrency, $context, $roundingMode);
+        try {
+            return static::getBrickCurrencyConverter()->convert(
+                $money,
+                $targetCurrency,
+                $context,
+                $roundingMode
+            );
+        } catch (Throwable $throwable) {
+            report($throwable);
+
+            RuntimeException::usePrevious($throwable);
+
+            RuntimeException::throw('Failed to convert currency');
+        }
     }
 
     public static function tryConvert(mixed $money, mixed $targetCurrency = null, mixed $sourceCurrency = null, ?Context $context = null, ?RoundingMode $roundingMode = null): ?Money

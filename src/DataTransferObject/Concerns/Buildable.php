@@ -36,7 +36,7 @@ trait Buildable
         } catch (Throwable $throwable) {
             RuntimeException::usePrevious($throwable);
 
-            RuntimeException::throw('Response data object failed to build');
+            RuntimeException::throw('Failed to build DataTransferObject from given arguments');
         }
     }
 }

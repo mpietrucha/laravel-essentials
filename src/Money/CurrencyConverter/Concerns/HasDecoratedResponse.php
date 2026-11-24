@@ -8,12 +8,12 @@ use Illuminate\Http\Client\Response;
 /**
  * @phpstan-require-implements ExchangeRateService
  */
-trait HasIlluminateClientResponse
+trait HasDecoratedResponse
 {
     /**
      * @param  array<string>  $headers
      */
-    public function getIlluminateClientResponse(string $url, array $headers = []): Response
+    public function getDecoratedResponse(string $url, array $headers = []): Response
     {
         $response = $this->getResponse($url, $headers);
 

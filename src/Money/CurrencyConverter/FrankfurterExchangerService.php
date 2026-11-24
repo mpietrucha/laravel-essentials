@@ -15,13 +15,13 @@ use Exchanger\Service\HttpService;
 use Exchanger\Service\SupportsHistoricalQueries;
 use Illuminate\Support\Uri;
 use Mpietrucha\Laravel\Essentials\Money\CurrencyConverter\Concerns\CanBeRegistered;
-use Mpietrucha\Laravel\Essentials\Money\CurrencyConverter\Concerns\HasIlluminateClientResponse;
+use Mpietrucha\Laravel\Essentials\Money\CurrencyConverter\Concerns\HasDecoratedResponse;
 use Mpietrucha\Support\Arr;
 
 final class FrankfurterExchangerService extends HttpService
 {
     use CanBeRegistered;
-    use HasIlluminateClientResponse;
+    use HasDecoratedResponse;
     use SupportsHistoricalQueries;
 
     public function supportQuery(ExchangeRateQuery $exchangeQuery): bool
@@ -57,7 +57,7 @@ final class FrankfurterExchangerService extends HttpService
 
     private function createExchangeRate(string $url, CurrencyPair $currencyPair): ExchangeRate
     {
-        $response = $this->getIlluminateClientResponse($url)->throw();
+        $response = $this->getDecoratedResponse($url)->throw();
 
         $date = $response->json('{first}.date');
 
