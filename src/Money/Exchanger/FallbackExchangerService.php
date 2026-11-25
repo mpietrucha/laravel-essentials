@@ -14,7 +14,7 @@ use Mpietrucha\Support\Arr;
 use Mpietrucha\Support\ClassNamespace;
 use Mpietrucha\Support\Str;
 
-class CachedExchangerService extends Service
+class FallbackExchangerService extends Service
 {
     use CanBeRegistered;
 

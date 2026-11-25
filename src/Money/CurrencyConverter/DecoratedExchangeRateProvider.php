@@ -7,7 +7,7 @@ namespace Mpietrucha\Laravel\Essentials\Money\CurrencyConverter;
 use Brick\Math\BigNumber;
 use Brick\Money\CurrencyConverter;
 use Brick\Money\ExchangeRateProvider;
-use Mpietrucha\Laravel\Essentials\Money\Exchanger\CachedExchangerService;
+use Mpietrucha\Laravel\Essentials\Money\Exchanger\FallbackExchangerService;
 use Mpietrucha\Support\Concerns\Makeable;
 
 class DecoratedExchangeRateProvider implements ExchangeRateProvider
@@ -29,7 +29,7 @@ class DecoratedExchangeRateProvider implements ExchangeRateProvider
     {
         $rate = $this->exchangeRateProvider->getExchangeRate($sourceCurrency, $targetCurrency);
 
-        CachedExchangerService::setExchangeRate(
+        FallbackExchangerService::setExchangeRate(
             $sourceCurrency,
             $targetCurrency,
             $rate instanceof BigNumber ? $rate->toString() : (string) $rate,

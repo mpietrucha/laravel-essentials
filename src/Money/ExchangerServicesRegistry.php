@@ -5,7 +5,7 @@ namespace Mpietrucha\Laravel\Essentials\Money;
 use Exchanger\Contract\ExchangeRateService;
 use Illuminate\Support\Collection;
 use Mpietrucha\Laravel\Essentials\Facade;
-use Mpietrucha\Laravel\Essentials\Money\Exchanger\CachedExchangerService;
+use Mpietrucha\Laravel\Essentials\Money\Exchanger\FallbackExchangerService;
 use Mpietrucha\Laravel\Essentials\Money\Exchanger\FrankfurterExchangerService;
 use Swap\Service\Registry;
 
@@ -18,7 +18,7 @@ abstract class ExchangerServicesRegistry
      * @var list<ExchangeRateServiceClass>
      */
     protected static array $services = [
-        CachedExchangerService::class,
+        FallbackExchangerService::class,
         FrankfurterExchangerService::class,
     ];
 
