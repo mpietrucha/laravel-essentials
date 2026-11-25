@@ -7,6 +7,7 @@ use Brick\Money\Context;
 use Brick\Money\CurrencyConverter as BrickCurrencyConverter;
 use Brick\Money\ExchangeRateProvider;
 use Brick\Money\Money;
+use Mpietrucha\Laravel\Essentials\Money\CurrencyConverter\DecoratedExchangeRateProvider;
 use Mpietrucha\Laravel\Essentials\Money\CurrencyConverter\SwapExchangeRateProvider;
 use Mpietrucha\Support\Exception\RuntimeException;
 use Throwable;
@@ -15,7 +16,12 @@ abstract class CurrencyConverter
 {
     protected static ?ExchangeRateProvider $exchangeRateProvider = null;
 
-    protected static ?BrickCurrencyConverter $brickCurrencyConverter = null;
+    protected static ?BrickCurrencyConverter $adapter = null;
+
+    public static function setExchangeRateProvider(ExchangeRateProvider $exchangeRateProvider): void
+    {
+        static::$exchangeRateProvider = $exchangeRateProvider;
+    }
 
     public static function getExchangeRateProvider(): ExchangeRateProvider
     {
@@ -26,31 +32,34 @@ abstract class CurrencyConverter
         return static::$exchangeRateProvider = resolve(SwapExchangeRateProvider::class);
     }
 
-    public static function getBrickCurrencyConverter(): BrickCurrencyConverter
+    public static function adapter(): BrickCurrencyConverter
     {
-        if (static::$brickCurrencyConverter instanceof BrickCurrencyConverter) {
-            return static::$brickCurrencyConverter;
+        if (static::$adapter instanceof BrickCurrencyConverter) {
+            return static::$adapter;
         }
 
         $exchangeRateProvider = static::getExchangeRateProvider();
 
-        return static::$brickCurrencyConverter = new BrickCurrencyConverter($exchangeRateProvider);
+        return static::$adapter = DecoratedExchangeRateProvider::buildCurrencyConverter($exchangeRateProvider);
     }
 
     public static function convert(mixed $money, mixed $targetCurrency = null, mixed $sourceCurrency = null, ?Context $context = null, ?RoundingMode $roundingMode = null): Money
     {
-        $roundingMode ??= MoneyFactory::getDefaultRoundingMode();
-
-        $money = MoneyFactory::from($money, $sourceCurrency, $context, $roundingMode);
+        $money = MoneyFactory::from(
+            $money,
+            $sourceCurrency,
+            $context,
+            $roundingMode ??= MoneyFactory::getDefaultRoundingMode(),
+        );
 
         $targetCurrency = CurrencyFactory::from($targetCurrency);
 
         try {
-            return static::getBrickCurrencyConverter()->convert(
+            return static::adapter()->convert(
                 $money,
                 $targetCurrency,
                 $context,
-                $roundingMode
+                $roundingMode,
             );
         } catch (Throwable $throwable) {
             report($throwable);

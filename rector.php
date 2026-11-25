@@ -50,7 +50,7 @@ return RectorConfig::configure()
             'src/Macro.php',
         ],
         ThrowIfRector::class => [
-            'src/Money/CurrencyConverter/FrankfurterExchangerService.php',
+            'src/Money/Exchanger/FrankfurterExchangerService.php',
         ],
     ])
     ->withSets([
@@ -71,8 +71,6 @@ return RectorConfig::configure()
         typeDeclarations: true,
         typeDeclarationDocblocks: true,
         privatization: true,
-        instanceOf: true,
-        earlyReturn: true,
         carbon: true
     )
     ->withPhpSets(php85: true)

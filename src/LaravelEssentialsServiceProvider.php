@@ -23,7 +23,7 @@ use Mpietrucha\Laravel\Essentials\Mixins\Console\Commands\GenerateMixinAnalyzers
 use Mpietrucha\Laravel\Essentials\Mixins\EloquentBuilderMixin;
 use Mpietrucha\Laravel\Essentials\Mixins\QueryBuilderMixin;
 use Mpietrucha\Laravel\Essentials\Money\Console\Commands\NormalizePrices;
-use Mpietrucha\Laravel\Essentials\Money\CurrencyConverter\FrankfurterExchangerService;
+use Mpietrucha\Laravel\Essentials\Money\ExchangerServicesRegistry;
 use Mpietrucha\Laravel\Essentials\Money\HasPriceAutoloader;
 use Mpietrucha\Laravel\Essentials\Money\Models\Discount;
 use Mpietrucha\Laravel\Essentials\PackageTools\Package;
@@ -91,7 +91,7 @@ class LaravelEssentialsServiceProvider extends PackageServiceProvider
 
         BindExceptionHandler::dontRegister();
 
-        FrankfurterExchangerService::register();
+        ExchangerServicesRegistry::registerAll();
 
         config([
             'translation-loader.translation_manager' => SpatieTranslationLoaderManager::class,

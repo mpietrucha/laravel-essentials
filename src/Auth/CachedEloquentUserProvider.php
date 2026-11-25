@@ -16,38 +16,36 @@ class CachedEloquentUserProvider extends EloquentUserProvider
     {
         parent::__construct($hasher, $model);
 
-        $this->flush(...) |> $model::updated(...);
-        $this->flush(...) |> $model::deleted(...);
+        $this->flushCache(...) |> $model::updated(...);
+        $this->flushCache(...) |> $model::deleted(...);
     }
 
     #[\Override]
     public function retrieveById(mixed $identifier): ?Authenticatable
     {
-        $key = $this->key($identifier);
+        $cacheKey = $this->getCacheKey($identifier);
 
-        $ttl = $this->ttl();
+        $cacheTTL = $this->getCacheTTL();
 
-        return cache()->remember($key, $ttl, fn () => parent::retrieveById($identifier));
+        return cache()->remember($cacheKey, $cacheTTL, fn () => parent::retrieveById($identifier));
     }
 
-    protected function key(mixed $identifier): string
+    protected function getCacheKey(mixed $identifier): string
     {
-        $key = config()->string('auth.providers.users.cache.key', 'eloquent:users:%s');
-
         if (! is_scalar($identifier)) {
             InvalidArgumentException::throw('Auth identifier must be a scalar value');
         }
 
-        return sprintf($key, $identifier);
+        return sprintf(config()->string('auth.providers.users.cache.key', 'eloquent:users:%s'), $identifier);
     }
 
-    protected function ttl(): CarbonInterval
+    protected function getCacheTTL(): CarbonInterval
     {
         return config()->integer('auth.providers.users.cache.ttl', 60 * 60 * 24) |> seconds(...);
     }
 
-    protected function flush(Authenticatable $authenticatable): void
+    protected function flushCache(Authenticatable $authenticatable): void
     {
-        $authenticatable->getAuthIdentifier() |> $this->key(...) |> cache()->forget(...);
+        $authenticatable->getAuthIdentifier() |> $this->getCacheKey(...) |> cache()->forget(...);
     }
 }

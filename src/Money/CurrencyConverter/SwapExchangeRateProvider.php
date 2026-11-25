@@ -6,26 +6,32 @@ namespace Mpietrucha\Laravel\Essentials\Money\CurrencyConverter;
 
 use Brick\Money\Exception\CurrencyConversionException;
 use Brick\Money\ExchangeRateProvider;
+use Exchanger\CurrencyPair;
 use Mpietrucha\Support\Concerns\Makeable;
 use Swap\Swap;
 use Throwable;
 
-final readonly class SwapExchangeRateProvider implements ExchangeRateProvider
+class SwapExchangeRateProvider implements ExchangeRateProvider
 {
     use Makeable;
 
-    public function __construct(private Swap $swap)
+    public function __construct(protected Swap $swap)
     {
     }
 
     public function getExchangeRate(string $sourceCurrency, string $targetCurrency): string
     {
-        $currencyPair = sprintf('%s/%s', $sourceCurrency, $targetCurrency);
+        $currencyPair = (string) new CurrencyPair($sourceCurrency, $targetCurrency);
 
         try {
             return (string) $this->swap->latest($currencyPair)->getValue();
         } catch (Throwable $throwable) {
-            throw CurrencyConversionException::exchangeRateNotAvailable($sourceCurrency, $targetCurrency, previous: $throwable);
+            throw CurrencyConversionException::exchangeRateNotAvailable(
+                $sourceCurrency,
+                $targetCurrency,
+                null,
+                $throwable,
+            );
         }
     }
 }

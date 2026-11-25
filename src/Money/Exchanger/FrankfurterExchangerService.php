@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Mpietrucha\Laravel\Essentials\Money\CurrencyConverter;
+namespace Mpietrucha\Laravel\Essentials\Money\Exchanger;
 
 use DateTimeImmutable;
 use DateTimeZone;
@@ -14,11 +14,11 @@ use Exchanger\Exception\UnsupportedCurrencyPairException;
 use Exchanger\Service\HttpService;
 use Exchanger\Service\SupportsHistoricalQueries;
 use Illuminate\Support\Uri;
-use Mpietrucha\Laravel\Essentials\Money\CurrencyConverter\Concerns\CanBeRegistered;
-use Mpietrucha\Laravel\Essentials\Money\CurrencyConverter\Concerns\HasDecoratedResponse;
+use Mpietrucha\Laravel\Essentials\Money\Exchanger\Concerns\CanBeRegistered;
+use Mpietrucha\Laravel\Essentials\Money\Exchanger\Concerns\HasDecoratedResponse;
 use Mpietrucha\Support\Arr;
 
-final class FrankfurterExchangerService extends HttpService
+class FrankfurterExchangerService extends HttpService
 {
     use CanBeRegistered;
     use HasDecoratedResponse;
@@ -27,11 +27,6 @@ final class FrankfurterExchangerService extends HttpService
     public function supportQuery(ExchangeRateQuery $exchangeQuery): bool
     {
         return true;
-    }
-
-    public function getName(): string
-    {
-        return 'frankfurter';
     }
 
     protected function getLatestExchangeRate(ExchangeRateQuery $exchangeQuery): ExchangeRate

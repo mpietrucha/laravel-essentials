@@ -1,6 +1,6 @@
 <?php
 
-namespace Mpietrucha\Laravel\Essentials\Money\CurrencyConverter\Concerns;
+namespace Mpietrucha\Laravel\Essentials\Money\Exchanger\Concerns;
 
 use Exchanger\Contract\ExchangeRateService;
 use Illuminate\Http\Client\Response;
