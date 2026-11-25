@@ -11,6 +11,7 @@ use Exchanger\Exception\UnsupportedCurrencyPairException;
 use Exchanger\Service\Service;
 use Mpietrucha\Laravel\Essentials\Money\Exchanger\Concerns\CanBeRegistered;
 use Mpietrucha\Support\Arr;
+use Mpietrucha\Support\ClassNamespace;
 use Mpietrucha\Support\Str;
 
 class CachedExchangerService extends Service
@@ -57,7 +58,7 @@ class CachedExchangerService extends Service
 
     protected static function getCacheKey(string $sourceCurrency, ?string $targetCurrency = null): string
     {
-        $prefix = get_called_class() |> Str::kebab(...);
+        $prefix = get_called_class() |> ClassNamespace::name(...) |> Str::kebab(...);
 
         $currencyPair = match (true) {
             $targetCurrency === null => CurrencyPair::createFromString($sourceCurrency),
