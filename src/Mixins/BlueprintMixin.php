@@ -9,14 +9,19 @@ use Illuminate\Database\Schema\Blueprint;
  */
 trait BlueprintMixin
 {
-    public function mixedMorphs(string $name, ?string $index = null): void
+    public function mixedMorphs(string $name, ?string $index = null, bool $nullable = false): void
     {
         $id = sprintf('%s_id', $name);
         $type = sprintf('%s_type', $name);
 
-        $this->char($id, 36);
-        $this->string($type);
+        $this->string($type)->nullable($nullable);
+        $this->string($id, 36)->nullable($nullable);
 
-        $this->index([$id, $type], $index);
+        $this->index([$type, $id], $index);
+    }
+
+    public function nullableMixedMorphs(string $name, ?string $index = null): void
+    {
+        $this->mixedMorphs($name, $index, true);
     }
 }
