@@ -23,6 +23,7 @@ use Mpietrucha\Laravel\Essentials\Mixins\Console\Commands\GenerateMixinAnalyzers
 use Mpietrucha\Laravel\Essentials\Mixins\EloquentBuilderMixin;
 use Mpietrucha\Laravel\Essentials\Mixins\QueryBuilderMixin;
 use Mpietrucha\Laravel\Essentials\Money\Console\Commands\NormalizePrices;
+use Mpietrucha\Laravel\Essentials\Money\Console\Commands\TouchStalePhases;
 use Mpietrucha\Laravel\Essentials\Money\ExchangerServicesRegistry;
 use Mpietrucha\Laravel\Essentials\Money\HasPriceAutoloader;
 use Mpietrucha\Laravel\Essentials\Money\Models\Discount;
@@ -62,6 +63,7 @@ class LaravelEssentialsServiceProvider extends PackageServiceProvider
             NormalizePrices::class,
             SyncTranslations::class,
             GenerateIdeHelpers::class,
+            TouchStalePhases::class,
             GenerateMixinAnalyzers::class,
         ]);
 
@@ -73,6 +75,7 @@ class LaravelEssentialsServiceProvider extends PackageServiceProvider
         $this->configureExceptionHandler();
 
         $this->scheduleNormalizePrices();
+        $this->scheduleTouchStalePhases();
 
         $this->extendCacheClearedCommand();
         $this->extendEloquentUserProvider();
@@ -109,9 +112,25 @@ class LaravelEssentialsServiceProvider extends PackageServiceProvider
             return;
         }
 
-        $this->callAfterResolving(Schedule::class, static fn (Schedule $schedule) => $schedule->command(
-            NormalizePrices::class
-        )->daily()->runInBackground()->withoutOverlapping());
+        $this->schedule()->command(NormalizePrices::class)->daily()->runInBackground()->withoutOverlapping();
+
+        // $this->scheduleCommand(NormalizePrices::class)->daily()->runInBackground()->withoutOverlapping();
+        // $this->callAfterResolving(Schedule::class, static fn (Schedule $schedule) => $schedule->command(
+        //     NormalizePrices::class
+        // )->daily()->runInBackground()->withoutOverlapping());
+    }
+
+    protected function scheduleTouchStalePhases(): void
+    {
+        if (Discount::disabled()) {
+            return;
+        }
+
+        if (! config('essentials.money.discounts.touch_stale_phases.schedule')) {
+            return;
+        }
+
+        $this->schedule()->command(TouchStalePhases::class)->everyMinute()->withoutOverlapping();
     }
 
     protected function configureExceptionHandler(): void

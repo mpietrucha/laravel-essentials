@@ -34,17 +34,6 @@ class NormalizePrices extends Job
     {
     }
 
-    public function handle(): void
-    {
-        $models = $this->modelDirectories |> static::getModelsWithPriceNormalizers(...);
-
-        $models->each(function (Collection $priceNormalizers, string $modelClass): void {
-            $models = $modelClass::query()->lazyById();
-
-            $models->each(fn (Model $model) => $this->normalizePrices($model, $priceNormalizers));
-        });
-    }
-
     /**
      * @param  ModelDirectories  $modelDirectories
      * @return LazyCollection<class-string<Model>, PriceNormalizerCollection>
@@ -69,12 +58,23 @@ class NormalizePrices extends Job
         })->filter(filled(...));
     }
 
+    public function handle(): void
+    {
+        $models = $this->modelDirectories |> static::getModelsWithPriceNormalizers(...);
+
+        $models->each(function (Collection $priceNormalizers, string $modelClass): void {
+            $models = $modelClass::query()->lazyById();
+
+            $models->each(fn (Model $model) => $this->normalizePrices($model, $priceNormalizers));
+        });
+    }
+
     /**
      * @param  PriceNormalizerCollection  $priceNormalizers
      */
     protected function normalizePrices(Model $model, Collection $priceNormalizers): void
     {
-        $activity = config('essentials.money.normalize_prices.activity');
+        $activity = config('essentials.money.normalize_prices.log_activity');
 
         if (! $activity && Instance::traits($model)->contains(LogsActivity::class)) {
             /** @phpstan-ignore method.notFound */

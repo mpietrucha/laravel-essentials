@@ -4,6 +4,7 @@ namespace Mpietrucha\Laravel\Essentials\PackageTools;
 
 use Mpietrucha\Laravel\Essentials\PackageTools\Concerns\ProcessBladeAnonymousComponents;
 use Mpietrucha\Laravel\Essentials\PackageTools\Concerns\ProcessMixins;
+use Mpietrucha\Laravel\Essentials\PackageTools\Concerns\Schedulable;
 use Spatie\LaravelPackageTools\Package as SpatiePackage;
 use Spatie\LaravelPackageTools\PackageServiceProvider as SpatiePackageServiceProvider;
 
@@ -14,6 +15,7 @@ abstract class PackageServiceProvider extends SpatiePackageServiceProvider
 {
     use ProcessBladeAnonymousComponents;
     use ProcessMixins;
+    use Schedulable;
 
     abstract public function configure(Package $package): void;
 
@@ -36,8 +38,8 @@ abstract class PackageServiceProvider extends SpatiePackageServiceProvider
     {
         parent::bootPackageViewSharedData();
 
-        return $this
-            ->bootPackageMixins()
-            ->bootPackageBladeAnonymousComponents();
+        $this->bootPackageMixins();
+
+        return $this->bootPackageBladeAnonymousComponents();
     }
 }

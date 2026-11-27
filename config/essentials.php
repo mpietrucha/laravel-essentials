@@ -23,10 +23,14 @@ return [
                 'table' => 'discounts',
                 'model' => Discount::class,
             ],
+
+            'touch_stale_phases' => [
+                'schedule' => env('ESSENTIALS_TOUCH_STALE_PHASES_SCHEDULE', true),
+            ],
         ],
         'normalize_prices' => [
             'schedule' => env('ESSENTIALS_NORMALIZE_PRICES_SCHEDULE', true),
-            'activity' => env('ESSENTIALS_NORMALIZE_PRICES_ACTIVITY', false),
+            'log_activity' => env('ESSENTIALS_NORMALIZE_PRICES_LOG_ACTIVITY', false),
         ],
     ],
 ];

@@ -196,7 +196,7 @@ class Discount extends Phase
         $multiplier = $this->discount_multiplier;
 
         if ($multiplier < 1) {
-            return $price->multipliedBy($multiplier, $roundingMode);
+            return $price->multipliedBy((string) $multiplier, $roundingMode);
         }
 
         return $this->getPrice($priceAttribute, null, $price->getCurrency(), $context, $roundingMode);
