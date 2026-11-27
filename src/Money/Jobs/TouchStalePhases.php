@@ -33,38 +33,38 @@ class TouchStalePhases extends Job
     public function handle(): void
     {
         static::getPhaseModels()->each(static function (string $phaseModel): void {
-            $phaseBuilder = $phaseModel::query();
+            $phasesBuilder = $phaseModel::query();
 
-            $phaseBuilder->clone() |> static::touchStartedPhases(...);
-            $phaseBuilder->clone() |> static::touchExpiredPhases(...);
+            $phasesBuilder->clone() |> static::touchStartedPhases(...);
+            $phasesBuilder->clone() |> static::touchExpiredPhases(...);
         });
     }
 
     /**
-     * @param  PhaseBuilder  $phaseBuilder
+     * @param  PhaseBuilder  $phasesBuilder
      */
-    protected static function touchStartedPhases(Builder $phaseBuilder): void
+    protected static function touchStartedPhases(Builder $phasesBuilder): void
     {
-        $phaseBuilder->active();
+        $phasesBuilder->active();
 
         /** @phpstan-ignore argument.type */
-        $phaseBuilder->whereColumn($phaseBuilder->getModel()->getUpdatedAtColumn(), '<', 'active_from');
+        $phasesBuilder->whereColumn($phasesBuilder->getModel()->getUpdatedAtColumn(), '<', 'active_from');
 
-        $phaseBuilder->touch();
+        $phasesBuilder->touch();
     }
 
     /**
-     * @param  PhaseBuilder  $phaseBuilder
+     * @param  PhaseBuilder  $phasesBuilder
      */
-    protected static function touchExpiredPhases(Builder $phaseBuilder): void
+    protected static function touchExpiredPhases(Builder $phasesBuilder): void
     {
-        $phaseBuilder->whereNull('finished_at');
+        $phasesBuilder->whereNull('finished_at');
 
-        $phaseBuilder->wherePast($activeTo = 'active_to');
+        $phasesBuilder->wherePast($activeTo = 'active_to');
 
         /** @phpstan-ignore argument.type */
-        $phaseBuilder->whereColumn($phaseBuilder->getModel()->getUpdatedAtColumn(), '<', $activeTo);
+        $phasesBuilder->whereColumn($phasesBuilder->getModel()->getUpdatedAtColumn(), '<', $activeTo);
 
-        $phaseBuilder->touch();
+        $phasesBuilder->touch();
     }
 }
