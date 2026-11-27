@@ -2,7 +2,6 @@
 
 namespace Mpietrucha\Laravel\Essentials;
 
-use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Contracts\Debug\ExceptionHandler;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
@@ -113,11 +112,6 @@ class LaravelEssentialsServiceProvider extends PackageServiceProvider
         }
 
         $this->schedule()->command(NormalizePrices::class)->daily()->runInBackground()->withoutOverlapping();
-
-        // $this->scheduleCommand(NormalizePrices::class)->daily()->runInBackground()->withoutOverlapping();
-        // $this->callAfterResolving(Schedule::class, static fn (Schedule $schedule) => $schedule->command(
-        //     NormalizePrices::class
-        // )->daily()->runInBackground()->withoutOverlapping());
     }
 
     protected function scheduleTouchStalePhases(): void

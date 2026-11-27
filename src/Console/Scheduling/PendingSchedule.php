@@ -10,7 +10,8 @@ use Throwable;
 
 /**
  * @phpstan-type PendingCallArguments array<mixed>
- * @phpstan-type PendingCallCollection Collection<string, PendingCallArguments>
+ * @phpstan-type PendingCall array{string, PendingCallArguments}
+ * @phpstan-type PendingCallCollection Collection<int, PendingCall>
  *
  * @mixin Schedule
  */
@@ -28,22 +29,24 @@ class PendingSchedule
      */
     public function __call(string $method, array $arguments): static
     {
-        $this->getPendingCalls()->put($method, $arguments);
+        $this->getPendingCalls()->push([$method, $arguments]);
 
         return $this;
     }
 
     public function apply(Schedule $schedule): void
     {
-        $this->getPendingCalls()->each(static function (array $arguments, string $method) use ($schedule): void {
+        $this->getPendingCalls()->reduce(static function (mixed $target, array $pendingCall): mixed {
             try {
-                $schedule->$method(...$arguments);
+                [$method, $arguments] = $pendingCall;
+
+                return $target->$method(...$arguments);
             } catch (Throwable $throwable) {
                 RuntimeException::usePrevious($throwable);
 
                 RuntimeException::throw('Failed to apply pending schedule calls');
             }
-        });
+        }, $schedule);
     }
 
     /**

@@ -15,9 +15,10 @@ trait Schedulable
     {
         $pendingSchedule = PendingSchedule::make();
 
-        $this->callAfterResolving(Schedule::class, static function (Schedule $schedule) use ($pendingSchedule): void {
-            $pendingSchedule->apply($schedule);
-        });
+        $this->callAfterResolving(
+            Schedule::class,
+            static fn (Schedule $schedule) => $pendingSchedule->apply($schedule),
+        );
 
         return $pendingSchedule;
     }
